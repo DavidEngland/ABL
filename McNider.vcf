@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:McNider;Richard;T.;"Dick"
+FN:Richard "Dick" T. McNider
+ORG:University of Alabama in Huntsville;Atmospheric and Earth Science
+TITLE:Distinguished Professor, Emeritus
+ADR;TYPE=WORK,POSTAL,PARCEL:;;Cramer Research Hall, Room 3051;320 Sparkman Drive;Huntsville;AL;35899;United States
+LABEL;TYPE=WORK,POSTAL,PARCEL:Cramer Research Hall, Room 3051\n320 Sparkman Drive\nHuntsville, AL 35899
+TEL;TYPE=WORK,VOICE:+12568246456
+EMAIL;TYPE=INTERNET,WORK:richard.mcnider@uah.edu
+END:VCARD

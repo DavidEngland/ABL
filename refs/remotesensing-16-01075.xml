@@ -1,0 +1,1490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "JATS-journalpublishing1-3.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.3" xml:lang="en">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">remotesensing</journal-id>
+      <journal-title-group>
+        <journal-title>Remote Sensing</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Remote Sens.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Remote Sensing</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="epub">2072-4292</issn>
+      <publisher>
+        <publisher-name>MDPI</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.3390/rs16061075</article-id>
+      <article-id pub-id-type="publisher-id">remotesensing-16-01075</article-id>
+      <article-categories>
+        <subj-group>
+          <subject>Article</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>High-Resolution Remote Sensing of the Gradient Richardson Number in a Megacity Boundary Layer</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Yang</surname>
+            <given-names>Simin</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Investigation" vocab-term-identifier="https://credit.niso.org/contributor-roles/investigation/">Investigation</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing &#x2013; original draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">Writing &#x2013; original draft</role>
+          <xref rid="af1-remotesensing-16-01075" ref-type="aff">1</xref>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-1104-7165</contrib-id>
+          <name>
+            <surname>Ma</surname>
+            <given-names>Yongjing</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing &#x2013; original draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">Writing &#x2013; original draft</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zhang</surname>
+            <given-names>Wenyu</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <xref rid="af1-remotesensing-16-01075" ref-type="aff">1</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Ren</surname>
+            <given-names>Xinbing</given-names>
+          </name>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Peng</surname>
+            <given-names>Kecheng</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Ahmad</surname>
+            <given-names>Masroor</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Investigation" vocab-term-identifier="https://credit.niso.org/contributor-roles/investigation/">Investigation</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Jia</surname>
+            <given-names>Danjie</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zhao</surname>
+            <given-names>Dandan</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Kong</surname>
+            <given-names>Lingbin</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Investigation" vocab-term-identifier="https://credit.niso.org/contributor-roles/investigation/">Investigation</role>
+          <xref rid="af1-remotesensing-16-01075" ref-type="aff">1</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Ma</surname>
+            <given-names>Yining</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <xref rid="af3-remotesensing-16-01075" ref-type="aff">3</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-4243-5072</contrib-id>
+          <name>
+            <surname>Xin</surname>
+            <given-names>Jinyuan</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing &#x2013; original draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">Writing &#x2013; original draft</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+          <xref rid="af4-remotesensing-16-01075" ref-type="aff">4</xref>
+          <xref rid="c1-remotesensing-16-01075" ref-type="corresp">*</xref>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Thenkabail</surname>
+            <given-names>Prasad S.</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="af1-remotesensing-16-01075"><label>1</label>School of Geoscience and Technology, Zhengzhou University, Zhengzhou 450001, China; <email>yangsimin@gs.zzu.edu.cn</email> (S.Y.); <email>zhangwy@zzu.edu.cn</email> (W.Z.); <email>konglb@zzu.edu.cn</email> (L.K.)</aff>
+      <aff id="af2-remotesensing-16-01075"><label>2</label>State Key Laboratory of Atmospheric Boundary Layer Physics and Atmospheric Chemistry, Institute of Atmospheric Physics, Chinese Academy of Sciences, Beijing 100029, China; <email>mayongjing@mail.iap.ac.cn</email> (Y.M.); <email>renxinbing@mail.iap.ac.cn</email> (X.R.); <email>pengkc@nudt.edu.cn</email> (K.P.); <email>masroor@mail.iap.ac.cn</email> (M.A.); <email>jiadanjie@mail.iap.ac.cn</email> (D.J.); <email>zhaodandan@dq.cern.ac.cn</email> (D.Z.)</aff>
+      <aff id="af3-remotesensing-16-01075"><label>3</label>Shanghai Investigation, Design, and Research Institute, Shanghai 200093, China; <email>ma_yining@ctg.com.cn</email></aff>
+      <aff id="af4-remotesensing-16-01075"><label>4</label>College of Earth and Planetary Sciences, University of Chinese Academy of Sciences, Beijing 100049, China</aff>
+      <author-notes>
+        <corresp id="c1-remotesensing-16-01075"><label>*</label>Correspondence: <email>xjy@mail.iap.ac.cn</email></corresp>
+      </author-notes>
+      <pub-date pub-type="epub">
+        <day>19</day>
+        <month>03</month>
+        <year>2024</year>
+      </pub-date>
+      <pub-date pub-type="collection">
+        <month>03</month>
+        <year>2024</year>
+      </pub-date>
+      <volume>16</volume>
+      <issue>6</issue>
+      <elocation-id>1075</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>05</day>
+          <month>01</month>
+          <year>2024</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>09</day>
+          <month>03</month>
+          <year>2024</year>
+        </date>
+        <date date-type="accepted">
+          <day>10</day>
+          <month>03</month>
+          <year>2024</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>&#xA9; 2024 by the authors.</copyright-statement>
+        <copyright-year>2024</copyright-year>
+        <license license-type="open-access">
+          <license-p>Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license (<ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</ext-link>).</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <p>The Gradient Richardson Number (<italic>R<sub>i</sub></italic>) is an important parameter for appraising the stability and turbulence exchange at the atmospheric boundary layer (ABL). However, high-resolution measurements of <italic>R<sub>i</sub></italic> profiles are rarely reported, especially in megacities. In this study, a Doppler wind lidar and a microwave radiometer were simultaneously utilized to measure the 2 km <italic>R<sub>i</sub></italic> vertical profile in downtown Beijing. These measurements were verified to have high accuracy compared with observations from a 325 m meteorological tower, with root-mean-square errors (RMSEs) of less than 1.66 K, 7.9%, and 1.45 m/s for the temperature, relative humidity, and wind speed (WS) for all altitudes and corresponding Pearson correlation coefficients (R) of 0.97, 0.93, and 0.81. The inter-comparisons of different spatial (25 m, 50 m, 100 m) and temporal resolutions (1 min, 30 min, 1 h) form a 3 &#xD7; 3 resolution matrix of <italic>R<sub>i</sub></italic>, in which the 1 h temporal resolution of <italic>R<sub>i</sub></italic> overestimates the intensity and active area of turbulence. The <italic>R<sub>i</sub></italic> value retrieved from the 100 m spatial resolution data overestimates these by half as it misidentifies the height of the stable area at the near surface. There are significant differences between the data with a 1 min temporal resolution and a 25 m spatial resolution (defined as the standard resolution of <italic>R<sub>i</sub></italic>), and the rest of the data in the resolution matrix (defined as data at other resolutions), with an RMSE &gt; 1 and an R &lt; 0.8. The difference between data at the standard resolution and data at other resolutions increases with elevations, which results from frequent weather processes or from water-vapor blocking at higher altitudes. The <italic>R<sub>i</sub></italic> profiles reveal that the atmospheric layer at altitudes from 100 m to 500 m in daytime is unstable, with <italic>R<sub>i</sub></italic> &lt; 0, while it is neutral, with 0 &lt; <italic>R<sub>i</sub></italic> &lt; 0.25, at night-time from 200 m to 400 m. The atmosphere above the ABL in a megacity is rather stable, with <italic>R<sub>i</sub></italic> &gt; 0.25, whereas below the ABL, it is neutral or unstable, which is due to drastic changes in the WS and temperature that are affected by the topography and surface friction.</p>
+      </abstract>
+      <kwd-group>
+        <kwd>Gradient Richardson Number</kwd>
+        <kwd>atmospheric boundary layer (ABL)</kwd>
+        <kwd>atmospheric stability</kwd>
+      </kwd-group>
+      <funding-group>
+        <award-group>
+          <funding-source>Ministry of Science and Technology of China</funding-source>
+          <award-id>2022YFF0802501</award-id>
+        </award-group>
+        <award-group>
+          <funding-source>National Natural Science Foundation of China</funding-source>
+          <award-id>42305090</award-id>
+          <award-id>42307144</award-id>
+        </award-group>
+        <award-group>
+          <funding-source>China Postdoctoral Foundation</funding-source>
+          <award-id>2022TQ0332</award-id>
+        </award-group>
+        <award-group>
+          <funding-source>CAS Strategic Priority Research Program</funding-source>
+          <award-id>XDA23020301</award-id>
+        </award-group>
+        <funding-statement>This research was funded by [the Ministry of Science and Technology of China] grant number [2022YFF0802501], [the National Natural Science Foundation of China] grant number [42305090; 42307144], [the China Postdoctoral Foundation] grant number [2022TQ0332], and [the CAS Strategic Priority Research Program] grant number [XDA23020301].</funding-statement>
+      </funding-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="sec1-remotesensing-16-01075" sec-type="intro">
+      <title>1. Introduction</title>
+      <p>The Gradient Richardson Number (<italic>R<sub>i</sub></italic>), named after Lewis Fry Richardson, is a dimensionless number that is defined as the ratio of thermal buoyancy to wind shear. It is an important parameter for determining the generation of turbulence and the hydrostatic stability of a fluid. Therefore, the concept of <italic>R<sub>i</sub></italic> is widely applied in the field of atmospheric science [<xref ref-type="bibr" rid="B1-remotesensing-16-01075">1</xref>,<xref ref-type="bibr" rid="B2-remotesensing-16-01075">2</xref>,<xref ref-type="bibr" rid="B3-remotesensing-16-01075">3</xref>], such as in the estimation of the atmospheric boundary-layer height (ABLH), the modeling of mixed layers [<xref ref-type="bibr" rid="B4-remotesensing-16-01075">4</xref>], and the quantification of the night-time boundary layer [<xref ref-type="bibr" rid="B5-remotesensing-16-01075">5</xref>]. In general, it is well recognized that the atmosphere is unstable when <italic>R<sub>i</sub></italic> is smaller than a certain critical value of 0.25, and the stability tends to be enhanced with the increase in <italic>R<sub>i</sub></italic> [<xref ref-type="bibr" rid="B6-remotesensing-16-01075">6</xref>].</p>
+      <p>The ABL, a key transitional zone between the Earth&#x2019;s surface and the free atmosphere, is directly affected by surface features, solar radiation, and WS, which can be theoretically classified as stable, neutral, and unstable according to the state of atmospheric stratification based on distinct physical properties [<xref ref-type="bibr" rid="B7-remotesensing-16-01075">7</xref>]. An important feature of the atmospheric motion within the ABL is the ubiquitous turbulence that plays a vital role in the vertical transport of heat, momentum, and water vapor [<xref ref-type="bibr" rid="B8-remotesensing-16-01075">8</xref>,<xref ref-type="bibr" rid="B9-remotesensing-16-01075">9</xref>,<xref ref-type="bibr" rid="B10-remotesensing-16-01075">10</xref>]. Therefore, probing the structural characteristics of the ABL is of great importance in improving the accuracy of prediction models of weather, climate, and atmospheric environmental quality, as well as for the development and extinction of clouds, convection, and atmospheric pollution.</p>
+      <p>Various approaches have been developed in the past decades for the investigation of the ABL. For example, layered observations from the 325 m tower were used to evaluate the influence of the urban boundary-layer structure on the accumulation of atmospheric pollutants [<xref ref-type="bibr" rid="B11-remotesensing-16-01075">11</xref>], although these were only available at the near surface. Radio sounding has advantages in terms of the vertical resolution and range, making it an effective means for deriving the boundary-layer height [<xref ref-type="bibr" rid="B12-remotesensing-16-01075">12</xref>]. However, the boundary-layer heights estimated from radio soundings have limitations in their temporal resolution because of the regularly fixed-time operations and also a horizontally large drift. Vertical temperature profiles retrieved from passive techniques such as infrared and microwave space-borne remote sensing technologies have a spatial resolution of 1&#x2013;2 km, which is too coarse to meet the requirement for analyzing structural profiles of the ABL. In recent years, with the rapid development of in situ remote sensing instruments such as the Doppler wind lidar [<xref ref-type="bibr" rid="B13-remotesensing-16-01075">13</xref>,<xref ref-type="bibr" rid="B14-remotesensing-16-01075">14</xref>,<xref ref-type="bibr" rid="B15-remotesensing-16-01075">15</xref>] and the microwave radiometer [<xref ref-type="bibr" rid="B16-remotesensing-16-01075">16</xref>], it is achievable for us to accurately measure the meteorological data at finer spatiotemporal resolutions.</p>
+      <p>Beijing, the capital of China, is a typical megacity with a non-uniform complex underlying surface, and its ABL characteristics as a representative of megacities have become a hot issue in ABL research fields all over the world [<xref ref-type="bibr" rid="B17-remotesensing-16-01075">17</xref>]. For the purpose of better exploring the characteristics of the ABL in downtown Beijing, <italic>R<sub>i</sub></italic> values retrieved from different resolution datasets have been analyzed, which will provide scientific references for the selection and application of different-resolution datasets in evaluating atmospheric stability and also deepen our understanding regarding urban ABL structures. </p>
+    </sec>
+    <sec id="sec2-remotesensing-16-01075">
+      <title>2. Sites, Instruments, and Methods</title>
+      <sec id="sec2dot1-remotesensing-16-01075">
+        <title>2.1. Introduction to the IAP Integrated Observatory</title>
+        <p><xref ref-type="fig" rid="remotesensing-16-01075-f001">Figure 1</xref>a shows the geographic location of the observatory and its surrounding environment, and <xref ref-type="fig" rid="remotesensing-16-01075-f001">Figure 1</xref>b shows the urban landscape of downtown Beijing. The observation site is the State Key Laboratory of Atmospheric Boundary Layer Physics and Atmospheric Chemistry, Institute of Atmospheric Physics, Chinese Academy of Sciences (IAP, CAS: 39&#xB0;58&#x2032;N, 116&#xB0;22&#x2032;E, 49 m), hereafter referred to as the IAP integrated observatory. Measurements were performed during 1&#x2013;25 January 2019 using the 325 m meteorological tower, a microwave radiometer, a Doppler wind lidar, and a CL51 ceilometer (<xref ref-type="fig" rid="remotesensing-16-01075-f001">Figure 1</xref>c&#x2013;f) in order to measure the wintertime thermodynamic ABL.</p>
+      </sec>
+      <sec id="sec2dot2-remotesensing-16-01075">
+        <title>2.2. Instruments</title>
+        <sec id="sec2dot2dot1-remotesensing-16-01075">
+          <title>2.2.1. IAP 325 m Tower</title>
+          <p>The 325 m meteorological tower has the advantages of high accuracy and the simultaneous observation of multiple layers. The 325 m meteorological tower has seventeen levels of operating platforms, of which fifteen platforms are commonly used, i.e., those at 8, 15, 32, 47, 63, 80, 102, 120, 140, 160, 180, 200, 240, 280, and 320 m. Each level is equipped with two anemometers (wind cups), one anemometer (wind vane), one thermometer, one hygrometer, and one data collector. The platform is 0.7 m in width, and the protective railing is around 1 m in height. The 325 m meteorological tower is capable of measuring the multi-meteorological variables of temperature, relative humidity, horizontal WS, and horizontal wind direction (WD). To date, the IAP 325 m meteorological tower has accumulated meteorological data for more than 40 years, which can be regarded as a reference basis for other observational approaches.</p>
+        </sec>
+        <sec id="sec2dot2dot2-remotesensing-16-01075">
+          <title>2.2.2. Microwave Radiometer</title>
+          <p>The microwave radiometer (HATPRO-G5, RPG, Meckenheim, Germany) is a passive microwave remote sensing device that can continuously acquire atmospheric thermal parameters such as temperature and humidity in the vertical range of 0&#x2013;10 km in real time [<xref ref-type="bibr" rid="B18-remotesensing-16-01075">18</xref>]. The microwave radiometer has two receivers, including seven frequency channels for water-vapor absorption lines (K-band 22.24&#x2013;31.40 GHz) and seven frequency channels for oxygen absorption lines (V-band 51.26&#x2013;58.00 GHz). A large amount of atmospheric radiation at frequencies of 22.24&#x2013;31.40 GHz is actively radiated by water-vapor molecules, while atmospheric radiation at frequencies of 51.26&#x2013;58.00 GHz is radiated by remotely sensed oxygen molecules [<xref ref-type="bibr" rid="B19-remotesensing-16-01075">19</xref>]. The microwave radiometer is available in two modes: the zenith mode and the boundary-layer multi-angle scanning mode. In the zenith observation mode, the radiometer takes measurements only in the vertical channels. In the boundary-layer mode, all channels are sampled, and more information can be obtained. The two modes work together to achieve spatial resolution (60&#x2013;300 m spatial resolution up to 10,000 m) and the boundary layer (25&#x2013;40 m spatial resolution), with up to ninety-three layers in the vertical direction and a time resolution of 1 s. For more details, see <uri>http://www.radiometer-physics.de</uri> (last accessed on 3 November 2023).</p>
+        </sec>
+        <sec id="sec2dot2dot3-remotesensing-16-01075">
+          <title>2.2.3. Doppler Wind Lidar</title>
+          <p>The Doppler wind lidar (Windcube100s, Leosphere, Paris, France) is an active remote sensing device based on light detection and ranging techniques. The instrument has three observation modes: 1. The vertical DBS (Doppler beam swinging) scanning mode, known as the vertical profile mode; 2. The horizontal PPI (plan position indicator) scanning mode, known as the constant zenith-angle mode; 3. The tangential RHI (range height indicator) scanning mode, known as the constant azimuth mode. The detectable range of the instrument is from 50 m to about 3 km, of which the bottom limit of 50 m is the detection blind zone. The vertical resolutions are 20 m from 50 m to 300 m and 25 m for 300&#x2013;3000 m. The time resolution of the WS is 5 s, with an integration time from 0.5 s to 10 s (standard integration time: 1 s), and the accuracy of WS is 0.5 m/s. The observation range of the radial WS and WD is &#x2212;30 m/s to 30 m/s and 0 to 360&#xB0;, respectively. More information about the instrument can be found at <uri>www.leosphere.com</uri> (last accessed on 3 November 2023).</p>
+        </sec>
+        <sec id="sec2dot2dot4-remotesensing-16-01075">
+          <title>2.2.4. CL51 Ceilometer</title>
+          <p>In this study, a CL51 ceilometer was used to obtain the height of the boundary layer. The ceilometer lidar (CL51, Vaisala, Vantaa, Finland) is an active remote sensing device. It is capable of emitting laser pulses and then receiving back the scattered signals caused by haze, fog, precipitation, and clouds. Based on the time interval between the signal transmission and reception, the height of the cloud bottom and the height of the boundary layer can be calculated. The CL51 ceilometer has a spatial resolution of 10 m and a temporal resolution of 15&#x2013;16 s. For more information, please refer to <uri>www.vaisala.com</uri> (last accessed on 3 November 2023).</p>
+        </sec>
+      </sec>
+      <sec id="sec2dot3-remotesensing-16-01075" sec-type="methods">
+        <title>2.3. Methodology</title>
+        <sec id="sec2dot3dot1-remotesensing-16-01075">
+          <title>2.3.1. ABL Thermal Parameters</title>
+          <p>Atmospheric temperature and humidity data obtained by microwave radiometers enable the calculation of atmospheric thermal parameters. The formulas are as follows:<disp-formula id="FD1-remotesensing-16-01075"><label>(1)</label><mml:math id="mm1" display="block"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>P</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mrow><mml:mi>P</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mrow><mml:mrow><mml:mi mathvariant="italic">exp</mml:mi></mml:mrow><mml:mo>&#x2061;</mml:mo><mml:mrow><mml:mo>[</mml:mo></mml:mrow></mml:mrow><mml:mo>&#x2212;</mml:mo><mml:mfrac><mml:mrow><mml:mn>1</mml:mn></mml:mrow><mml:mrow><mml:mi>R</mml:mi></mml:mrow></mml:mfrac><mml:mrow><mml:msubsup><mml:mo stretchy="false">&#x222B;</mml:mo><mml:mrow><mml:msub><mml:mrow><mml:mi>Z</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mrow><mml:mi>Z</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:mrow></mml:msubsup><mml:mrow><mml:mfrac><mml:mrow><mml:mi>g</mml:mi></mml:mrow><mml:mrow><mml:mi>T</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:mrow><mml:mi>d</mml:mi><mml:mi>z</mml:mi><mml:mo stretchy="false">]</mml:mo></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD2-remotesensing-16-01075"><label>(2)</label><mml:math id="mm2" display="block"><mml:semantics><mml:mrow><mml:mi>&#x3B8;</mml:mi><mml:mo>=</mml:mo><mml:mi>T</mml:mi><mml:mo>&#xD7;</mml:mo><mml:mo>(</mml:mo><mml:mfrac><mml:mrow><mml:msub><mml:mrow><mml:mi>p</mml:mi></mml:mrow><mml:mrow><mml:mn>0</mml:mn></mml:mrow></mml:msub></mml:mrow><mml:mrow><mml:mi>P</mml:mi></mml:mrow></mml:mfrac><mml:msup><mml:mrow><mml:mo>)</mml:mo></mml:mrow><mml:mrow><mml:mfenced separators="|"><mml:mrow><mml:mfrac><mml:mrow><mml:mi>R</mml:mi></mml:mrow><mml:mrow><mml:msub><mml:mrow><mml:mi>c</mml:mi></mml:mrow><mml:mrow><mml:mi>p</mml:mi></mml:mrow></mml:msub></mml:mrow></mml:mfrac></mml:mrow></mml:mfenced></mml:mrow></mml:msup></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD3-remotesensing-16-01075"><label>(3)</label><mml:math id="mm3" display="block"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>e</mml:mi></mml:mrow><mml:mrow><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>6.1078</mml:mn><mml:mrow><mml:mrow><mml:mi mathvariant="italic">exp</mml:mi></mml:mrow><mml:mo>&#x2061;</mml:mo><mml:mrow><mml:mo>[</mml:mo></mml:mrow></mml:mrow><mml:mfrac><mml:mrow><mml:mn>17.2693882</mml:mn><mml:mfenced separators="|"><mml:mrow><mml:mi>T</mml:mi><mml:mo>&#x2212;</mml:mo><mml:mn>273.16</mml:mn></mml:mrow></mml:mfenced></mml:mrow><mml:mrow><mml:mi>T</mml:mi><mml:mo>&#x2212;</mml:mo><mml:mn>35.86</mml:mn></mml:mrow></mml:mfrac><mml:mo stretchy="false">]</mml:mo></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD4-remotesensing-16-01075"><label>(4)</label><mml:math id="mm4" display="block"><mml:semantics><mml:mrow><mml:mi>e</mml:mi><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mi>R</mml:mi><mml:mi>H</mml:mi></mml:mrow><mml:mrow><mml:mn>100</mml:mn></mml:mrow></mml:mfrac><mml:mo>&#xD7;</mml:mo><mml:msub><mml:mrow><mml:mi>e</mml:mi></mml:mrow><mml:mrow><mml:mi>s</mml:mi></mml:mrow></mml:msub></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD5-remotesensing-16-01075"><label>(5)</label><mml:math id="mm5" display="block"><mml:semantics><mml:mrow><mml:mi>q</mml:mi><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mn>0.622</mml:mn><mml:mi>e</mml:mi></mml:mrow><mml:mrow><mml:mi>p</mml:mi><mml:mo>&#x2212;</mml:mo><mml:mn>0.378</mml:mn><mml:mi>e</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD6-remotesensing-16-01075"><label>(6)</label><mml:math id="mm6" display="block"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>&#x3B8;</mml:mi></mml:mrow><mml:mrow><mml:mi>v</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mi mathvariant="sans-serif">&#x3B8;</mml:mi><mml:mo>(</mml:mo><mml:mn>1</mml:mn><mml:mo>+</mml:mo><mml:mn>0.608</mml:mn><mml:mi>q</mml:mi><mml:mo>)</mml:mo></mml:mrow></mml:semantics></mml:math></disp-formula>
+          where <italic>P</italic>, Z, <italic>&#x3B8;</italic>, and <italic>T</italic> denote the actual pressure, altitude, potential temperature, and the temperature, respectively. <italic>P</italic><sub>0</sub> is the reference pressure of 1000 hPa, <italic>R</italic> represents the gas constant, and <italic>c<sub>p</sub></italic> is the constant-pressure specific heat capacity of the air. In addition, <italic>e<sub>s</sub></italic>, <italic>e</italic>, <italic>q</italic>, and <italic>&#x3B8;<sub>v</sub></italic> are the saturation vapor pressure, actual water-vapor pressure, specific humidity, and the virtual potential temperature, respectively.</p>
+        </sec>
+        <sec id="sec2dot3dot2-remotesensing-16-01075">
+          <title>2.3.2. Temperature Inversion</title>
+          <p>The formula for calculating the temperature lapse rate is as follows:<disp-formula id="FD7-remotesensing-16-01075"><label>(7)</label><mml:math id="mm7" display="block"><mml:semantics><mml:mrow><mml:mi>T</mml:mi><mml:mi>e</mml:mi><mml:mi>m</mml:mi><mml:mi>p</mml:mi><mml:mo>.</mml:mo><mml:mi>I</mml:mi><mml:mi>n</mml:mi><mml:mi>v</mml:mi><mml:mi>e</mml:mi><mml:mi>r</mml:mi><mml:mi>s</mml:mi><mml:mi>i</mml:mi><mml:mi>o</mml:mi><mml:mi>n</mml:mi><mml:msub><mml:mtext>&#xA0;</mml:mtext><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>i</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>100</mml:mn><mml:mo>&#x2217;</mml:mo><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>T</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mo>&#x2212;</mml:mo><mml:msub><mml:mi>T</mml:mi><mml:mi>i</mml:mi></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>/</mml:mo><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>Z</mml:mi><mml:mrow><mml:mi>i</mml:mi><mml:mo>+</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mo>&#x2212;</mml:mo><mml:msub><mml:mi>Z</mml:mi><mml:mi>i</mml:mi></mml:msub><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:semantics></mml:math></disp-formula>
+          where <italic>T<sub>i</sub></italic> denotes the atmospheric temperature at the <italic>i</italic>-th altitude (<italic>Z<sub>i</sub></italic>). <italic>Temp.Inversion</italic> is the temperature lapse rate (unit: K/100 m). A positive temperature lapse rate (<italic>TI</italic>) demonstrates a stable atmosphere, while negative values usually indicate unstable stratification. When the <italic>TI</italic> is close to or equal to 0, it represents a neutral environment [<xref ref-type="bibr" rid="B20-remotesensing-16-01075">20</xref>].</p>
+        </sec>
+        <sec id="sec2dot3dot3-remotesensing-16-01075">
+          <title>2.3.3. Gradient Richardson Numbers</title>
+          <p>The <italic>R<sub>i</sub></italic> equation was calculated using thermal parameters and wind field data, as follows:<disp-formula id="FD8-remotesensing-16-01075"><label>(8)</label><mml:math id="mm8" display="block"><mml:semantics><mml:mrow><mml:msub><mml:mi>R</mml:mi><mml:mi>i</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mfrac><mml:mi>g</mml:mi><mml:mrow><mml:msub><mml:mi>&#x3B8;</mml:mi><mml:mi>v</mml:mi></mml:msub></mml:mrow></mml:mfrac><mml:mfrac><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mo>&#x2202;</mml:mo><mml:msub><mml:mi>&#x3B8;</mml:mi><mml:mi>v</mml:mi></mml:msub><mml:mo>/</mml:mo><mml:mo>&#x2202;</mml:mo><mml:mi>z</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mrow><mml:msup><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mo>&#x2202;</mml:mo><mml:mi>u</mml:mi><mml:mo>/</mml:mo><mml:mo>&#x2202;</mml:mo><mml:mi>z</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mn>2</mml:mn></mml:msup><mml:mo>+</mml:mo><mml:msup><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mo>&#x2202;</mml:mo><mml:mi>v</mml:mi><mml:mo>/</mml:mo><mml:mo>&#x2202;</mml:mo><mml:mi>z</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mn>2</mml:mn></mml:msup></mml:mrow></mml:mfrac></mml:mrow></mml:semantics></mml:math></disp-formula>
+          where <italic>&#x3B8;<sub>v</sub></italic> denotes the virtual temperature, <italic>g</italic> is the gravitational acceleration, and <italic>z</italic> is the altitude. In practical calculations, the gradient of Equation (8) is approximated by finite differences as &#x2206;<italic>&#x3B8;<sub>v</sub></italic>/&#x2206;<italic>z</italic>, &#x2206;<italic>u</italic>/&#x2206;<italic>z</italic>, and &#x2206;<italic>v</italic>/&#x2206;<italic>z</italic>, where the increments of <italic>&#x3B8;</italic>, <italic>u</italic>, and <italic>v</italic> over the vertical distance <italic>&#x2206;z</italic> are taken from either actual observations or numerically simulated vertical profiles [<xref ref-type="bibr" rid="B21-remotesensing-16-01075">21</xref>]. The numerator reflects the buoyancy disruption through the entire boundary layer, and the denominator is the estimation of the overall shear generation. In an aerodynamically stable environment, turbulence is opposite to the recovery force of gravity in the fluid motion, so buoyancy tends to inhibit turbulence, and wind shear is tilted toward mechanically generated turbulence.</p>
+        </sec>
+      </sec>
+    </sec>
+    <sec id="sec3-remotesensing-16-01075" sec-type="results">
+      <title>3. Results</title>
+      <sec id="sec3dot1-remotesensing-16-01075">
+        <title>3.1. Comparative Validations of Multi-Source Data </title>
+        <sec id="sec3dot1dot1-remotesensing-16-01075">
+          <title>3.1.1. Wind-Field Assessment</title>
+          <p>The horizontal WS measured by the Doppler wind lidar is similar to that measured by the 325 m tower at all vertical heights. As depicted in <xref ref-type="fig" rid="remotesensing-16-01075-f002">Figure 2</xref>, the WS observed by the Doppler wind lidar is slightly larger at low WS conditions, whereas it is underestimated compared with the tower observations in high WS scenarios.</p>
+          <p>The Pearson correlation coefficient (R) demonstrates an increasing trend with height, which indicates that the lidar observations are credible at higher altitudes. The R is around 0.9 at all heights except for that of 8 m. The Doppler wind lidar cannot measure the wind field below 50 m; therefore, we adopted the meteorological sensor mounted on the microwave radiometer for measuring the near-surface WS of 8 m. At this level, the surrounding buildings block the natural wind, leading to the smaller horizontal WS measured by the tower. Apart from the 8 m level, the horizontal WS measured by the Doppler wind lidar at an altitude of 120 m had the largest RMSE of 1.45 m/s compared with the tower observations. In summary, the detection bias of the Doppler lidar lies within an acceptable range, which proves that the Doppler wind lidar has a high degree of reliability.</p>
+          <p><xref ref-type="fig" rid="remotesensing-16-01075-f003">Figure 3</xref> shows the comparisons of the horizontal WS and WD detected by the Doppler wind lidar and the 325 m tower at various heights. The two similar curves are the averaged results of the Doppler wind lidar and the 325 m tower, respectively, which were obtained by dividing the WD into sixteen directions and averaging the WS into each WD bin at each height. Except for the blocked 8 m level, it is observed that the horizontal WS and WD detected by the Doppler wind lidar are in good agreement with those observed by the 325 m tower. Therefore, wind-field measured by the Doppler wind lidar has proven to be highly credible.</p>
+        </sec>
+        <sec id="sec3dot1dot2-remotesensing-16-01075">
+          <title>3.1.2. Temperature and Relative Humidity Assessment</title>
+          <p>According to <xref ref-type="fig" rid="remotesensing-16-01075-f004">Figure 4</xref>, the temperatures measured by the microwave radiometer at all heights are remarkably close to those measured by the 325 m tower, in which the Pearson correlation coefficient can be up to more than 0.97. In general, the temperature shows a decreasing trend with an increase in height, and the temperature measured by the microwave radiometer shows a cold deviation in comparison with the routine observation by the 325 m tower. The RMSE varies from 0.55 K at 8 m to 1.66 K at 320 m, with the median 0.94 K occurring at 140 m, so we can conclude that the difference between the two measuring approaches can be neglected and that the microwave radiometer also has a high degree of accuracy.</p>
+          <p>In <xref ref-type="fig" rid="remotesensing-16-01075-f005">Figure 5</xref>, the relative humidity (RH) measured by the microwave radiometer is likewise approximate to that measured by the 325 m tower, with the Pearson correlation coefficients ranging from 0.93 to 0.96. Generally, the RH tends to decrease with increasing elevations. The RMSE of the RH is 5.64% at 140 m, 7.9% at 80 m, and the median of 6.69% appears at 8 m. Moreover, the RH measured by the microwave radiometer exhibits a wet bias with respect to the 325 m tower observation below 120 m, and a dry bias in the range of 140&#x2013;320 m. As the height increases, the deviation first decreases and then gradually increases, with the maximum deviation appearing at 320 m. In conclusion, the overall differences in the RH using these two technologies are rather small, and the microwave radiometer is capable of retrieving high-accuracy RH.</p>
+        </sec>
+        <sec id="sec3dot1dot3-remotesensing-16-01075">
+          <title>3.1.3. Comparison of Tower-Ri and Lidar-Ri</title>
+          <p><xref ref-type="fig" rid="remotesensing-16-01075-f006">Figure 6</xref> shows the inter-comparison of the calculated Lidar-Ri and Tower-Ri. It was found that the difference between the values of Lidar-Ri and Tower-Ri is large at 50 m, which then gradually decreases with increasing altitude. This phenomenon is mainly associated with the difference between the wind field observed by the Doppler wind lidar and the 325 m tower, as the temperature is highly consistent with each other. For humidity, this can only affect <italic>R<sub>i</sub></italic> indirectly through <italic>&#x3B8;<sub>v</sub></italic>, and the effect is also minimal. Additionally, the positive and negative values of Lidar-Ri and Tower-Ri are approximately the same, and the trends of both Lidar-Ri and Tower-Ri are closer to each other with respect to elevation. Theoretical and experimental studies have shown that when <italic>R<sub>i</sub></italic> &gt; 0, the atmosphere is always static and stable; when <italic>R<sub>i</sub></italic> &lt; 0, turbulence starts to be active, and the atmosphere becomes unstable [<xref ref-type="bibr" rid="B22-remotesensing-16-01075">22</xref>]. Therefore, below 300 m, Lidar-Ri can only qualitatively determine whether the atmosphere is stable or not, but it cannot accurately quantify the intensity of atmospheric stability.</p>
+        </sec>
+      </sec>
+      <sec id="sec3dot2-remotesensing-16-01075">
+        <title>3.2. Analysis of Gradient-Richardson-Number-Related Parameters</title>
+        <p>The variation in WS highly depends on the surface roughness and atmospheric stability [<xref ref-type="bibr" rid="B23-remotesensing-16-01075">23</xref>]. The vertical variation in near-surface WS is mostly affected by surface roughness, and the larger the surface roughness is, the faster the WS decreases. Generally speaking, the variation in WS with height is smaller when the atmosphere is unstable because of the vertically turbulent transport of momentum [<xref ref-type="bibr" rid="B24-remotesensing-16-01075">24</xref>]. <xref ref-type="fig" rid="remotesensing-16-01075-f007">Figure 7</xref>c shows the WD contour. The WD below 50 m is different from that above 50 m, which can be attributed to obstruction by the surrounding buildings. Changes in the WD at 500 m on 3, 6, and 11 January can be explained as being due to the influence of local circulations. Meanwhile, above 600 m, the WD remains unchanged.</p>
+        <p><xref ref-type="fig" rid="remotesensing-16-01075-f008">Figure 8</xref>a shows the temperature observed by the microwave radiometer at a 25 m spatial resolution and 1 s temporal resolution. There is a roughly gradual increasing trend in the temperature from 1 to 25 January. The temperature reaches its maximum at noon on the 22nd and then suddenly drops on the 24th, which is probably due to the rainfall that occurred in the morning (<xref ref-type="fig" rid="remotesensing-16-01075-f008">Figure 8</xref>d). <xref ref-type="fig" rid="remotesensing-16-01075-f008">Figure 8</xref>c shows that the temperature inversions occur frequently at the near ground, as well as at the height of 1&#x2013;2 km. Temperature inversion plays a vital role in determining cloud formation, precipitation, and visibility. The near-surface temperature inversion is possibly associated with the cooling properties of vegetation, water, and building shade inside the urban canopy. With regard to the temperature inversion present at 1&#x2013;2 km, this always occurs when the WD is southwest (<xref ref-type="fig" rid="remotesensing-16-01075-f008">Figure 8</xref>b), which can be explained by the fact of the confrontation of warm and cold air masses. When warm air transported from the south over Beijing meets the cold air overhead of the city, the warm air is lifted up and forms a stratification of the cold lower layer and warm upper layer, which results in an advection temperature inversion at a certain height [<xref ref-type="bibr" rid="B25-remotesensing-16-01075">25</xref>].</p>
+        <p>To further investigate the vertical structure of the temperature inversion, the variable &#x201C;virtual potential temperature lapse rate&#x201D; is introduced (&#x2206;<italic>&#x3B8;<sub>v</sub></italic> = <italic>(&#x3B8;<sub>2</sub></italic> &#x2212; <italic>&#x3B8;<sub>1</sub>)</italic> <inline-formula><mml:math id="mm9"><mml:semantics><mml:mrow><mml:mi mathvariant="normal">&#x2217;</mml:mi><mml:mn>100</mml:mn></mml:mrow></mml:semantics></mml:math></inline-formula>) using two neighboring layers on a vertical gradient, as shown in <xref ref-type="fig" rid="remotesensing-16-01075-f008">Figure 8</xref>e. The more continuous the zone of &#x2206;<italic>&#x3B8;</italic><sub>v</sub> &gt; 0 is, the thicker the temperature-inverted layer is. The strength of the temperature inversion can be indicated by the magnitude of the value of &#x2206;<italic>&#x3B8;</italic><sub>v</sub>, with a larger &#x2206;<italic>&#x3B8;</italic><sub>v</sub> representing a stronger temperature inversion [<xref ref-type="bibr" rid="B26-remotesensing-16-01075">26</xref>]. It was found that the temperature inversion occurs above 600 m and below 100 m, and that the intensity of inversion appears to be largest near the surface. The area of the temperature inversion region indicated by &#x2206;<italic>&#x3B8;</italic><sub>v</sub> is larger than that indicated by using <italic>TI</italic>.</p>
+      </sec>
+      <sec id="sec3dot3-remotesensing-16-01075">
+        <title>3.3. Gradient-Richardson-Number Characterization</title>
+        <p>The Gradient Richardson Number (<italic>R<sub>i</sub></italic>) can be used to analyze the structure of the ABL and to estimate the height of the ABL [<xref ref-type="bibr" rid="B27-remotesensing-16-01075">27</xref>,<xref ref-type="bibr" rid="B28-remotesensing-16-01075">28</xref>]. The principle of identifying the height of the ABL is based on the difference in turbulent properties between the boundary layer and the free atmosphere, where the disappearance height of continuous turbulence can be identified as the height of the ABL [<xref ref-type="bibr" rid="B29-remotesensing-16-01075">29</xref>]. Theoretical and experimental studies have proved that turbulence starts to appear when <italic>R<sub>i</sub></italic> &lt; 0.25, and turbulence disappears when <italic>R<sub>i</sub></italic> &gt; 0.25, so the height at <italic>R<sub>i</sub></italic> = 0.25 is chosen as the ABL height. </p>
+        <p>Generally, a critical value <italic>R<sub>i</sub></italic> = 0.25 is selected to determine the stability of the ABL. As shown in <xref ref-type="fig" rid="remotesensing-16-01075-f009">Figure 9</xref>, <italic>R<sub>i</sub></italic> &lt; 0.25 represents the presence of turbulence;, otherwise there is no turbulence. Most of the <italic>R<sub>i</sub></italic> values are close to zero, demonstrating a frequent neutral atmosphere with minimal turbulent motions. In addition, turbulence persistently exists below a height of 500 m, and the strongest turbulence appears at around 300 m. Turbulence is very active during the midday to evening, mainly due to the high solar radiation during this period, which results in very strong atmospheric motions. Another phenomenon is that there are turbulent motions at night between 200 and 300 m, which is probably generated by local wind shear within the night-time boundary layer [<xref ref-type="bibr" rid="B30-remotesensing-16-01075">30</xref>].</p>
+        <p>In <xref ref-type="fig" rid="remotesensing-16-01075-f009">Figure 9</xref>, the warm-tone fills correspond to stable layers with <italic>R<sub>i</sub></italic> &gt; 0.25. It is interesting to find that there is a frequent temperature inversion existing at around 100 m. Above 500 m, it starts to be stable, and then the stability extends to a maximum of up to 1000 m. The buoyancy force dominates in this region, and the turbulence from wind shear is suppressed by laminar flow. However, a thin unsteady layer appears at around 1500 m. This is because the airflow above the maximum WS layer slows down faster; at the same time, the maximum WS layer oscillates with the decelerated airflow layer, leading to an increase in directional shear and a decrease in local <italic>R<sub>i</sub></italic>, thus increasing the probability of turbulence occurrence. These trends make the definition of the turbulent boundary layer more ambiguous, and the depth of the turbulent layer derived from <italic>R<sub>i</sub></italic> is significantly increased [<xref ref-type="bibr" rid="B31-remotesensing-16-01075">31</xref>,<xref ref-type="bibr" rid="B32-remotesensing-16-01075">32</xref>].</p>
+        <p><italic>R<sub>i</sub></italic> is influenced by the temporal and spatial resolution. For the purpose of clarifying the differences in characterizing the ABL structure at different resolution datasets of <italic>R<sub>i</sub></italic>, nine resolution datasets of <italic>R<sub>i</sub></italic> are calculated and shown in <xref ref-type="fig" rid="remotesensing-16-01075-f009">Figure 9</xref>a&#x2013;i. Among them, <xref ref-type="fig" rid="remotesensing-16-01075-f009">Figure 9</xref>c has a temporal resolution of 1 h and a spatial resolution of 100 m, with very few data dots that show the overall trend, while <xref ref-type="fig" rid="remotesensing-16-01075-f009">Figure 9</xref>g has a temporal resolution of 1 min and a spatial resolution of 25 m with plenty of data dots, allowing us to identify the precise values of <italic>R<sub>i</sub></italic> at each location. A lower temporal resolution overestimates the intensity of turbulence; for example, the blue unstable zone in <xref ref-type="fig" rid="remotesensing-16-01075-f009">Figure 9</xref>a becomes darker than that in <xref ref-type="fig" rid="remotesensing-16-01075-f009">Figure 9</xref>g. Moreover, it is difficult to capture the short-term change in <italic>R<sub>i</sub></italic> with a low time resolution, but it is easier to present the daily variations in <italic>R<sub>i</sub></italic> with a lower time resolution. For example, it can be clearly seen from <xref ref-type="fig" rid="remotesensing-16-01075-f009">Figure 9</xref>a that the daily change in <italic>R<sub>i</sub></italic> is more obvious from the 17th to the 21st. Similarly, lower spatial resolution would lead to larger altitude intervals, making it impossible to accurately estimate <italic>R<sub>i</sub></italic> at individual altitudes or even misidentifying the atmospheric stability. For example, at the same temporal resolution, <italic>R<sub>i</sub></italic> with a spatial resolution of 100 m is greater near the ground than that at 25 m, and <italic>R<sub>i</sub></italic> at a spatial resolution of 100 m overestimates the height of the turbulence onset by about 50% compared with that at 25 m.</p>
+        <p>In order to investigate the specific differences between different spatiotemporal resolution datasets of <italic>R<sub>i</sub></italic>, the 25 m/1 min-resolution <italic>R<sub>i</sub></italic> was adopted as the benchmark reference, and then we compared the <italic>R<sub>i</sub></italic> calculated from the remaining eight resolution datasets with the benchmark reference <italic>R<sub>i</sub></italic> to make the plots in <xref ref-type="fig" rid="remotesensing-16-01075-f010">Figure 10</xref>, where the horizontal and vertical axes represent the standard deviations, and the brown dashed lines represent the RMSE. In general, the RMSE of each resolution <italic>R<sub>i</sub></italic> versus the benchmark resolution <italic>R<sub>i</sub></italic> was greater than 1, and R was less than 0.8. It is thus evidenced that using a coarse-resolution <italic>R<sub>i</sub></italic> to characterize the atmosphere is not reliable. </p>
+        <p>The RMSEs of each resolution dataset of <italic>R<sub>i</sub></italic> to the benchmark resolution <italic>R<sub>i</sub></italic> is less than 2 below 600 m, with R in the range of 0.3 to 0.7, and the RMSE is greater than 2 from 800 m to 1500 m, with the correlation gradually weakening. This shows that the difference in <italic>R<sub>i</sub></italic> between the eight resolution datasets and the standard resolution dataset increasing with elevation is due to water vapor and cloud masking at high altitude. The differences in <italic>R<sub>i</sub></italic> among the three different spatial resolution datasets of inversions are smaller at altitudes from 600 m to 1000 m, because the atmosphere is neutral in this region and <italic>R<sub>i</sub></italic> is around 0. The 50 m/1 min resolution datasets of <italic>R<sub>i</sub></italic> have the smallest RMSEs with the benchmark resolution dataset at all altitudes, and the 1 h resolution datasets have the largest RMSEs with the benchmark resolution dataset of <italic>R<sub>i</sub></italic>, except for the 100 m/30 min resolution dataset of <italic>R<sub>i</sub></italic> at 100 m. This suggests that temporal resolution has a greater effect on <italic>R<sub>i</sub></italic>. </p>
+        <p>The standard deviations of <italic>R<sub>i</sub></italic> from different resolution datasets increase with elevation. For example, the standard deviation is less than 2 below 800 m and greater than 2 or even 2.5 above 800 m. The dramatic variations in <italic>R<sub>i</sub></italic> indicate rapid changes in atmospheric stability that are perturbed by frequent weather processes and large-scale circulations. Furthermore, the <italic>R<sub>i</sub></italic> values with low spatial but high temporal resolutions can show the changing trend of atmospheric stability, but it cannot accurately characterize the intensity of atmospheric stability. For example, at 600 m, the 100 m/1 min resolution has a better correlation of 0.7 with the baseline resolution, but it has a larger RMSE of 1.3 with the baseline resolution, which proves that the values are more different.</p>
+        <p>The daily averaging ABL structure is shown in <xref ref-type="fig" rid="remotesensing-16-01075-f011">Figure 11</xref>. The red solid line is the boundary-layer height measured by the CL51 ceilometer (CL51-BLH), while the black dashed line is the boundary-layer height determined using <italic>R<sub>i</sub></italic> (Ri-BLH). It was found that Ri-BLH is lower than CL51-BLH, but the trends of the two BLHs are highly consistent, which is mainly due to the decisive role of temperature changes in thermal turbulence. The difference between Ri-BLH and CL51-BLH gradually increases from 12:00 p.m., and the difference is maximum at 15:00 p.m.; this is due to the strong daytime convection, whereby convective motions lift the aerosols up to a high altitude, resulting in a rapid increase in the ABL height probed by CL51.</p>
+        <p>According to <xref ref-type="fig" rid="remotesensing-16-01075-f011">Figure 11</xref>, we observe the presence of a stable layer during winter, with its occurrence primarily attributed to the temperature inversion that suppresses turbulence. The turbulence is active in the region where the altitudes range from 100 m to 500 m; it was found that the wind-field changes in this region are not significant, which is mainly due to the fact that the variation in the virtual potential temperature plays a decisive role in thermal turbulence. During the clear daytime, with high temperatures and low humidity, the height of the boundary layer gradually increases and reaches its peak at around 14:00; meanwhile, the turbulence increases with the increasing height of the ABL. The turbulence intensity is the strongest during the period of 12:00&#x2013;18:00 p.m. From 500 m to 1500 m, the wind shear is weak where the atmosphere is in a stable state. Above 1500 m, there appears a thin, neutral layer due to the high WS and strong wind shear with low temperature.</p>
+        <p>The limitation of this study is the uncertainty in the selection of the critical value of <italic>R<sub>i</sub></italic>. The critical value for determining the presence or absence of turbulence using <italic>R<sub>i</sub></italic> may rise with clear-sky radiative cooling and decline with the downward transport of water vapor. The use of <italic>R<sub>i</sub></italic> as a dynamic stability criterion can be explained as follows: Laminar flow becomes turbulent when <italic>R<sub>i</sub></italic> &lt; <italic>R<sub>c</sub></italic> (<italic>R<sub>c</sub></italic> denotes the critical value of turbulence change), and turbulent flow transits to be laminar when <italic>R<sub>i</sub></italic> &gt; <italic>R<sub>c</sub></italic>. Experiments have shown that <italic>R<sub>c</sub></italic> values varying between 0.21 and 0.25 work well, but the exact value of <italic>R<sub>c</sub></italic> remains in question [<xref ref-type="bibr" rid="B33-remotesensing-16-01075">33</xref>]. It is generally acknowledged that dynamic instability occurs when <italic>R<sub>i</sub></italic> &lt; 1, but the motion of turbulence commonly requires two conditions, i.e., instability and a triggering mechanism. If there is only unstable stratification in the atmosphere, <italic>R<sub>i</sub></italic> should be reduced to <italic>R<sub>c</sub></italic> to meet the requirement of turbulence generation. Then, the active turbulence generated can exist until <italic>R<sub>i</sub></italic> &gt; 1. When instability and triggering mechanisms exist at the same time, <italic>R<sub>i</sub></italic> only needs to be less than 1 for turbulence to be generated [<xref ref-type="bibr" rid="B34-remotesensing-16-01075">34</xref>].</p>
+      </sec>
+    </sec>
+    <sec id="sec4-remotesensing-16-01075" sec-type="conclusions">
+      <title>4. Conclusions</title>
+      <p>In this study, the reliability of the microwave radiometer and the Doppler wind lidar was validated by comparing their observations with the data from a 325 m tower, and then the stability parameter <italic>R<sub>i</sub></italic> was derived based on the high-resolution meteorological datasets detected by these two instruments. </p>
+      <p>Temperature inversion inhibits the generation of turbulence below 100 m overhead of the city, leading to the emergence of a stable atmospheric layer. Turbulence is always present in the 100&#x2013;500 m range, but the wind field in this region does not vary significantly, suggesting that temperature variations are decisive for turbulence in this zone. Turbulence is the strongest at around 300 m and stable at above 500 m, and the stability is at its highest at around 1000 m, but a thin unstable layer develops at around 1500 m. </p>
+      <p>The <italic>R<sub>i</sub></italic> of nine different spatial and temporal resolution datasets was cross-compared. An <italic>R<sub>i</sub></italic> of low temporal resolution will overestimate the intensity of turbulence, and the range of turbulence existence and lower spatial resolution may lead to misidentification. The differences between different resolution datasets of <italic>R<sub>i</sub></italic> and the baseline resolution <italic>R<sub>i</sub></italic> are large, in which the temporal resolution has a greater effect on <italic>R<sub>i</sub></italic>. The biases between the <italic>R<sub>i</sub></italic> of each resolution and the baseline resolution <italic>R<sub>i</sub></italic> increases along with altitude positively. Finally, <italic>R<sub>i</sub></italic> with a low spatial resolution and high temporal resolution can be used to represent the change trend in the atmospheric state, but it cannot characterize the accurate stability of the atmosphere. </p>
+      <p>The results of the study show that the high-resolution detection of the <italic>R<sub>i</sub></italic> within the ABL is of great significance, providing a new way of thinking to deepen our knowledge regarding the formation mechanism of turbulent motions. It also offers a scientific basis for a better understanding of the impact of urbanization on the atmospheric environment.</p>
+    </sec>
+  </body>
+  <back>
+    <notes>
+      <title>Author Contributions</title>
+      <p>Methodology, S.Y., Y.M. (Yongjing Ma), W.Z., X.R., K.P., D.Z. and J.X.; Software, S.Y., Y.M. (Yongjing Ma), X.R., K.P., D.J. and Y.M. (Yining Ma); Investigation, S.Y., M.A. and L.K.; Writing&#x2014;original draft, S.Y., Y.M. (Yongjing Ma) and J.X. All authors have read and agreed to the published version of the manuscript.</p>
+    </notes>
+    <notes>
+      <title>Data Availability Statement</title>
+      <p>The data underlying this article will be shared upon reasonable request to the corresponding author. The data are not publicly available due to privacy.</p>
+    </notes>
+    <notes notes-type="COI-statement">
+      <title>Conflicts of Interest</title>
+      <p>The authors declare no conflicts of interest.</p>
+    </notes>
+    <ref-list>
+      <title>References</title>
+      <ref id="B1-remotesensing-16-01075">
+        <label>1.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Businger</surname>
+              <given-names>J.A.</given-names>
+            </name>
+          </person-group>
+          <article-title>Note on the critical Richardson number(s)</article-title>
+          <source>Q. J. R. Meteorol. Soc.</source>
+          <year>1969</year>
+          <volume>95</volume>
+          <fpage>653</fpage>
+          <lpage>654</lpage>
+          <pub-id pub-id-type="doi">10.1002/qj.49709540519</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B2-remotesensing-16-01075">
+        <label>2.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Brutsaert</surname>
+              <given-names>W.</given-names>
+            </name>
+          </person-group>
+          <article-title>Radiation, evaporation and the maintenance of turbulence under stable conditions in the lower atmosphere</article-title>
+          <source>Bound. Layer Meteorol.</source>
+          <year>1972</year>
+          <volume>2</volume>
+          <fpage>309</fpage>
+          <lpage>325</lpage>
+          <pub-id pub-id-type="doi">10.1007/BF02184772</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B3-remotesensing-16-01075">
+        <label>3.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ottersten</surname>
+              <given-names>H.</given-names>
+            </name>
+            <name>
+              <surname>Hardy</surname>
+              <given-names>K.R.</given-names>
+            </name>
+            <name>
+              <surname>Little</surname>
+              <given-names>C.G.</given-names>
+            </name>
+          </person-group>
+          <article-title>Radar and sodar probing of waves and turbulence in statically stable clear-air layers</article-title>
+          <source>Bound. Layer Meteorol.</source>
+          <year>1973</year>
+          <volume>4</volume>
+          <fpage>47</fpage>
+          <lpage>89</lpage>
+          <pub-id pub-id-type="doi">10.1007/BF02265225</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B4-remotesensing-16-01075">
+        <label>4.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Pollard</surname>
+              <given-names>R.T.</given-names>
+            </name>
+            <name>
+              <surname>Rhines</surname>
+              <given-names>P.B.</given-names>
+            </name>
+            <name>
+              <surname>Thompson</surname>
+              <given-names>R.O.</given-names>
+            </name>
+          </person-group>
+          <article-title>The deepening of the wind-mixed layer</article-title>
+          <source>Geophys. Fluid Dyn.</source>
+          <year>1973</year>
+          <volume>4</volume>
+          <fpage>381</fpage>
+          <lpage>404</lpage>
+          <pub-id pub-id-type="doi">10.1080/03091927208236105</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B5-remotesensing-16-01075">
+        <label>5.</label>
+        <element-citation publication-type="confproc">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Canadillas</surname>
+              <given-names>B.A.</given-names>
+            </name>
+            <name>
+              <surname>B&#xE9;gu&#xE9;</surname>
+              <given-names>A.</given-names>
+            </name>
+            <name>
+              <surname>Neumann</surname>
+              <given-names>T.</given-names>
+            </name>
+          </person-group>
+          <article-title>Comparison of turbulence spectra derived from LiDAR and sonic measurements at the offshore platform FINO1</article-title>
+          <source>Proceedings of the 10th German Wind Energy Conference 2010</source>
+          <conf-loc>Bremen, Germany</conf-loc>
+          <conf-date>17&#x2013;18 November 2010</conf-date>
+        </element-citation>
+      </ref>
+      <ref id="B6-remotesensing-16-01075">
+        <label>6.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ren</surname>
+              <given-names>X.</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>L.</given-names>
+            </name>
+            <name>
+              <surname>Ma</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Wu</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Zhou</surname>
+              <given-names>F.</given-names>
+            </name>
+            <name>
+              <surname>Jia</surname>
+              <given-names>D.</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>D.</given-names>
+            </name>
+            <name>
+              <surname>Xin</surname>
+              <given-names>J.</given-names>
+            </name>
+          </person-group>
+          <article-title>Remote Sensing of Planetary Boundary Layer Thermodynamic and Material Structures over a Large Steel Plant, China</article-title>
+          <source>Remote Sens.</source>
+          <year>2023</year>
+          <volume>15</volume>
+          <elocation-id>5104</elocation-id>
+          <pub-id pub-id-type="doi">10.3390/rs15215104</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B7-remotesensing-16-01075">
+        <label>7.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Liu</surname>
+              <given-names>S.</given-names>
+            </name>
+            <name>
+              <surname>Liang</surname>
+              <given-names>X.Z.</given-names>
+            </name>
+          </person-group>
+          <article-title>Observed diurnal cycle climatology of planetary boundary layer height</article-title>
+          <source>J. Clim.</source>
+          <year>2010</year>
+          <volume>23</volume>
+          <fpage>5790</fpage>
+          <lpage>5809</lpage>
+          <pub-id pub-id-type="doi">10.1175/2010JCLI3552.1</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B8-remotesensing-16-01075">
+        <label>8.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Kaimal</surname>
+              <given-names>J.C.</given-names>
+            </name>
+            <name>
+              <surname>Wyngaard</surname>
+              <given-names>J.C.</given-names>
+            </name>
+            <name>
+              <surname>Haugen</surname>
+              <given-names>D.A.</given-names>
+            </name>
+            <name>
+              <surname>Cot&#xE9;</surname>
+              <given-names>O.R.</given-names>
+            </name>
+            <name>
+              <surname>Izumi</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Caughey</surname>
+              <given-names>S.J.</given-names>
+            </name>
+            <name>
+              <surname>Readings</surname>
+              <given-names>C.J.</given-names>
+            </name>
+          </person-group>
+          <article-title>Turbulence structure in the convective boundary layer</article-title>
+          <source>J. Atmos. Sci.</source>
+          <year>1976</year>
+          <volume>33</volume>
+          <fpage>2152</fpage>
+          <lpage>2169</lpage>
+          <pub-id pub-id-type="doi">10.1175/1520-0469(1976)033&lt;2152:TSITCB&gt;2.0.CO;2</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B9-remotesensing-16-01075">
+        <label>9.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Yu</surname>
+              <given-names>M.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Tang</surname>
+              <given-names>G.</given-names>
+            </name>
+            <name>
+              <surname>Song</surname>
+              <given-names>T.</given-names>
+            </name>
+            <name>
+              <surname>Zhou</surname>
+              <given-names>P.</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>Z.</given-names>
+            </name>
+            <name>
+              <surname>Hu</surname>
+              <given-names>B.</given-names>
+            </name>
+            <name>
+              <surname>Ji</surname>
+              <given-names>D.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>L.</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Rapid formation of intense haze episodes via aerosol&#x2013;boundary layer feedback in Beijing</article-title>
+          <source>Atmos. Chem. Phys.</source>
+          <year>2020</year>
+          <volume>20</volume>
+          <fpage>45</fpage>
+          <lpage>53</lpage>
+          <pub-id pub-id-type="doi">10.5194/acp-20-45-2020</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B10-remotesensing-16-01075">
+        <label>10.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Tian</surname>
+              <given-names>P.</given-names>
+            </name>
+            <name>
+              <surname>Cao</surname>
+              <given-names>X.</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>L.</given-names>
+            </name>
+            <name>
+              <surname>Sun</surname>
+              <given-names>N.</given-names>
+            </name>
+            <name>
+              <surname>Sun</surname>
+              <given-names>L.</given-names>
+            </name>
+            <name>
+              <surname>Logan</surname>
+              <given-names>T.</given-names>
+            </name>
+            <name>
+              <surname>Shi</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Ji</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Lin</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>Aerosol vertical distribution and optical properties over China from long-term satellite and ground-based remote sensing</article-title>
+          <source>Atmos. Chem. Phys.</source>
+          <year>2017</year>
+          <volume>17</volume>
+          <fpage>2509</fpage>
+          <lpage>2523</lpage>
+          <pub-id pub-id-type="doi">10.5194/acp-17-2509-2017</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B11-remotesensing-16-01075">
+        <label>11.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Wang</surname>
+              <given-names>L.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>H.</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Gao</surname>
+              <given-names>Z.</given-names>
+            </name>
+            <name>
+              <surname>Yang</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Zhang</surname>
+              <given-names>X.</given-names>
+            </name>
+            <name>
+              <surname>Li</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Huang</surname>
+              <given-names>M.</given-names>
+            </name>
+          </person-group>
+          <article-title>Impacts of the near-surface urban boundary layer structure on PM<sub>2.5</sub> concentrations in Beijing during winter</article-title>
+          <source>Sci. Total Environ.</source>
+          <year>2019</year>
+          <volume>669</volume>
+          <fpage>493</fpage>
+          <lpage>504</lpage>
+          <pub-id pub-id-type="doi">10.1016/j.scitotenv.2019.03.097</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B12-remotesensing-16-01075">
+        <label>12.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Seibert</surname>
+              <given-names>P.</given-names>
+            </name>
+            <name>
+              <surname>Beyrich</surname>
+              <given-names>F.</given-names>
+            </name>
+            <name>
+              <surname>Gryning</surname>
+              <given-names>S.E.</given-names>
+            </name>
+            <name>
+              <surname>Joffre</surname>
+              <given-names>S.</given-names>
+            </name>
+            <name>
+              <surname>Rasmussen</surname>
+              <given-names>A.</given-names>
+            </name>
+            <name>
+              <surname>Tercier</surname>
+              <given-names>P.</given-names>
+            </name>
+          </person-group>
+          <article-title>Review and intercomparison of operational methods for the determination of the mixing height</article-title>
+          <source>Atmos. Environ.</source>
+          <year>2000</year>
+          <volume>34</volume>
+          <fpage>1001</fpage>
+          <lpage>1027</lpage>
+          <pub-id pub-id-type="doi">10.1016/S1352-2310(99)00349-0</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B13-remotesensing-16-01075">
+        <label>13.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Manninen</surname>
+              <given-names>A.J.</given-names>
+            </name>
+            <name>
+              <surname>Marke</surname>
+              <given-names>T.</given-names>
+            </name>
+            <name>
+              <surname>Tuononen</surname>
+              <given-names>M.</given-names>
+            </name>
+            <name>
+              <surname>O&#x2019;Connor</surname>
+              <given-names>E.J.</given-names>
+            </name>
+          </person-group>
+          <article-title>Atmospheric boundary layer classification with Doppler lidar</article-title>
+          <source>J. Geophys. Res. Atmos.</source>
+          <year>2018</year>
+          <volume>123</volume>
+          <fpage>8172</fpage>
+          <lpage>8189</lpage>
+          <pub-id pub-id-type="doi">10.1029/2017JD028169</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B14-remotesensing-16-01075">
+        <label>14.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Banakh</surname>
+              <given-names>V.A.</given-names>
+            </name>
+            <name>
+              <surname>Smalikho</surname>
+              <given-names>I.N.</given-names>
+            </name>
+            <name>
+              <surname>Falits</surname>
+              <given-names>A.V.</given-names>
+            </name>
+          </person-group>
+          <article-title>Estimation of the height of the turbulent mixing layer from data of Doppler lidar measurements using conical scanning by a probe beam</article-title>
+          <source>Atmos. Meas. Tech.</source>
+          <year>2021</year>
+          <volume>14</volume>
+          <fpage>1511</fpage>
+          <lpage>1524</lpage>
+          <pub-id pub-id-type="doi">10.5194/amt-14-1511-2021</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B15-remotesensing-16-01075">
+        <label>15.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ma</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Xin</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Tian</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Yue</surname>
+              <given-names>C.</given-names>
+            </name>
+            <name>
+              <surname>Zhou</surname>
+              <given-names>X.</given-names>
+            </name>
+            <name>
+              <surname>Ren</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Hao</surname>
+              <given-names>F.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>P.</given-names>
+            </name>
+            <name>
+              <surname>Xie</surname>
+              <given-names>F.</given-names>
+            </name>
+            <name>
+              <surname>Ren</surname>
+              <given-names>X.</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>The interactions of aerosol and planetary boundary layer over a large city in the Mongolian Plateau</article-title>
+          <source>Sci. Total Environ.</source>
+          <year>2023</year>
+          <volume>907</volume>
+          <fpage>167985</fpage>
+          <pub-id pub-id-type="doi">10.1016/j.scitotenv.2023.167985</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B16-remotesensing-16-01075">
+        <label>16.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Berg</surname>
+              <given-names>L.K.</given-names>
+            </name>
+            <name>
+              <surname>Newsom</surname>
+              <given-names>R.K.</given-names>
+            </name>
+            <name>
+              <surname>Turner</surname>
+              <given-names>D.D.</given-names>
+            </name>
+          </person-group>
+          <article-title>Year-long vertical velocity statistics derived from Doppler lidar data for the continental convective boundary layer</article-title>
+          <source>J. Appl. Meteorol. Climatol.</source>
+          <year>2017</year>
+          <volume>56</volume>
+          <fpage>2441</fpage>
+          <lpage>2454</lpage>
+          <pub-id pub-id-type="doi">10.1175/JAMC-D-16-0359.1</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B17-remotesensing-16-01075">
+        <label>17.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Xin</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Ma</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Zhao</surname>
+              <given-names>D.</given-names>
+            </name>
+            <name>
+              <surname>Gong</surname>
+              <given-names>C.</given-names>
+            </name>
+            <name>
+              <surname>Ren</surname>
+              <given-names>X.</given-names>
+            </name>
+            <name>
+              <surname>Tang</surname>
+              <given-names>G.</given-names>
+            </name>
+            <name>
+              <surname>Xia</surname>
+              <given-names>X.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Z.</given-names>
+            </name>
+            <name>
+              <surname>Cao</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Vil&#xE0;-Guerau de Arellano</surname>
+              <given-names>J.</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>The feedback effects of aerosols from different sources on the urban boundary layer in Beijing China</article-title>
+          <source>Environ. Pollut.</source>
+          <year>2023</year>
+          <volume>325</volume>
+          <fpage>121440</fpage>
+          <pub-id pub-id-type="doi">10.1016/j.envpol.2023.121440</pub-id>
+          <pub-id pub-id-type="pmid">36921656</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B18-remotesensing-16-01075">
+        <label>18.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhang</surname>
+              <given-names>L.</given-names>
+            </name>
+            <name>
+              <surname>Xin</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Yin</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Chang</surname>
+              <given-names>W.</given-names>
+            </name>
+            <name>
+              <surname>Xue</surname>
+              <given-names>M.</given-names>
+            </name>
+            <name>
+              <surname>Jia</surname>
+              <given-names>D.</given-names>
+            </name>
+            <name>
+              <surname>Ma</surname>
+              <given-names>Y.</given-names>
+            </name>
+          </person-group>
+          <article-title>Understanding the major impact of planetary boundary layer schemes on simulation of vertical wind structure</article-title>
+          <source>Atmosphere</source>
+          <year>2021</year>
+          <volume>12</volume>
+          <elocation-id>777</elocation-id>
+          <pub-id pub-id-type="doi">10.3390/atmos12060777</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B19-remotesensing-16-01075">
+        <label>19.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ahn</surname>
+              <given-names>M.H.</given-names>
+            </name>
+            <name>
+              <surname>Won</surname>
+              <given-names>H.Y.</given-names>
+            </name>
+            <name>
+              <surname>Han</surname>
+              <given-names>D.</given-names>
+            </name>
+            <name>
+              <surname>Kim</surname>
+              <given-names>Y.H.</given-names>
+            </name>
+            <name>
+              <surname>Ha</surname>
+              <given-names>J.C.</given-names>
+            </name>
+          </person-group>
+          <article-title>Characterization of downwelling radiance measured from a ground-based using numerical weather prediction model data</article-title>
+          <source>Atmos. Meas. Tech.</source>
+          <year>2016</year>
+          <volume>9</volume>
+          <fpage>281</fpage>
+          <lpage>293</lpage>
+          <pub-id pub-id-type="doi">10.5194/amt-9-281-2016</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B20-remotesensing-16-01075">
+        <label>20.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhao</surname>
+              <given-names>D.</given-names>
+            </name>
+            <name>
+              <surname>Xin</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Gong</surname>
+              <given-names>C.</given-names>
+            </name>
+            <name>
+              <surname>Quan</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Tang</surname>
+              <given-names>G.</given-names>
+            </name>
+            <name>
+              <surname>Ma</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Dai</surname>
+              <given-names>L.</given-names>
+            </name>
+            <name>
+              <surname>Wu</surname>
+              <given-names>X.</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>G.</given-names>
+            </name>
+            <etal/>
+          </person-group>
+          <article-title>The impact threshold of the aerosol radiative forcing on the boundary layer structure in the pollution region</article-title>
+          <source>Atmos. Chem. Phys.</source>
+          <year>2021</year>
+          <volume>21</volume>
+          <fpage>5739</fpage>
+          <lpage>5753</lpage>
+          <pub-id pub-id-type="doi">10.5194/acp-21-5739-2021</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B21-remotesensing-16-01075">
+        <label>21.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Maryon</surname>
+              <given-names>R.H.</given-names>
+            </name>
+            <name>
+              <surname>Smith</surname>
+              <given-names>F.B.</given-names>
+            </name>
+            <name>
+              <surname>Conway</surname>
+              <given-names>B.J.</given-names>
+            </name>
+            <name>
+              <surname>Goddard</surname>
+              <given-names>D.M.</given-names>
+            </name>
+          </person-group>
+          <article-title>The UK nuclear accident model</article-title>
+          <source>Prog. Nucl. Energy</source>
+          <year>1991</year>
+          <volume>26</volume>
+          <fpage>85</fpage>
+          <lpage>104</lpage>
+          <pub-id pub-id-type="doi">10.1016/0149-1970(91)90043-O</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B22-remotesensing-16-01075">
+        <label>22.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Abarbanel</surname>
+              <given-names>H.D.</given-names>
+            </name>
+            <name>
+              <surname>Holm</surname>
+              <given-names>D.D.</given-names>
+            </name>
+            <name>
+              <surname>Marsden</surname>
+              <given-names>J.E.</given-names>
+            </name>
+            <name>
+              <surname>Ratiu</surname>
+              <given-names>T.</given-names>
+            </name>
+          </person-group>
+          <article-title>Richardson number criterion for the nonlinear stability of three-dimensional stratified flow</article-title>
+          <source>Phys. Rev. Lett.</source>
+          <year>1984</year>
+          <volume>52</volume>
+          <fpage>2352</fpage>
+          <pub-id pub-id-type="doi">10.1103/PhysRevLett.52.2352</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B23-remotesensing-16-01075">
+        <label>23.</label>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Stull</surname>
+              <given-names>R.B.</given-names>
+            </name>
+          </person-group>
+          <source>An Introduction to Boundary Layer Meteorology</source>
+          <publisher-name>Kluwer Academic Publishers</publisher-name>
+          <publisher-loc>Dordrecht, The Netherlands</publisher-loc>
+          <year>1988</year>
+          <fpage>381</fpage>
+          <lpage>383</lpage>
+        </element-citation>
+      </ref>
+      <ref id="B24-remotesensing-16-01075">
+        <label>24.</label>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Oke</surname>
+              <given-names>T.R.</given-names>
+            </name>
+            <name>
+              <surname>Mills</surname>
+              <given-names>G.</given-names>
+            </name>
+            <name>
+              <surname>Christen</surname>
+              <given-names>A.</given-names>
+            </name>
+            <name>
+              <surname>Voogt</surname>
+              <given-names>J.A.</given-names>
+            </name>
+          </person-group>
+          <source>Urban Climates</source>
+          <publisher-name>Cambridge University Press</publisher-name>
+          <publisher-loc>Cambridge, UK</publisher-loc>
+          <year>2017</year>
+          <fpage>100</fpage>
+          <lpage>103</lpage>
+        </element-citation>
+      </ref>
+      <ref id="B25-remotesensing-16-01075">
+        <label>25.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zhang</surname>
+              <given-names>X.</given-names>
+            </name>
+            <name>
+              <surname>Zhong</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Wang</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Liu</surname>
+              <given-names>Y.</given-names>
+            </name>
+          </person-group>
+          <article-title>The interdecadal worsening of weather conditions affecting aerosol pollution in the Beijing area in relation to climate warming</article-title>
+          <source>Atmos. Chem. Phys.</source>
+          <year>2018</year>
+          <volume>18</volume>
+          <fpage>5991</fpage>
+          <lpage>5999</lpage>
+          <pub-id pub-id-type="doi">10.5194/acp-18-5991-2018</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B26-remotesensing-16-01075">
+        <label>26.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>G&#xF3;rska</surname>
+              <given-names>M.</given-names>
+            </name>
+            <name>
+              <surname>de Arellano</surname>
+              <given-names>J.V.G.</given-names>
+            </name>
+            <name>
+              <surname>LeMone</surname>
+              <given-names>M.A.</given-names>
+            </name>
+            <name>
+              <surname>Van Heerwaarden</surname>
+              <given-names>C.C.</given-names>
+            </name>
+          </person-group>
+          <article-title>Mean and flux horizontal variability of virtual potential temperature, moisture, and carbon dioxide: Aircraft observations and LES study</article-title>
+          <source>Mon. Meather Rev.</source>
+          <year>2008</year>
+          <volume>136</volume>
+          <fpage>4435</fpage>
+          <lpage>4451</lpage>
+          <pub-id pub-id-type="doi">10.1175/2008MWR2230.1</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B27-remotesensing-16-01075">
+        <label>27.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Troen</surname>
+              <given-names>I.B.</given-names>
+            </name>
+            <name>
+              <surname>Mahrt</surname>
+              <given-names>L.</given-names>
+            </name>
+          </person-group>
+          <article-title>A simple model of the atmospheric boundary layer; sensitivity to surface evaporation</article-title>
+          <source>Bound. Layer Meteorol.</source>
+          <year>1986</year>
+          <volume>37</volume>
+          <fpage>129</fpage>
+          <lpage>148</lpage>
+          <pub-id pub-id-type="doi">10.1007/BF00122760</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B28-remotesensing-16-01075">
+        <label>28.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vogelezang</surname>
+              <given-names>D.H.P.</given-names>
+            </name>
+            <name>
+              <surname>Holtslag</surname>
+              <given-names>A.A.M.</given-names>
+            </name>
+          </person-group>
+          <article-title>Evaluation and model impacts of alternative boundary-layer height formulations</article-title>
+          <source>Bound. Layer Meteorol.</source>
+          <year>1996</year>
+          <volume>81</volume>
+          <fpage>245</fpage>
+          <lpage>269</lpage>
+          <pub-id pub-id-type="doi">10.1007/BF02430331</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B29-remotesensing-16-01075">
+        <label>29.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Cheng-Ying</surname>
+              <given-names>D.</given-names>
+            </name>
+            <name>
+              <surname>Zhi-Qiu</surname>
+              <given-names>G.</given-names>
+            </name>
+            <name>
+              <surname>Qing</surname>
+              <given-names>W.</given-names>
+            </name>
+            <name>
+              <surname>Gang</surname>
+              <given-names>C.</given-names>
+            </name>
+          </person-group>
+          <article-title>Analysis of atmospheric boundary layer height characteristics over the Arctic Ocean using the aircraft and GPS soundings</article-title>
+          <source>Atmos. Ocean. Sci. Lett.</source>
+          <year>2011</year>
+          <volume>4</volume>
+          <fpage>124</fpage>
+          <lpage>130</lpage>
+          <pub-id pub-id-type="doi">10.1080/16742834.2011.11446916</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B30-remotesensing-16-01075">
+        <label>30.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Smeda</surname>
+              <given-names>M.S.</given-names>
+            </name>
+          </person-group>
+          <article-title>Incorporation of planetary boundary-layer processes into numerical forecasting models</article-title>
+          <source>Bound. Layer Meteorol.</source>
+          <year>1979</year>
+          <volume>16</volume>
+          <fpage>115</fpage>
+          <lpage>129</lpage>
+          <pub-id pub-id-type="doi">10.1007/BF03335360</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B31-remotesensing-16-01075">
+        <label>31.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zilitinkevich</surname>
+              <given-names>S.S.</given-names>
+            </name>
+          </person-group>
+          <article-title>On the determination of the height of the Ekman boundary layer</article-title>
+          <source>Bound. Layer Meteorol.</source>
+          <year>1972</year>
+          <volume>3</volume>
+          <fpage>141</fpage>
+          <lpage>145</lpage>
+          <pub-id pub-id-type="doi">10.1007/BF02033914</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B32-remotesensing-16-01075">
+        <label>32.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Mahrt</surname>
+              <given-names>L.</given-names>
+            </name>
+          </person-group>
+          <article-title>Modelling the depth of the stable boundary-layer</article-title>
+          <source>Bound. Layer Meteorol.</source>
+          <year>1981</year>
+          <volume>21</volume>
+          <fpage>3</fpage>
+          <lpage>19</lpage>
+          <pub-id pub-id-type="doi">10.1007/BF00119363</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B33-remotesensing-16-01075">
+        <label>33.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Kim</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Mahrt</surname>
+              <given-names>L.J.T.A.</given-names>
+            </name>
+          </person-group>
+          <article-title>Simple formulation of turbulent mixing in the stable free atmosphere and nocturnal boundary layer</article-title>
+          <source>Tellus A</source>
+          <year>1992</year>
+          <volume>44</volume>
+          <fpage>381</fpage>
+          <lpage>394</lpage>
+          <pub-id pub-id-type="doi">10.3402/tellusa.v44i5.14969</pub-id>
+        </element-citation>
+      </ref>
+      <ref id="B34-remotesensing-16-01075">
+        <label>34.</label>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Woods</surname>
+              <given-names>J.D.</given-names>
+            </name>
+          </person-group>
+          <article-title>On Richardson&#x2019;s number as a criterion for laminar-turbulent-laminar transition in the ocean and atmosphere</article-title>
+          <source>Radio Sci.</source>
+          <year>1969</year>
+          <volume>4</volume>
+          <fpage>1289</fpage>
+          <lpage>1298</lpage>
+          <pub-id pub-id-type="doi">10.1029/RS004i012p01289</pub-id>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <sec sec-type="display-objects">
+      <title>Figures</title>
+      <fig id="remotesensing-16-01075-f001" position="float">
+        <label>Figure 1</label>
+        <caption>
+          <p>(<bold>a</bold>) Location of observation stations, (<bold>b</bold>) Landscape around observation stations, (<bold>c</bold>) The 325 m tower, (<bold>d</bold>) the microwave radiometer, (<bold>e</bold>) the Doppler wind lidar, and (<bold>f</bold>) the CL51 ceilometer.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g001.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f002" position="float">
+        <label>Figure 2</label>
+        <caption>
+          <p>Scatter plots of WS measured by the Doppler wind lidar from 1&#x2212;25 January 2019 versus that of the IAP 325 m tower.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g002.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f003" position="float">
+        <label>Figure 3</label>
+        <caption>
+          <p>Comparison of horizontal wind vectors observed by the Doppler wind lidar and the 325 m tower at different heights.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g003.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f004" position="float">
+        <label>Figure 4</label>
+        <caption>
+          <p>Same as <xref ref-type="fig" rid="remotesensing-16-01075-f002">Figure 2</xref> but for temperature, T.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g004.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f005" position="float">
+        <label>Figure 5</label>
+        <caption>
+          <p>Same as <xref ref-type="fig" rid="remotesensing-16-01075-f002">Figure 2</xref> but for relative humidity, RH.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g005.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f006" position="float">
+        <label>Figure 6</label>
+        <caption>
+          <p>The <italic>R<sub>i</sub></italic> values calculated from the lidar&#x2212;radiometer and the 325 m tower data at different altitudes.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g006.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f007" position="float">
+        <label>Figure 7</label>
+        <caption>
+          <p>The horizontal WS (<bold>a</bold>), vertical WS (<bold>b</bold>), horizontal WD (<bold>c</bold>), u&#x2212;component of the horizontal WS (<bold>d</bold>), and v&#x2212;component of the horizontal WS (<bold>e</bold>) measured by the Doppler wind lidar from 1 to 25 January 2019.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g007.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f008" position="float">
+        <label>Figure 8</label>
+        <caption>
+          <p>Temperature (<bold>a</bold>), horizontal WD (<bold>b</bold>), temperature lapse rate (<bold>c</bold>), relative humidity (<bold>d</bold>), and virtual potential temperature lapse rate (<bold>e</bold>) from 1 to 25 January 2019.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g008.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f009" position="float">
+        <label>Figure 9</label>
+        <caption>
+          <p><italic>R<sub>i</sub></italic> images (<bold>a</bold>&#x2013;<bold>i</bold>) from different spatial (25 m, 50 m, 100 m) and temporal resolution (1 min, 30 min, 1 h) datasets for the period 1&#x2212;25 January 2019.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g009.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f010" position="float">
+        <label>Figure 10</label>
+        <caption>
+          <p>Taylor diagram of <italic>Ri</italic> from different spatial and temporal resolution datasets for the period 1&#x2013;25 January 2019.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g010.tif"/>
+      </fig>
+      <fig id="remotesensing-16-01075-f011" position="float">
+        <label>Figure 11</label>
+        <caption>
+          <p>The daily average values for <italic>R<sub>i</sub></italic>, wind field, and boundary layer height for the period 1&#x2212;25 January 2019.</p>
+        </caption>
+        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="remotesensing-16-01075-g011.tif"/>
+      </fig>
+    </sec>
+    <fn-group>
+      <fn>
+        <p><bold>Disclaimer/Publisher&#x2019;s Note:</bold> The statements, opinions and data contained in all publications are solely those of the individual author(s) and contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to people or property resulting from any ideas, methods, instructions or products referred to in the content.</p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

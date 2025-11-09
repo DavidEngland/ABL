@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "JATS-journalpublishing1-3.dtd">
+<!--
+# Summary (Remote Sensing 2024: High-Resolution Ri_g in Megacity Boundary Layer)
+
+## Instruments & Validation
+- Doppler wind lidar (WS vertical res: 20–25 m from 50–3000 m; blind below 50 m).
+- Microwave radiometer (temperature/humidity, vertical res 25–40 m in BL).
+- 325 m tower (reference, 15 levels).
+- Validation metrics (tower vs remote sensing):
+  - Temperature RMSE ≤ 1.66 K (R ≥ 0.97).
+  - Relative humidity RMSE ≤ 7.9% (R ≈ 0.93–0.96).
+  - Wind speed RMSE ≤ 1.45 m/s (R ≈ 0.81–0.9 increasing with height).
+  → Confirms high-fidelity input for Ri_g and supports use of analytic curvature forms with observed gradients.
+
+## Observed Vertical Structure (Jan winter period)
+- Surface (0–100 m): frequent strong temperature inversion → stable layer (Ri_g > 0.25).
+- Active turbulence layer: ~100–500 m daytime (Ri_g < 0; strongest around 300 m).
+- Nighttime neutral: ~200–400 m (0 < Ri_g < 0.25).
+- Stable above ~500 m; peak stability near ~1000 m (Ri_g > 0.25).
+- Thin neutral/weakly unstable layer near ~1500 m (shear/directional changes).
+- Additional inversion zone 600–2000 m linked to warm/cold advection (WD southwest events).
+
+## Resolution Sensitivity (3×3 matrix: Spatial 25/50/100 m × Temporal 1 min/30 min/1 h)
+- Coarser temporal (1 h) overestimates turbulence intensity & spatial extent (bluer patches).
+- Coarser spatial (100 m) overestimates onset height of turbulence by ~50% near surface.
+- RMSE vs benchmark (25 m / 1 min) > 1; correlation R < 0.8 for other resolutions.
+- Differences grow with altitude: masking by clouds/water vapor & accumulated gradient smoothing.
+→ Direct evidence of grid-dependent Ri_g distortion; supports curvature-aware BC and Δz selection criteria.
+
+## Critical Richardson Number
+- Operational threshold used: Ri_g = 0.25 for turbulence cessation.
+- Literature acknowledges Rc range 0.21–0.25 and persistence of turbulence until Ri_g > 1 if previously active.
+→ Suggest dynamic Rc parameterization or normalization s = Ri/Ri_c in closures.
+
+## Temperature Inversion Impacts
+- Near-surface inversion drives early stability, reduces effective turbulent depth.
+- Inversion aloft (advection type) modulates shear & stratification layering → potential secondary inflection in curvature profile.
+
+## Modeling / Current Study Extraction
+1. Use analytic curvature neutral limit 2(α_hβ_h − 2α_mβ_m) to calibrate against observed near-neutral range 200–400 m.
+2. Validate curvature sign transitions around 100 m (inversion) and ~500 m (stability onset).
+3. Grid dependence experiment: replicate resolution matrix numerically; compare curvature BC vs standard Ri finite difference (expect reduced overestimation at coarse Δz).
+4. Introduce dynamic Ri_c selection influenced by inversion strength (e.g., lapse rate metrics).
+5. Parameter fitting: prioritize layers 100–500 m for α_m, α_h, β_m, β_h (active turbulence) and 500–1000 m for stability constraints.
+6. Mask heights with strong inversion (Δθ_v > 0, sustained) when estimating power-law φ functions to avoid bias.
+7. Reporting set: (i) neutral curvature at ~250 m; (ii) first curvature sign change height; (iii) RMSE improvement across synthetic coarse grids.
+8. Error analysis: quantify resolution-induced bias factor B_res = Ri_coarse / Ri_fine; test curvature BC reduction B_res' < B_res.
+
+## Proposed Figures (cross-link)
+- Comparison: Observed Ri_g profile vs analytic curvature-guided reconstructed profile (fine vs coarse Δz).
+- Resolution bias curves: turbulence layer thickness vs Δz & Δt.
+- Inversion effect: curvature enhancement factor C(ζ) overlay on temperature lapse/inversion frequency.
+
+## Data Utilization Strategy
+- Use validated remote sensing gradients as ground truth for evaluating inversion of ζ(Ri_g).
+- Derive empirical Δz thresholds where coarse-grid misclassification (stable vs neutral) exceeds tolerance; calibrate curvature BC.
+- Leverage observed active layer thickness (≈400 m) for selecting vertical extent of power-law validity before singular guards.
+
+## Action Items
+- Extract tower & lidar gradient pairs for near-neutral curvature numeric verification.
+- Implement synthetic aggregation (25 → 50 → 100 m and 1 → 30 → 60 min) to measure error decline with curvature BC.
+- Evaluate dynamic Rc: compare fixed 0.25 vs lapse-rate-informed Rc* in Ri-based closure performance.
+
+-->
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.3" xml:lang="en">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">remotesensing</journal-id>
+      <journal-title-group>
+        <journal-title>Remote Sensing</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Remote Sens.</abbrev-journal-title>
+        <abbrev-journal-title abbrev-type="pubmed">Remote Sensing</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="epub">2072-4292</issn>
+      <publisher>
+        <publisher-name>MDPI</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id pub-id-type="doi">10.3390/rs16061075</article-id>
+      <article-id pub-id-type="publisher-id">remotesensing-16-01075</article-id>
+      <article-categories>
+        <subj-group>
+          <subject>Article</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>High-Resolution Remote Sensing of the Gradient Richardson Number in a Megacity Boundary Layer</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Yang</surname>
+            <given-names>Simin</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Investigation" vocab-term-identifier="https://credit.niso.org/contributor-roles/investigation/">Investigation</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing &#x2013; original draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">Writing &#x2013; original draft</role>
+          <xref rid="af1-remotesensing-16-01075" ref-type="aff">1</xref>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-1104-7165</contrib-id>
+          <name>
+            <surname>Ma</surname>
+            <given-names>Yongjing</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing &#x2013; original draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">Writing &#x2013; original draft</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zhang</surname>
+            <given-names>Wenyu</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <xref rid="af1-remotesensing-16-01075" ref-type="aff">1</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Ren</surname>
+            <given-names>Xinbing</given-names>
+          </name>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Peng</surname>
+            <given-names>Kecheng</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Ahmad</surname>
+            <given-names>Masroor</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Investigation" vocab-term-identifier="https://credit.niso.org/contributor-roles/investigation/">Investigation</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Jia</surname>
+            <given-names>Danjie</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Zhao</surname>
+            <given-names>Dandan</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Kong</surname>
+            <given-names>Lingbin</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Investigation" vocab-term-identifier="https://credit.niso.org/contributor-roles/investigation/">Investigation</role>
+          <xref rid="af1-remotesensing-16-01075" ref-type="aff">1</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <name>
+            <surname>Ma</surname>
+            <given-names>Yining</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Software" vocab-term-identifier="https://credit.niso.org/contributor-roles/software/">Software</role>
+          <xref rid="af3-remotesensing-16-01075" ref-type="aff">3</xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0003-4243-5072</contrib-id>
+          <name>
+            <surname>Xin</surname>
+            <given-names>Jinyuan</given-names>
+          </name>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Methodology" vocab-term-identifier="https://credit.niso.org/contributor-roles/methodology/">Methodology</role>
+          <role vocab="credit" vocab-identifier="https://credit.niso.org/" vocab-term="Writing &#x2013; original draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">Writing &#x2013; original draft</role>
+          <xref rid="af2-remotesensing-16-01075" ref-type="aff">2</xref>
+          <xref rid="af4-remotesensing-16-01075" ref-type="aff">4</xref>
+          <xref rid="c1-remotesensing-16-01075" ref-type="corresp">*</xref>
+        </contrib>
+      </contrib-group>
+      <contrib-group>
+        <contrib contrib-type="editor">
+          <name>
+            <surname>Thenkabail</surname>
+            <given-names>Prasad S.</given-names>
+          </name>
+          <role>Academic Editor</role>
+        </contrib>
+      </contrib-group>
+      <aff id="af1-remotesensing-16-01075"><label>1</label>School of Geoscience and Technology, Zhengzhou University, Zhengzhou 450001, China; <email>yangsimin@gs.zzu.edu.cn</email> (S.Y.); <email>zhangwy@zzu.edu.cn</email> (W.Z.); <email>konglb@zzu.edu.cn</email> (L.K.)</aff>
+      <aff id="af2-remotesensing-16-01075"><label>2</label>State Key Laboratory of Atmospheric Boundary Layer Physics and Atmospheric Chemistry, Institute of Atmospheric Physics, Chinese Academy of Sciences, Beijing 100029, China; <email>mayongjing@mail.iap.ac.cn</email> (Y.M.); <email>renxinbing@mail.iap.ac.cn</email> (X.R.); <email>pengkc@nudt.edu.cn</email> (K.P.); <email>masroor@mail.iap.ac.cn</email> (M.A.); <email>jiadanjie@mail.iap.ac.cn</email> (D.J.); <email>zhaodandan@dq.cern.ac.cn</email> (D.Z.)</aff>
+      <aff id="af3-remotesensing-16-01075"><label>3</label>Shanghai Investigation, Design, and Research Institute, Shanghai 200093, China; <email>ma_yining@ctg.com.cn</email></aff>
+      <aff id="af4-remotesensing-16-01075"><label>4</label>College of Earth and Planetary Sciences, University of Chinese Academy of Sciences, Beijing 100049, China</aff>
+      <author-notes>
+        <corresp id="c1-remotesensing-16-01075"><label>*</label>Correspondence: <email>xjy@mail.iap.ac.cn</email></corresp>
+      </author-notes>
+      <pub-date pub-type="epub">
+        <day>19</day>
+        <month>03</month>
+        <year>2024</year>
+      </pub-date>
+      <pub-date pub-type="collection">
+        <month>03</month>
+        <year>2024</year>
+      </pub-date>
+      <volume>16</volume>
+      <issue>6</issue>
+      <elocation-id>1075</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>05</day>
+          <month>01</month>
+          <year>2024</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>09</day>
+          <month>03</month>
+          <year>2024</year>
+        </date>
+        <date date-type="accepted">
+          <day>10</day>
+          <month>03</month>
+          <year>2024</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>&#xA9; 2024 by the authors.</copyright-statement>
+        <copyright-year>2024</copyright-year>
+        <license license-type="open-access">
+          <license-p>Licensee MDPI, Basel, Switzerland. This article is an open access article distributed under the terms and conditions of the Creative Commons Attribution (CC BY) license (<ext-link ext-link-type="uri" xlink:href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</ext-link>).</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <p>The Gradient Richardson Number (<italic>R<sub>i</sub></italic>) is an important parameter for appraising the stability and turbulence exchange at the atmospheric boundary layer (ABL). However, high-resolution measurements of <italic>R<sub>i</sub></italic> profiles are rarely reported, especially in megacities. In this study, a Doppler wind lidar and a microwave radiometer were simultaneously utilized to measure the 2 km <italic>R<sub>i</sub></italic> vertical profile in downtown Beijing. These measurements were verified to have high accuracy compared with observations from a 325 m meteorological tower, with root-mean-square errors (RMSEs) of less than 1.66 K, 7.9%, and 1.45 m/s for the temperature, relative humidity, and wind speed (WS) for all altitudes and corresponding Pearson correlation coefficients (R) of 0.97, 0.93, and 0.81. The inter-comparisons of different spatial (25 m, 50 m, 100 m) and temporal resolutions (1 min, 30 min, 1 h) form a 3 &#xD7; 3 resolution matrix of <italic>R<sub>i</sub></italic>, in which the 1 h temporal resolution of <italic>R<sub>i</sub></italic> overestimates the intensity and active area of turbulence. The <italic>R<sub>i</sub></italic> value retrieved from the 100 m spatial resolution data overestimates these by half as it misidentifies the height of the stable area at the near surface. There are significant differences between the data with a 1 min temporal resolution and a 25 m spatial resolution (defined as the standard resolution of <italic>R<sub>i</sub></italic>), and the rest of the data in the resolution matrix (defined as data at other resolutions), with an RMSE &gt; 1 and an R &lt; 0.8. The difference between data at the standard resolution and data at other resolutions increases with elevations, which results from frequent weather processes or from water-vapor blocking at higher altitudes. The <italic>R<sub>i</sub></italic> profiles reveal that the atmospheric layer at altitudes from 100 m to 500 m in daytime is unstable, with <italic>R<sub>i</sub></italic> &lt; 0, while it is neutral, with 0 &lt; <italic>R<sub>i</sub></italic> &lt; 0.25, at night-time from 200 m to 400 m. The atmosphere above the ABL in a megacity is rather stable, with <italic>R<sub>i</sub></italic> &gt; 0.25, whereas below the ABL, it is neutral or unstable, which is due to drastic changes in the WS and temperature that are affected by the topography and surface friction.</p>
+      </abstract>
+      <kwd-group>
+        <kwd>Gradient Richardson Number</kwd>
+        <kwd>atmospheric boundary layer (ABL)</kwd>
+        <kwd>atmospheric stability</kwd>
+      </kwd-group>
+      <funding-group>
+        <award-group>
+          <funding-source>Ministry of Science and Technology of China</funding-source>
+          <award-id>2022YFF0802501</award-id>
+        </award-group>
+        <award-group>
+          <funding-source>National Natural Science Foundation of China</funding-source>
+          <award-id>42305090</award-id>
+          <award-id>42307144</award-id>
+        </award-group>
+        <award-group>
+          <funding-source>China Postdoctoral Foundation</funding-source>
+          <award-id>2022TQ0332</award-id>
+        </award-group>
+        <award-group>
+          <funding-source>CAS Strategic Priority Research Program</funding-source>
+          <award-id>XDA23020301</award-id>
+        </award-group>
+        <funding-statement>This research was funded by [the Ministry of Science and Technology of China] grant number [2022YFF0802501], [the National Natural Science Foundation of China] grant number [42305090; 42307144], [the China Postdoctoral Foundation] grant number [2022TQ0332], and [the CAS Strategic Priority Research Program] grant number [XDA23020301].</funding-statement>
+      </funding-group>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="sec1-remotesensing-16-01075" sec-type="intro">
+      <title>1. Introduction</title>
+      <p>The Gradient Richardson Number (<italic>R<sub>i</sub></italic>), named after Lewis Fry Richardson, is a dimensionless number that is defined as the ratio of thermal buoyancy to wind shear. It is an important parameter for determining the generation of turbulence and the hydrostatic stability of a fluid. Therefore, the concept of <italic>R<sub>i</sub></italic> is widely applied in the field of atmospheric science [<xref ref-type="bibr" rid="B1-remotesensing-16-01075">1</xref>,<xref ref-type="bibr" rid="B2-remotesensing-16-01075">2</xref>,<xref ref-type="bibr" rid="B3-remotesensing-16-01075">3</xref>], such as in the estimation of the atmospheric boundary-layer height (ABLH), the modeling of mixed layers [<xref ref-type="bibr" rid="B4-remotesensing-16-01075">4</xref>], and the quantification of the night-time boundary layer [<xref ref-type="bibr" rid="B5-remotesensing-16-01075">5</xref>]. In general, it is well recognized that the atmosphere is unstable when <italic>R<sub>i</sub></italic> is smaller than a certain critical value of 0.25, and the stability tends to be enhanced with the increase in <italic>R<sub>i</sub></italic> [<xref ref-type="bibr" rid="B6-remotesensing-16-01075">6</xref>].</p>
+      <p>The ABL, a key transitional zone between the Earth&#x2019;s surface and the free atmosphere, is directly affected by surface features, solar radiation, and WS, which can be theoretically classified as stable, neutral, and unstable according to the state of atmospheric stratification based on distinct physical properties [<xref ref-type="bibr" rid="B7-remotesensing-16-01075">7</xref>]. An important feature of the atmospheric motion within the ABL is the ubiquitous turbulence that plays a vital role in the vertical transport of heat, momentum, and water vapor [<xref ref-type="bibr" rid="B8-remotesensing-16-01075">8</xref>,<xref ref-type="bibr" rid="B9-remotesensing-16-01075">9</xref>,<xref ref-type="bibr" rid="B10-remotesensing-16-01075">10</xref>]. Therefore, probing the structural characteristics of the ABL is of great importance in improving the accuracy of prediction models of weather, climate, and atmospheric environmental quality, as well as for the development and extinction of clouds, convection, and atmospheric pollution.</p>
+      <p>Various approaches have been developed in the past decades for the investigation of the ABL. For example, layered observations from the 325 m tower were used to evaluate the influence of the urban boundary-layer structure on the accumulation of atmospheric pollutants [<xref ref-type="bibr" rid="B11-remotesensing-16-01075">11</xref>], although these were only available at the near surface. Radio sounding has advantages in terms of the vertical resolution and range, making it an effective means for deriving the boundary-layer height [<xref ref-type="bibr" rid="B12-remotesensing-16-01075">12</xref>]. However, the boundary-layer heights estimated from radio soundings have limitations in their temporal resolution because of the regularly fixed-time operations and also a horizontally large drift. Vertical temperature profiles retrieved from passive techniques such as infrared and microwave space-borne remote sensing technologies have a spatial resolution of 1&#x2013;2 km, which is too coarse to meet the requirement for analyzing structural profiles of the ABL. In recent years, with the rapid development of in situ remote sensing instruments such as the Doppler wind lidar [<xref ref-type="bibr" rid="B13-remotesensing-16-01075">13</xref>,<xref ref-type="bibr" rid="B14-remotesensing-16-01075">14</xref>,<xref ref-type="bibr" rid="B15-remotesensing-16-01075">15</xref>] and the microwave radiometer [<xref ref-type="bibr" rid="B16-remotesensing-16-01075">16</xref>], it is achievable for us to accurately measure the meteorological data at finer spatiotemporal resolutions.</p>
+      <p>Beijing, the capital of China, is a typical megacity with a non-uniform complex underlying surface, and its ABL characteristics as a representative of megacities have become a hot issue in ABL research fields all over the world [<xref ref-type="bibr" rid="B17-remotesensing-16-01075">17</xref>]. For the purpose of better exploring the characteristics of the ABL in downtown Beijing, <italic>R<sub>i</sub></italic> values retrieved from different resolution datasets have been analyzed, which will provide scientific references for the selection and application of different-resolution datasets in evaluating atmospheric stability and also deepen our understanding regarding urban ABL structures. </p>
+    </sec>
+    <sec id="sec2-remotesensing-16-01075">
+      <title>2. Sites, Instruments, and Methods</title>
+      <sec id="sec2dot1-remotesensing-16-01075">
+        <title>2.1. Introduction to the IAP Integrated Observatory</title>
+        <p><xref ref-type="fig" rid="remotesensing-16-01075-f001">Figure 1</xref>a shows the geographic location of the observatory and its surrounding environment, and <xref ref-type="fig" rid="remotesensing-16-01075-f001">Figure 1</xref>b shows the urban landscape of downtown Beijing. The observation site is the State Key Laboratory of Atmospheric Boundary Layer Physics and Atmospheric Chemistry, Institute of Atmospheric Physics, Chinese Academy of Sciences (IAP, CAS: 39&#xB0;58&#x2032;N, 116&#xB0;22&#x2032;E, 49 m), hereafter referred to as the IAP integrated observatory. Measurements were performed during 1&#x2013;25 January 2019 using the 325 m meteorological tower, a microwave radiometer, a Doppler wind lidar, and a CL51 ceilometer (<xref ref-type="fig" rid="remotesensing-16-01075-f001">Figure 1</xref>c&#x2013;f) in order to measure the wintertime thermodynamic ABL.</p>
+      </sec>
+      <sec id="sec2dot2-remotesensing-16-01075">
+        <title>2.2. Instruments</title>
+        <sec id="sec2dot2dot1-remotesensing-16-01075">
+          <title>2.2.1. IAP 325 m Tower</title>
+          <p>The 325 m meteorological tower has the advantages of high accuracy and the simultaneous observation of multiple layers. The 325 m meteorological tower has seventeen levels of operating platforms, of which fifteen platforms are commonly used, i.e., those at 8, 15, 32, 47, 63, 80, 102, 120, 140, 160, 180, 200, 240, 280, and 320 m. Each level is equipped with two anemometers (wind cups), one anemometer (wind vane), one thermometer, one hygrometer, and one data collector. The platform is 0.7 m in width, and the protective railing is around 1 m in height. The 325 m meteorological tower is capable of measuring the multi-meteorological variables of temperature, relative humidity, horizontal WS, and horizontal wind direction (WD). To date, the IAP 325 m meteorological tower has accumulated meteorological data for more than 40 years, which can be regarded as a reference basis for other observational approaches.</p>
+        </sec>
+        <sec id="sec2dot2dot2-remotesensing-16-01075">
+          <title>2.2.2. Microwave Radiometer</title>
+          <p>The microwave radiometer (HATPRO-G5, RPG, Meckenheim, Germany) is a passive microwave remote sensing device that can continuously acquire atmospheric thermal parameters such as temperature and humidity in the vertical range of 0&#x2013;10 km in real time [<xref ref-type="bibr" rid="B18-remotesensing-16-01075">18</xref>]. The microwave radiometer has two receivers, including seven frequency channels for water-vapor absorption lines (K-band 22.24&#x2013;31.40 GHz) and seven frequency channels for oxygen absorption lines (V-band 51.26&#x2013;58.00 GHz). A large amount of atmospheric radiation at frequencies of 22.24&#x2013;31.40 GHz is actively radiated by water-vapor molecules, while atmospheric radiation at frequencies of 51.26&#x2013;58.00 GHz is radiated by remotely sensed oxygen molecules [<xref ref-type="bibr" rid="B19-remotesensing-16-01075">19</xref>]. The microwave radiometer is available in two modes: the zenith mode and the boundary-layer multi-angle scanning mode. In the zenith observation mode, the radiometer takes measurements only in the vertical channels. In the boundary-layer mode, all channels are sampled, and more information can be obtained. The two modes work together to achieve spatial resolution (60&#x2013;300 m spatial resolution up to 10,000 m) and the boundary layer (25&#x2013;40 m spatial resolution), with up to ninety-three layers in the vertical direction and a time resolution of 1 s. For more details, see <uri>http://www.radiometer-physics.de</uri> (last accessed on 3 November 2023).</p>
+        </sec>
+        <sec id="sec2dot2dot3-remotesensing-16-01075">
+          <title>2.2.3. Doppler Wind Lidar</title>
+          <p>The Doppler wind lidar (Windcube100s, Leosphere, Paris, France) is an active remote sensing device based on light detection and ranging techniques. The instrument has three observation modes: 1. The vertical DBS (Doppler beam swinging) scanning mode, known as the vertical profile mode; 2. The horizontal PPI (plan position indicator) scanning mode, known as the constant zenith-angle mode; 3. The tangential RHI (range height indicator) scanning mode, known as the constant azimuth mode. The detectable range of the instrument is from 50 m to about 3 km, of which the bottom limit of 50 m is the detection blind zone. The vertical resolutions are 20 m from 50 m to 300 m and 25 m for 300&#x2013;3000 m. The time resolution of the WS is 5 s, with an integration time from 0.5 s to 10 s (standard integration time: 1 s), and the accuracy of WS is 0.5 m/s. The observation range of the radial WS and WD is &#x2212;30 m/s to 30 m/s and 0 to 360&#xB0;, respectively. More information about the instrument can be found at <uri>www.leosphere.com</uri> (last accessed on 3 November 2023).</p>
+        </sec>
+        <sec id="sec2dot2dot4-remotesensing-16-01075">
+          <title>2.2.4. CL51 Ceilometer</title>
+          <p>In this study, a CL51 ceilometer was used to obtain the height of the boundary layer. The ceilometer lidar (CL51, Vaisala, Vantaa, Finland) is an active remote sensing device. It is capable of emitting laser pulses and then receiving back the scattered signals caused by haze, fog, precipitation, and clouds. Based on the time interval between the signal transmission and reception, the height of the cloud bottom and the height of the boundary layer can be calculated. The CL51 ceilometer has a spatial resolution of 10 m and a temporal resolution of 15&#x2013;16 s. For more information, please refer to <uri>www.vaisala.com</uri> (last accessed on 3 November 2023).</p>
+        </sec>
+      </sec>
+      <sec id="sec2dot3-remotesensing-16-01075" sec-type="methods">
+        <title>2.3. Methodology</title>
+        <sec id="sec2dot3dot1-remotesensing-16-01075">
+          <title>2.3.1. ABL Thermal Parameters</title>
+          <p>Atmospheric temperature and humidity data obtained by microwave radiometers enable the calculation of atmospheric thermal parameters. The formulas are as follows:<disp-formula id="FD1-remotesensing-16-01075"><label>(1)</label><mml:math id="mm1" display="block"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>P</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mrow><mml:mi>P</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn></mml:mrow></mml:msub><mml:mrow><mml:mrow><mml:mi mathvariant="italic">exp</mml:mi></mml:mrow><mml:mo>&#x2061;</mml:mo><mml:mrow><mml:mo>[</mml:mo></mml:mrow></mml:mrow><mml:mo>&#x2212;</mml:mo><mml:mfrac><mml:mrow><mml:mn>1</mml:mn></mml:mrow><mml:mrow><mml:mi>R</mml:mi></mml:mrow></mml:mfrac><mml:mrow><mml:msubsup><mml:mo stretchy="false">&#x222B;</mml:mo><mml:mrow><mml:msub><mml:mrow><mml:mi>Z</mml:mi></mml:mrow><mml:mrow><mml:mn>1</mml:mn></mml:mrow></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mrow><mml:mi>Z</mml:mi></mml:mrow><mml:mrow><mml:mn>2</mml:mn></mml:mrow></mml:msub></mml:mrow></mml:msubsup><mml:mrow><mml:mfrac><mml:mrow><mml:mi>g</mml:mi></mml:mrow><mml:mrow><mml:mi>T</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:mrow><mml:mi>d</mml:mi><mml:mi>z</mml:mi><mml:mo stretchy="false">]</mml:mo></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD2-remotesensing-16-01075"><label>(2)</label><mml:math id="mm2" display="block"><mml:semantics><mml:mrow><mml:mi>&#x3B8;</mml:mi><mml:mo>=</mml:mo><mml:mi>T</mml:mi><mml:mo>&#xD7;</mml:mo><mml:mo>(</mml:mo><mml:mfrac><mml:mrow><mml:msub><mml:mrow><mml:mi>p</mml:mi></mml:mrow><mml:mrow><mml:mn>0</mml:mn></mml:mrow></mml:msub></mml:mrow><mml:mrow><mml:mi>P</mml:mi></mml:mrow></mml:mfrac><mml:msup><mml:mrow><mml:mo>)</mml:mo></mml:mrow><mml:mrow><mml:mfenced separators="|"><mml:mrow><mml:mfrac><mml:mrow><mml:mi>R</mml:mi></mml:mrow><mml:mrow><mml:msub><mml:mrow><mml:mi>c</mml:mi></mml:mrow><mml:mrow><mml:mi>p</mml:mi></mml:mrow></mml:msub></mml:mrow></mml:mfrac></mml:mrow></mml:mfenced></mml:mrow></mml:msup></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD3-remotesensing-16-01075"><label>(3)</label><mml:math id="mm3" display="block"><mml:semantics><mml:mrow><mml:msub><mml:mrow><mml:mi>e</mml:mi></mml:mrow><mml:mrow><mml:mi>s</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mn>6.1078</mml:mn><mml:mrow><mml:mrow><mml:mi mathvariant="italic">exp</mml:mi></mml:mrow><mml:mo>&#x2061;</mml:mo><mml:mrow><mml:mo>[</mml:mo></mml:mrow></mml:mrow><mml:mfrac><mml:mrow><mml:mn>17.2693882</mml:mn><mml:mfenced separators="|"><mml:mrow><mml:mi>T</mml:mi><mml:mo>&#x2212;</mml:mo><mml:mn>273.16</mml:mn></mml:mrow></mml:mfenced></mml:mrow><mml:mrow><mml:mi>T</mml:mi><mml:mo>&#x2212;</mml:mo><mml:mn>35.86</mml:mn></mml:mrow></mml:mfrac><mml:mo stretchy="false">]</mml:mo></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD4-remotesensing-16-01075"><label>(4)</label><mml:math id="mm4" display="block"><mml:semantics><mml:mrow><mml:mi>e</mml:mi><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mi>R</mml:mi><mml:mi>H</mml:mi></mml:mrow><mml:mrow><mml:mn>100</mml:mn></mml:mrow></mml:mfrac><mml:mo>&#xD7;</mml:mo><mml:msub><mml:mrow><mml:mi>e</mml:mi></mml:mrow><mml:mrow><mml:mi>s</mml:mi></mml:mrow></mml:msub></mml:mrow></mml:semantics></mml:math></disp-formula>
+          <disp-formula id="FD5-remotesensing-16-01075"><label>(5)</label><mml:math id="mm5" display="block"><mml:semantics><mml:mrow><mml:mi>q</mml:mo

@@ -1,0 +1,13 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Pour Biazar;Arastoo;;;
+FN:Arastoo Pour Biazar
+ORG:University of Alabama in Huntsville;Earth System Science Center
+TITLE:
+ADR;TYPE=WORK,POSTAL,PARCEL:;;Room 3041;320 Sparkman Drive;Huntsville;AL;35805;United States
+LABEL;TYPE=WORK,POSTAL,PARCEL:Room 3041\nNational Space Science and Technology Center\nGlobal Hydrology and Climate Center\n320 Sparkman Drive\nHuntsville, AL 35805
+ADR;TYPE=WORK,POSTAL,DOM:;;Earth System Science Center;University of Alabama in Huntsville;Huntsville;Alabama;35899;United States
+TEL;TYPE=WORK,VOICE:+12569617970
+TEL;TYPE=WORK,FAX:+12569617755
+EMAIL;TYPE=INTERNET,WORK:biazar@nsstc.uah.edu
+END:VCARD
