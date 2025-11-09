@@ -353,3 +353,71 @@ def rig_derivatives_zeta(
     dRi_dzeta = F_val * (1.0 + zeta * V_log)
     d2Ri_dzeta2 = F_val * (2.0 * V_log + zeta * (V_log * V_log - W_log))
     return dRi_dzeta, d2Ri_dzeta2, F_val, V_log
+
+# --- Q-SBL and Ri-only closure helpers ------------------------------------------
+
+def qsbl_coeffs(alpha_m: float, beta_m: float,
+                alpha_h: float, beta_h: float
+                ) -> tuple[float, float, float, float, float, float]:
+    """Return (a_m, b_m, a_h, b_h, Δ, c1) for quadratic SBL truncation.
+    a = αβ; b = 0.5 α(α+1) β²; Δ = α_hβ_h − 2α_mβ_m; c1 = α_hβ_h² − 2α_mβ_m²
+    """
+    a_m = alpha_m * beta_m
+    b_m = 0.5 * alpha_m * (alpha_m + 1.0) * (beta_m ** 2)
+    a_h = alpha_h * beta_h
+    b_h = 0.5 * alpha_h * (alpha_h + 1.0) * (beta_h ** 2)
+    Delta = a_h - 2.0 * a_m
+    c1 = alpha_h * (beta_h ** 2) - 2.0 * alpha_m * (beta_m ** 2)
+    return a_m, b_m, a_h, b_h, Delta, c1
+
+def ri_closure_series(alpha_m: float, beta_m: float,
+                      alpha_h: float, beta_h: float
+                      ) -> tuple[Callable[[float], float], Callable[[float], float]]:
+    """Near-neutral Ri-only closures using Q-SBL composition to O(Ri^2).
+    Returns fm(Ri) ≈ 1 + s1_m Ri + s2_m Ri², fh(Ri) ≈ 1 + s1_h Ri + s2_h Ri².
+    """
+    a_m, b_m, a_h, b_h, Delta, _ = qsbl_coeffs(alpha_m, beta_m, alpha_h, beta_h)
+    s1_m, s2_m = a_m, (b_m - a_m * Delta)
+    s1_h, s2_h = a_h, (b_h - a_h * Delta)
+
+    def fm(Ri: float) -> float:
+        return 1.0 + s1_m * Ri + s2_m * (Ri * Ri)
+
+    def fh(Ri: float) -> float:
+        return 1.0 + s1_h * Ri + s2_h * (Ri * Ri)
+
+    return fm, fh
+
+def ri_closure_pade(alpha_m: float, beta_m: float,
+                    alpha_h: float, beta_h: float
+                    ) -> tuple[Callable[[float], float], Callable[[float], float], dict]:
+    """Pade [1/1] Ri-only closures matching O(Ri^2) series.
+    f(Ri) ≈ (1 + p Ri) / (1 − q Ri), with:
+      p − q = s1,   q (p + q) = s2  ⇒ q = 0.5 (−s1 + sqrt(s1² + 4 s2)), p = s1 + q
+    Returns fm, fh and parameter dict {'pm','qm','ph','qh'} for diagnostics.
+    """
+    a_m, b_m, a_h, b_h, Delta, _ = qsbl_coeffs(alpha_m, beta_m, alpha_h, beta_h)
+    s1_m, s2_m = a_m, (b_m - a_m * Delta)
+    s1_h, s2_h = a_h, (b_h - a_h * Delta)
+
+    def _pq(s1: float, s2: float) -> tuple[float, float]:
+        disc = s1 * s1 + 4.0 * s2
+        q = 0.5 * (-s1 + math.sqrt(disc)) if disc >= 0 else 0.0
+        p = s1 + q
+        return p, q
+
+    pm, qm = _pq(s1_m, s2_m)
+    ph, qh = _pq(s1_h, s2_h)
+
+    def fm(Ri: float) -> float:
+        return (1.0 + pm * Ri) / (1.0 - qm * Ri)
+
+    def fh(Ri: float) -> float:
+        return (1.0 + ph * Ri) / (1.0 - qh * Ri)
+
+    params = {'pm': pm, 'qm': qm, 'ph': ph, 'qh': qh}
+    return fm, fh, params
+
+# Notes:
+# - Use ri_closure_series for Ri ≲ 0.05–0.1; switch to ri_closure_pade below the pole 1/q.
+# - For full-range fidelity, prefer ζ-inversion (zeta_from_ri_series + zeta_from_ri_newton) and evaluate φ(ζ).
