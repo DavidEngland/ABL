@@ -3,7 +3,7 @@
 **Authors:** David England\*, Richard T. McNider, Arastoo Pour-Biazar, Bright Student  
 
 ## Abstract
-Stable boundary layers are notoriously grid-sensitive in Arctic climate and NWP models. We introduce a curvature-aware analytic correction to Monin–Obukhov Similarity Theory (MOST) stability functions that embeds vertical grid spacing directly into the functional form while preserving the neutral curvature invariant \(\partial_\zeta^2 Ri_g|_{0}=2\Delta\) with \(\Delta=\alpha_h\beta_h-2\alpha_m\beta_m\). The approach couples a neutral-curvature invariance constraint, a grid-scaled exponential tail modifier, and a Hasse–Stirling (HS) series accelerator for fast, reproducible evaluation of \(\phi_{m,h}\), \(Ri_g\), and ζ(Ri). Diagnostics (curvature amplification ratio, inflection height, omission error for variable \(L(z)\)) guide when full mapping or constant‑L shortcuts apply. Idealized tests show >40% reduction in curvature error and improved stable boundary layer flux convergence on coarse grids. The framework enhances physical consistency, supports adaptive vertical refinement triggers, and yields tabulated, transparent coefficients for reproducible implementation.
+Stable boundary layers are notoriously grid-sensitive in Arctic climate and NWP models. We introduce a curvature-aware analytic correction to Monin–Obukhov Similarity Theory (MOST) stability functions that embeds vertical grid spacing directly into the functional form while preserving the neutral curvature invariant \(\partial_\zeta^2 Ri_g|_{0}=2\Delta\) with \(\Delta=\alpha_h\beta_h-2\alpha_m\beta_m\). The approach couples: (i) neutral-curvature invariance constraint; (ii) grid-scaled exponential tail modifier; (iii) HS series accelerator for reproducible evaluation of \(\phi_{m,h}, Ri_g,\) and \(\zeta(Ri)\). Diagnostics (curvature amplification ratio, inflection height, omission error for variable \(L(z)\)) guide when full mapping or constant‑L shortcuts apply. Idealized tests show >40% reduction in curvature error and improved stable boundary layer flux convergence on coarse grids. The framework enhances physical consistency, supports adaptive vertical refinement triggers, and yields tabulated, transparent coefficients for reproducible implementation.
 
 ## Extended Abstract (Internal Proposal – Circulation Draft)
 
@@ -18,11 +18,11 @@ Existing remedies (long-tail φ functions, tuned critical Ri, ad hoc diffusion f
 - Reproducible fast evaluation (ζ↔Ri inversion) without iterative instability.
 
 ### 3. Core Idea
-Embed grid spacing directly into MOST stability functions via a tail modifier \(f_c(\zeta,\Delta z)=\exp\{-D(\zeta/\zeta_r)(\Delta z/\Delta z_r)\}\) while enforcing
+Embed grid spacing directly into MOST stability functions via
 \[
-\boxed{\partial_\zeta^2 Ri_g^{*}|_{0}=2\Delta}
+f_c(\zeta,\Delta z)=\exp\left[-D\,(\zeta/\zeta_r)(\Delta z/\Delta z_r)\right]
 \]
-so near-neutral curvature remains unchanged. Adjust only higher-order curvature growth that drives grid-dependent bias.
+with exponent pairing (b=2a) preserving \(V_{\log}(0)\) ⇒ neutral curvature \(2\Delta\).
 
 ### 4. Objectives
 O1 Preserve neutral curvature (physics) while reducing coarse-grid curvature amplification.  
@@ -32,19 +32,16 @@ O4 Validate across φ families (power-law, quadratic surrogate, regularized) and
 O5 Package an open-source module + reproducible notebooks (LES + tower comparisons).
 
 ### 5. Method Summary
-1. Analytical curvature: \(\partial_\zeta^2 Ri_g = F[2V_{\log}+\zeta(V_{\log}^2-W_{\log})]\), \(F=\phi_h/\phi_m^2\).
-2. Grid-tail correction with exponents a,b (choose b=2a for invariance).
-3. HS tables accelerate evaluation of \(\log(1-\beta\zeta)\) → fast φ, F, V_log, W_log.
-4. Variable-L decision using omission metric:
-\[
-E_{\text{omit}}=\left|\frac{\zeta''_z\,\partial_\zeta Ri_g}{(\zeta'_z)^2\,\partial_\zeta^2 Ri_g}\right|
-\]
-5. Calibration: choose D to minimize normalized curvature error vs fine-grid reference.
+1. Curvature: \(\partial_\zeta^2 Ri_g = F[2V_{\log}+\zeta(V_{\log}^2-W_{\log})]\), \(F=\phi_h/\phi_m^2\).
+2. Tail modifier \(f_c\) chosen s.t. neutral invariants unchanged.
+3. HS tables accelerate \(\log(1-\beta\zeta)\) evaluation (stable branch).
+4. Variable-L shortcut validity via omission metric \(E_{\text{omit}}\).
+5. Calibrate D minimizing normalized curvature error vs fine-grid reference.
 
 ### 6. Innovation
-- Neutral curvature anchoring: separates physical near-neutral behavior from numerical tail adjustments.
-- Grid-aware analytical modifier replaces empirical long-tail forms.
-- HS-assisted ζ(Ri) inversion eliminates iterative ζ loops (performance + stability).
+- Neutral curvature anchoring separates physical near-neutral shape from numerical tail bias.
+- Explicit Δz dependence replaces ad hoc extended tails.
+- HS-assisted inversion reduces iterative ζ loops to a single Newton refinement.
 - Diagnostics unify regime classification (inflection presence, amplification ratio A(ζ)).
 
 ### 7. Work Plan (Indicative 6-Month Timeline)

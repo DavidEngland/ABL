@@ -1,3 +1,165 @@
+# Guest Lecture Outline — MOST, Stable BL, and Curvature-Aware Corrections
+
+Audience: Graduate students and scientists (STEM); goal is intuition → equations → implications → open problems.
+
+Time plan (60–90 min)
+- 0–5 min: Motivation and objectives
+- 5–20 min: MOST primer (intuitive → formal)
+- 20–35 min: Gradient Richardson number Ri_g and curvature
+- 35–50 min: Grid sensitivity and curvature-aware correction
+- 50–65 min: Results summary and validation
+- 65–80 min: Open questions, future work, discussion
+- 80–90 min: Live demo (optional) and Q&A
+
+Learning objectives
+- Understand the role of similarity variables and Obukhov length L in the surface layer.
+- See how Ri_g(ζ) curvature explains coarse-grid bias in stable BLs.
+- Learn neutral-curvature invariance (2Δ) and why preserving it matters.
+- Review practical correction strategies and where validation is still needed.
+
+---
+
+## 0. Motivation (Slide 1–2)
+- Arctic and nocturnal stable layers are grid-sensitive; coarse Δz misclassifies stability and biases turbulent fluxes.
+- We need a resolution-aware fix that preserves near-neutral physics and reduces curvature-induced bias.
+
+Key claim (working result)
+- A neutral-curvature–preserving modifier reduces coarse-grid curvature error by 40%+ without ad hoc diffusion floors.
+
+---
+
+## 1. MOST Primer (Slide 3–6)
+
+Physical intuition
+- Near-surface exchange driven by shear and buoyancy; dimensional groups collapse variability when scaled properly.
+
+Core definitions
+- Obukhov length: \(L=-\frac{u_*^3\theta}{\kappa g\,\overline{w'\theta'}}\) (sign sets stable/unstable).
+- Dimensionless height: \(\zeta=z/L\) or \(\zeta=z/L(z)\) if local.
+- Stability functions:
+  - \(\phi_m=\frac{\kappa z}{u_*}\frac{\partial U}{\partial z}\), \(\phi_h=\frac{\kappa z}{\theta_*}\frac{\partial \theta}{\partial z}\), \(\theta_*=-\overline{w'\theta'}/u_*\).
+  - Example stable branch: \(\phi_{m,h}=(1-\beta_{m,h}\zeta)^{-\alpha_{m,h}}\) with domain guard \(1-\beta\zeta>0\).
+
+Gradient Richardson number (MOST form)
+- \(Ri_g(\zeta)=\zeta\,\phi_h/\phi_m^2=\zeta F(\zeta)\).
+
+Notes for students
+- L can vary with height and time in real SBLs; start with bulk L and add local-L mapping when needed.
+
+---
+
+## 2. Curvature of Ri_g and Why It Matters (Slide 7–10)
+
+Compact curvature formula
+- \(\frac{d^2 Ri_g}{d\zeta^2}=F[2V_{\log}+\zeta(V_{\log}^2-W_{\log})]\),
+  with \(F=\phi_h/\phi_m^2\), \(V_{\log}=(\phi_h'/\phi_h)-2(\phi_m'/\phi_m)\), \(W_{\log}=dV_{\log}/d\zeta\).
+
+Neutral curvature invariant
+- \(\Delta=\alpha_h\beta_h-2\alpha_m\beta_m\), \( \left.\frac{d^2 Ri_g}{d\zeta^2}\right|_0=2\Delta\).
+- Interpretation: sign sets initial concavity; magnitude sets strength of early departure from linearity.
+
+Practical impact
+- For Δ<0 (typical SBL), Ri_g bends down quickly; layer-averaging then underestimates stability at the lowest level → overmixing.
+
+Optional mapping for local L(z)
+- \(\partial_z^2 Ri_g=(d\zeta/dz)^2\partial_\zeta^2 Ri_g + (d^2\zeta/dz^2)\partial_\zeta Ri_g\).
+- Use omission metric \(E_{\text{omit}}\) to decide if constant-L shortcut is acceptable.
+
+---
+
+## 3. Grid Sensitivity and Correction (Slide 11–14)
+
+Observation
+- Coarse Δz (10–100 m) smears near-surface curvature; bulk Ri_b < point Ri_g at \(z_g=\sqrt{z_0 z_1}\).
+
+Strategy
+- Preserve neutral curvature (2Δ), adjust only tail behavior (ζ>0) with a grid-aware modifier:
+  - \(f_c(\zeta,\Delta z)=\exp[-D (\zeta/\zeta_r)(\Delta z/\Delta z_r)]\), choose exponents so \(V_{\log}(0)\) unchanged.
+
+Alternatives
+- Q‑SBL (quadratic surrogate) for ζ≤0.2–0.3; Ri-based closures via series + Newton; regularized power law to avoid poles.
+
+---
+
+## 4. Results Snapshot (Slide 15–17)
+
+- Neutral curvature preserved within <5% across tested grids.
+- Curvature error reduced by 40%+ at Δz=60–100 m (idealized cases).
+- ζ(Ri) inversion: series seed + 1 Newton step achieves machine-precision equality with low cost.
+- Diagnostics: amplification ratio A(ζ), inflection height, omission metric for variable L(z).
+
+Caveats
+- Parameter transfer from USL fits can worsen SBL curvature; prefer SBL-calibrated or surrogate forms.
+- Guard poles: restrict ζ<~0.7/β or switch to surrogate.
+
+---
+
+## 5. Open Questions and Areas Needing Work (Slide 18–21)
+
+- Calibration of D (tail strength):
+  - Functional form vs. Δz, Ri, and target amplification A(ζ)? Site dependence vs. universal scaling?
+- Variable L(z):
+  - When is constant-L mapping sufficient (E_omit thresholds) in real nocturnal layers?
+- Ri-only closures:
+  - Pade [1/1] vs. ζ inversion tradeoffs for operational stability and range; blending strategy near poles.
+- Critical Richardson number:
+  - Fixed 0.25 vs. dynamic Rc; reconcile with observed intermittent turbulence at Ri>1.
+- ODE route:
+  - Directly solving reduced ODEs for Ri with lower-boundary curvature constraints—benefits vs. cost?
+- Data coverage:
+  - Extreme stability regimes (polar, over ice) for robust calibration; how to handle sparse segments.
+
+Discussion prompts (with possible answers)
+- “Should Rc be fixed?” → Likely context-dependent; normalize s=Ri/Rc and let Rc vary with inversion strength.
+- “Why preserve 2Δ?” → Anchors neutral physics; prevents “fixing” the tail by breaking the entry condition.
+- “Q‑SBL vs power-law?” → Q‑SBL is safer near poles; power-law gives analytic leverage—blend pragmatically.
+
+---
+
+## 6. Future Directions (Slide 22–24)
+
+Near-term
+- 1D slope-flow notebook (katabatic/anabatic) for rapid testing of closures and Δz effects.
+- LES/tower cross-validation (GABLS, ARM NSA) with shared diagnostics and bias tables.
+- Julia acceleration path for large sensitivity sweeps and ERA5 climatology subsetting.
+
+Medium-term
+- Urban megacity Ri_g mapping (remote sensing blend) → grid-dependence thresholds.
+- Planetary scaling demonstrations (Mars/Titan): reuse curvature logic with different L and thermodynamics.
+
+Tooling and collaboration
+- GitHub-first (issues/PRs/branches); Markdown/LaTeX equations; no Word math.
+- Reproducible notebooks with pinned environments; tagged releases for student projects.
+
+---
+
+## 7. Live Demo (5–10 min, optional)
+
+- Demo A: ζ(Ri) inversion accuracy (series + Newton) and pole guard behavior.
+- Demo B: Curvature profile vs Δz grids; show reduction with neutral-preserving modifier.
+- Demo C: Quick variable-L(z) mapping and omission metric E_omit thresholding.
+
+Notebooks to use
+- 01_tower_curvature_analysis.ipynb (basics, neutral curvature)
+- quick_grid_test.ipynb (Δz bias curves)
+- slope_flow_1d.ipynb (prototype when ready)
+
+---
+
+## 8. Takeaways (Slide 25)
+- Preserve neutral curvature (2Δ); correct tails, not the physics at ζ→0.
+- Use geometric mean height \(z_g\) and analytic curvature for consistent first-layer behavior.
+- Diagnostics enable principled Δz choices and adaptive refinement flags.
+
+Reading (short list for class)
+- Stull (1988), Högström (1988), Beljaars & Holtslag (1991)
+- England & McNider (1995), Cheng & Brutsaert (2005)
+- Holtslag et al. (2013), Cuxart et al. (2006)
+
+---
+
+...existing code...
+
 # Introduction to Monin–Obukhov Surface-Layer Theory and Richardson Number Curvature (SBL Focus)
 
 Audience: STEM background (math / physics / engineering) new to atmospheric boundary-layer similarity theory (MOST), with emphasis on the Stable Boundary Layer (SBL).  

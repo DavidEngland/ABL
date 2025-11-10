@@ -22,7 +22,7 @@ Then
 Near neutrality (\(\zeta\to0\)):
 \[
 \Delta=V_{\log}(0)=\alpha_h\beta_h-2\alpha_m\beta_m,\quad
-\left.\frac{d^2Ri_g}{d\zeta^2}\right|_{0}=2\Delta.
+\left.\frac{d^{2}Ri_g}{d\zeta^{2}}\right|_{0}=2\Delta.
 \]
 
 Interpretation:
@@ -42,7 +42,7 @@ Curvature:
 This replaces earlier generic G,G′ (G=V_log, G′=W_log).
 
 ## 2. Elevated Regime Behavior
-Away from neutral (\(\zeta\gesssim 0.1\) or approaching stable growth), the \(\zeta(V_{\log}^2-W_{\log})\) term drives rapid curvature escalation or decay. Parameter sets that keep \(V_{\log}^2\) and \(W_{\log}\) in partial balance delay curvature amplification, improving numerical stability in coarse vertical grids.
+Away from neutral (\(\zeta\gtrsim 0.1\) or approaching stable growth), the \(\zeta(V_{\log}^2-W_{\log})\) term drives rapid curvature escalation or decay. Parameter sets that keep \(V_{\log}^2\) and \(W_{\log}\) in partial balance delay curvature amplification, improving numerical stability in coarse vertical grids.
 
 ## 3. Discretization and Representative Height Selection
 Given two model levels \(z_1<z_2\) with \(z_2/z_1\gg1\) possible under coarse grids:
@@ -70,7 +70,7 @@ General chain rule:
 Variation metrics:
 \[
 \varepsilon_1=\frac{z|L'|}{L},\qquad
-\chi=\left|\frac{(d^2\zeta/dz^2)(dRi_g/d\zeta)}{(d\zeta/dz)^2(d^2Ri_g/d\zeta^2)}\right|.
+\chi=\left|\frac{(d^2\zeta/dz^2)(dRi_g/d\zeta)}{(d\zeta/dz)^2(d^2Ri_g/d\zeta^{2})}\right|.
 \]
 Use constant-\(L\) shortcut (\(\partial_z^2Ri_g\approx (1/L^2)\partial_\zeta^2Ri_g\)) if \(\varepsilon_1<0.05\) and \(\chi<0.05\); otherwise include full mapping.
 
@@ -138,123 +138,3 @@ def layer_curvature(z1,z2,L1,L2,phi_m,phi_h):
     V = (logF(zeta_g+h)-logF(zeta_g-h))/(2*h)
     W = (logF(zeta_g+h)-2*logF(zeta_g)+logF(zeta_g-h))/(h*h)
     curv_zeta = F(zeta_g)*(2*V + zeta_g*(V*V - W))
-    return curv_zeta
-```
-
-## 14. Critique of Original Draft (For Record)
-- Mixed plain-text and LaTeX markers (e.g., `\partial^2 Ri_g/\partial \zeta^2`) without consistent math environments.
-- Missing explicit definitions of \(V_{\log}, W_{\log}, \Delta\).
-- No quantitative criteria for when constant-\(L\) approximation is valid.
-- Geometric mean justification stated qualitatively only; now formalized via integral of \(\ln z\).
-- Lacked discretization error metric; now \(E_i\) defined.
-- No guidance for figure captions or diagnostics table.
-
-All enhancements preserve original intent while adding formal rigor and actionable criteria.
-
-## 21. Summary Table (Key Neutral Coefficients)
-| Symbol | Description | Value |
-|--------|-------------|-------|
-| \(\alpha_m, \beta_m\) | Momentum closure coefficients | Typically \(\approx 0.45\)–\(0.55\), \(14\)–\(16\) |
-| \(\alpha_h, \beta_h\) | Heat closure coefficients | Typically \(\approx 0.45\)–\(0.55\), \(14\)–\(16\) |
-| \(a_m, b_m\) | Quadratic SBL coefficients for momentum | \(6.3\) to \(8.8\), \(64\) to \(110\) |
-| \(a_h, b_h\) | Quadratic SBL coefficients for heat | \(6.3\) to \(8.8\), \(64\) to \(110\) |
-| \(\Delta\) | Near-neutral curvature coefficient | \(\alpha_h \beta_h - 2 \alpha_m \beta_m\) |
-| \(c_1\) | Cubic SBL coefficient | \(\alpha_h \beta_h^2 - 2 \alpha_m \beta_m^2\) |
-
-Note (precedence). The explicit surface-layer composition \(Ri_g(\zeta)=\zeta\,\phi_h(\zeta)/\phi_m(\zeta)^2\) appears explicitly in England & McNider (1995, BLM). Earlier MOST works define the ingredients but may not show the compact equality in print; see the curvature note for verification steps.
-
-## 22. Parameter Selection and Curvature Scaling
-// renamed from 21A to maintain monotonic section numbering
-Recommended near-neutral parameter ranges for MOST:
-- \(\alpha_m, \alpha_h\): \(0.45\) to \(0.55\)
-- \(\beta_m, \beta_h\): \(14\) to \(16\)
-
-Curvature scaling:
-- Compute \(\Delta\) using selected \(\alpha, \beta\).
-- For initial \(Ri_g\) estimates, use \(2\Delta\) from above.
-
-## 23. Enhanced MOST / Ri Formulations (Model-Oriented)
-For model compatibility and improved stability:
-- Implement quadratic or rational function forms for φ_m, φ_h based on \(Ri\) or \(Ri_g\).
-- Ensure continuity and smoothness at stability function transition points.
-
-## 24. Appendix—Planetary Scaling and Polar Use
-Planetary boundary layer (PBL) adaptation:
-- Retain curvature formulation but adjust \(L\) scaling to match planetary conditions.
-- Near-neutral coefficients \(\alpha, \beta\) may differ; calibrate using local PBL data.
-
-Polar application notes:
-- Be cautious of stability function applicability near poles; curvature effects may differ.
-- Consider blending with alternative formulations in extreme latitudes.
-
-## 25. Quadratic SBL Truncation (Q‑SBL)
-// (keep single Q‑SBL section; moved earlier duplicate to this consolidated position)
-### 25A. Typical Q‑SBL Coefficients (Stable SBL, ζ ≥ 0)
-Given α,β pairs in the common range α_{m,h} ≈ 0.45–0.55, β_{m,h} ≈ 14–16, the Q‑SBL coefficients
-a_m = α_m β_m, b_m = 0.5 α_m(α_m + 1) β_m^2, and similarly for heat, are typically:
-- a_m, a_h ≈ 6.3 to 8.8
-- b_m, b_h ≈ 64 to 110
-
-Ready‑to‑use examples
-- Symmetric “BD near‑neutral” set: α_m = α_h = 0.50, β_m = β_h = 16
-  - a_m = a_h = 8.00, b_m = b_h = 96.0
-  - Δ = α_h β_h − 2 α_m β_m = 8 − 16 = −8
-  - c1 = α_h β_h^2 − 2 α_m β_m^2 = 128 − 256 = −128
-- Cross (momentum smaller, heat larger): α_m = 0.45, β_m = 15; α_h = 0.55, β_h = 15
-  - a_m = 6.75, b_m ≈ 73.1; a_h = 8.25, b_h ≈ 95.9
-  - Δ = 8.25 − 2·6.75 = −5.25
-  - c1 = 0.55·15² − 2·0.45·15² = −78.75
-
-Operational guardrails
-- Use Q‑SBL for 0 ≤ ζ ≤ ζ_max with ζ_max ≈ 0.2–0.3 (site dependent).
-- Optional linear cap c_m ≈ c_h ≈ 5 if extreme stability segments require bounded growth.
-- For diagnostics, report neutral curvature 2Δ and whether ζ_inf (if any) lies below ζ_max.
-
-### 25B. Pure Richardson-Number Closures f_m(Ri), f_h(Ri)
-Goal: express φ_m, φ_h as functions of Ri only, avoiding explicit ζ. Two practical approaches:
-
-1) Near‑neutral series (Ri ≲ 0.1)
-- From Section 25, φ_m(ζ) ≈ 1 + a_m ζ + b_m ζ²; φ_h(ζ) ≈ 1 + a_h ζ + b_h ζ².
-- Invert ζ(Ri) to O(Ri³): ζ ≈ Ri − Δ Ri² + (1.5 Δ² − 0.5 c1) Ri³.
-- Compose to O(Ri²):
-  - f_m(Ri) = φ_m(ζ(Ri)) ≈ 1 + s1_m Ri + s2_m Ri²
-  - f_h(Ri) = φ_h(ζ(Ri)) ≈ 1 + s1_h Ri + s2_h Ri²
-  - Coefficients:
-    - s1_m = a_m, s1_h = a_h
-    - s2_m = b_m − a_m Δ, s2_h = b_h − a_h Δ
-
-Example (α=0.5, β=16): a_m = a_h = 8, b_m = b_h = 96, Δ = −8
-- s2_m = 96 − 8·(−8) = 160 → f_m(Ri) ≈ 1 + 8 Ri + 160 Ri²
-- s2_h = 96 − 8·(−8) = 160 → f_h(Ri) ≈ 1 + 8 Ri + 160 Ri²
-Validity: accurate for small Ri; clip or switch to rational form for Ri ≳ 0.1.
-
-2) Pade [1/1] rational approximation (wider Ri, still near‑neutral)
-Fit a stable rational form to match the series up to O(Ri²):
-- f(Ri) ≈ (1 + p Ri) / (1 − q Ri), where:
-  - p − q = s1
-  - q (p + q) = s2
-- Solve q = 0.5 (−s1 + sqrt(s1² + 4 s2)), p = s1 + q. Apply separately to m,h.
-
-Example (α=0.5, β=16): s1 = 8, s2 = 160 → q ≈ 9.2665, p ≈ 17.2665
-- f_m(Ri) ≈ (1 + 17.27 Ri) / (1 − 9.27 Ri)
-- f_h(Ri) ≈ (1 + 17.27 Ri) / (1 − 9.27 Ri)
-Notes:
-- Pole at Ri ≈ 1/q ≈ 0.108: use only below that or blend to a capped form.
-- For stronger stability or larger Ri, prefer ζ inversion or a capped surrogate.
-
-Optional “power” alternative (match s1,s2):
-- f(Ri) ≈ (1 + q Ri)^(−e), with e = −s1/q and 0.5 e(e+1) q² = s2.
-- For α=0.5, β=16, q = (s1² − 2 s2)/s1 = −32, e = 0.25.
-- Growth is rapid; pole at Ri = −1/q = 0.03125 → too restrictive in practice.
-
-Recommended procedure
-- Compute (a_m, b_m, a_h, b_h, Δ, c1) from α,β.
-- Build series closures (s1, s2) for m,h.
-- If Ri ≤ 0.05–0.1, use series; else use Pade [1/1] with pole guard (e.g., cap Ri < 0.8/q).
-- For full‑range fidelity: use exact ζ(Ri) inversion (series seed + 1–2 Newton steps) and evaluate φ_{m,h}(ζ).
-
-Implementation hint
-- See profiles.py helpers ri_closure_series and ri_closure_pade for ready callables that return f_m(Ri), f_h(Ri) directly.
-
-## 27. Cross-Reference
-For full derivation details of \(d^{2}Ri_g/d\zeta^{2}\) and inversion series see: “Richardson number curvature.md”. This note emphasizes discretization, mapping, and surrogate blending.
