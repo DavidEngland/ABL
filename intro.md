@@ -61,9 +61,26 @@ Neutral curvature invariant
 Practical impact
 - For Δ<0 (typical SBL), Ri_g bends down quickly; layer-averaging then underestimates stability at the lowest level → overmixing.
 
-Optional mapping for local L(z)
-- \(\partial_z^2 Ri_g=(d\zeta/dz)^2\partial_\zeta^2 Ri_g + (d^2\zeta/dz^2)\partial_\zeta Ri_g\).
-- Use omission metric \(E_{\text{omit}}\) to decide if constant-L shortcut is acceptable.
+NEW (Slide visual cue)
+- Show a single panel with three thin curves sharing the same initial slope (tangent to Ri_g = ζ):
+  - Δ = 0: straight reference line (linear).
+  - Δ < 0: concave-down (typical SBL) — highlight early drop below ζ line.
+  - Δ > 0: concave-up (rare) — rises above ζ line.
+- Spoken emphasis: “Δ sets the *rate of first departure* from neutrality; preserving 2Δ anchors physics at ζ → 0.”
+
+Optional quick plot (Python)
+```python
+zeta = np.linspace(0,0.25,200)
+def ri(z,a): return z + a*z*z   # quadratic near-neutral sketch only
+plt.plot(zeta, ri(zeta, 0.0), label='Δ=0')
+plt.plot(zeta, ri(zeta,-0.8), label='Δ<0 (concave-down)')
+plt.plot(zeta, ri(zeta, 0.6), label='Δ>0 (concave-up)')
+plt.plot(zeta, zeta, 'k--', lw=0.7, label='Ri_g = ζ')
+plt.xlabel('ζ'); plt.ylabel('Ri_g'); plt.legend()
+```
+
+Speaker note
+- “Everything downstream (bias, correction) originates from this curvature contrast right after neutrality.” 
 
 ---
 
@@ -72,12 +89,47 @@ Optional mapping for local L(z)
 Observation
 - Coarse Δz (10–100 m) smears near-surface curvature; bulk Ri_b < point Ri_g at \(z_g=\sqrt{z_0 z_1}\).
 
+NEW clarification: geometric mean height
+- Use \(z_g\) because for power-law / logarithmic-like vertical structure, integrals over [z0,z1] are best represented by exp(average ln z) → geometric mean.
+- Concavity logic: If \(Ri_g(z)\) is concave-down over [z0,z1], then by Jensen:
+  \[
+  Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g(z_g)
+  \]
+  ⇒ \(Ri_b\) underestimates true local stability ⇒ turbulent mixing coefficients too large ⇒ overmixing.
+
 Strategy
 - Preserve neutral curvature (2Δ), adjust only tail behavior (ζ>0) with a grid-aware modifier:
   - \(f_c(\zeta,\Delta z)=\exp[-D (\zeta/\zeta_r)(\Delta z/\Delta z_r)]\), choose exponents so \(V_{\log}(0)\) unchanged.
 
 Alternatives
 - Q‑SBL (quadratic surrogate) for ζ≤0.2–0.3; Ri-based closures via series + Newton; regularized power law to avoid poles.
+
+Simplified correction framing (slide-friendly)
+Goal
+- Adjust \(K_{m,h}\) on coarse grids without altering neutral entry curvature (2Δ).
+
+Introduce generic damping factor
+\[
+K_{m,h}^* = K_{m,h} \times G(\zeta,\Delta z)
+\]
+Constraints
+1. \(G(0, \Delta z)=1\) (preserve 2Δ).
+2. \(\partial_\zeta G|_{\zeta=0}=0\) (do not perturb first derivative → keeps neutral Taylor series).
+3. \(G \rightarrow 1\) as \(\Delta z \rightarrow 0\) (grid convergence).
+4. \(G\) monotone non-increasing in ζ for fixed coarse Δz (only damp tails).
+Minimal functional template
+\[
+G(\zeta,\Delta z)=\exp\!\left[-D\left(\frac{\Delta z}{\Delta z_r}\right)^p \left(\frac{\zeta}{\zeta_r}\right)^q\right],\quad p,q>0
+\]
+Choose q ≥ 1 so \(\partial_\zeta G|_{0}=0\); tune D,p,q from target bias reduction (e.g., 40% curvature error cut at Δz = 60–100 m).
+
+Speaker wording
+- “Not modifying neutrality; only suppressing excessive tail influence introduced by coarse vertical averaging.”
+
+Bias diagnostic (show on slide)
+\[
+B = \frac{Ri_g(z_g)}{Ri_b};\quad B>1 \text{ signals curvature-induced underestimation.}
+\]
 
 ---
 
@@ -139,10 +191,22 @@ Tooling and collaboration
 - Demo B: Curvature profile vs Δz grids; show reduction with neutral-preserving modifier.
 - Demo C: Quick variable-L(z) mapping and omission metric E_omit thresholding.
 
-Notebooks to use
-- 01_tower_curvature_analysis.ipynb (basics, neutral curvature)
-- quick_grid_test.ipynb (Δz bias curves)
-- slope_flow_1d.ipynb (prototype when ready)
+Refined execution plan
+- Demo B (Core): Single figure with three curves for one case:
+  1. Fine-grid reference \(Ri_g^{fine}(z)\).
+  2. Coarse-grid reconstructed (layer-averaged) profile (biased).
+  3. Corrected coarse \(Ri_g^*(z)\) after applying \(G\).
+  Add inset: table with (Δz, B_before, B_after).
+- Demo C (If time): Plot \(E_{\text{omit}}(z)\) for a case with variable \(L(z)\); gray band where \(E_{\text{omit}}<0.05\) (safe shortcut region).
+- Keep code hidden; narrate physical interpretation (“We recover local curvature signature without touching 2Δ.”).
+
+Slide micro-labels
+- “Anchor: neutrality (2Δ)”
+- “Problem: concave-down ⇒ Ri_b deficit”
+- “Fix: tail damping G(ζ,Δz)”
+
+Time guard
+- Abort Demo C if Demo B + questions exceed 6 min.
 
 ---
 
@@ -150,6 +214,7 @@ Notebooks to use
 - Preserve neutral curvature (2Δ); correct tails, not the physics at ζ→0.
 - Use geometric mean height \(z_g\) and analytic curvature for consistent first-layer behavior.
 - Diagnostics enable principled Δz choices and adaptive refinement flags.
+- Grid Damping Factor G: satisfies invariance at ζ=0 while targeting curvature-driven bias aloft in first layer.
 
 Reading (short list for class)
 - Stull (1988), Högström (1988), Beljaars & Holtslag (1991)
@@ -157,8 +222,6 @@ Reading (short list for class)
 - Holtslag et al. (2013), Cuxart et al. (2006)
 
 ---
-
-...existing code...
 
 # Introduction to Monin–Obukhov Surface-Layer Theory and Richardson Number Curvature (SBL Focus)
 
