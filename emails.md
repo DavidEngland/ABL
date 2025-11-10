@@ -130,7 +130,31 @@ python -c "from code.profiles import qsbl_coeffs; print(qsbl_coeffs(0.5,16,0.5,1
 - Finalize D calibration heuristic (grid_ratio vs target curvature reduction).
 - Prepare TDMA boundary-condition insertion example (if still desired) using corrected K_m*, K_h*.
 
-Let me know if you want the TDMA lower boundary integration example next or a Julia performance benchmark snapshot.
+## 8. Collaboration & Math Workflow (Addendum)
+
+- Preferred collaboration medium: GitHub (repo: https://github.com/DavidEngland/ABL).
+- Use Issues for task tickets (labels: curvature, inversion, grid, student).
+- Use feature/<topic> branches; open Pull Requests with: summary, equations (Markdown LaTeX), diagnostics output snippet.
+- Math: avoid Word. Inline / display LaTeX directly in Markdown or (for long derivations) a separate .tex or .md file under docs/theory/.
+  - If a journal later requires Word, convert at the end (pandoc or Overleaf export).
+  - Provide a plaintext fallback below critical formulas:
+    Example:
+    ```
+    d²Ri_g/dζ² = F[2V_log + ζ(V_log² - W_log)]
+    ```
+- Overleaf only if a coauthor insists; otherwise retain versioned Markdown for diff clarity.
+- Figures: commit script/notebook + PNG/SVG; no manual editing in Word.
+- “Vibe coding” guardrails: avoid depending on experimental functions until tagged; open an Issue if a name change breaks a branch.
+- Student workflow: fork → sync main weekly → pin analysis notebooks to commit SHA for reproducibility.
+
+## 9. Missed Points Addressed
+
+- Near-surface curvature extraction: yes—use analytic ζ→0 limits (2Δ) then compare to first resolved ζ in model; report ratio.
+- Geometric mean height justification included; apply for all layer reconstructions where Δz/z₁ > 0.2.
+- Exponential approximation you mentioned: can slot into tail modifier framework; neutral curvature preserved if exponent scales as described (b=2a).
+- If solving ODE numerically for Ri instead of assuming Ri=const: recommend shooting method with curvature constraint at lower boundary; open to prototype if needed—create Issue “ODE_Ri_solver”.
+
+Let me know if you prefer a short Overleaf skeleton; otherwise continuing with Markdown + GitHub diffs.
 
 Regards,
 David

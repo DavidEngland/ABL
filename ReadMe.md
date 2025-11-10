@@ -444,19 +444,20 @@ Ri (check):  0.150000  (error: 3.55e-15)
 
 ```
 ABL/
-├── ReadMe.md                          # This file
+├── ReadMe.md
 ├── docs/
 │   ├── theory/
-│   │   ├── curvature_derivation.md    # Mathematical foundations
-│   │   ├── neutral_invariance.md      # Δ and neutral curvature
-│   │   └── planetary_scaling.md       # Mars/Titan applications
+│   │   ├── curvature_derivation.md
+│   │   ├── neutral_invariance.md
+│   │   └── planetary_scaling.md
 │   ├── examples/
-│   │   ├── tower_fitting.ipynb        # Jupyter notebook
-│   │   ├── grid_sensitivity.py        # Standalone script
-│   │   └── les_validation.R           # R analysis
+│   │   ├── tower_fitting.ipynb
+│   │   ├── grid_sensitivity.py
+│   │   ├── slope_flow_1d.ipynb            # NEW: 1D slope-flow testbed (katabatic/anabatic)
+│   │   └── les_validation.R
 │   └── api/
-│       ├── python_reference.md        # Function signatures
-│       └── fortran_interface.md       # Legacy model integration
+│       ├── python_reference.md
+│       └── fortran_interface.md
 ├── src/
 │   ├── python/
 │   │   ├── most_core.py               # φ functions, curvature
@@ -489,6 +490,7 @@ ABL/
 - [ ] Integrate Hasse-Stirling coefficient tables for log(1-βζ)
 - [ ] Add adaptive refinement trigger based on χ and E_omit metrics
 - [ ] Create validation dashboard (Jupyter notebook with interactive plots)
+- [ ] Redevelop a 1D slope-flow model notebook (katabatic/anabatic) for curvature-aware closure testing
 
 ### Publications (Target Venues)
 1. **Journal of Applied Meteorology and Climate**: "Curvature-Aware Corrections for Arctic Stable Boundary Layers"

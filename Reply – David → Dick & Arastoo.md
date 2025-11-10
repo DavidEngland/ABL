@@ -2,7 +2,7 @@ Reply – David → Dick & Arastoo
 
 Dick, Arastoo,
 
-Been training AI with company called Mercor, nice to get paid over $100 to solve problems all online, even interviewed with an AI chatbot.  Started out as a "writer", it gives two solutions to the problem and have to evaluate.  I quickly got promoted to "reviewer", which either sign off on how the writer evaluations, or send it back for rework.  I can supply reference links if know people who need some work.  It's contract, sometimes not much and new batches drop and everybody gets to work.  Most are outside the USA.
+Been training AI with company called Mercor, nice to get paid over $100 to solve problems all online, even interviewed with an AI chatbot.  Started out as a "writer", it gives two solutions to the problem and have to evaluate.  I quickly got promoted to "reviewer", which either sign off on how the writer evaluations, or send it back for rework.  I can supply reference links if know people who need some work.  It's contract, sometimes not much and new batches drop and everybody gets to work.  Most are outside the USA.  Need desktop computer, have to put on Slack and a time monitor.  Can see active screen, have to wiggle mouse even when just reading.  Was rough for me at first because I was not allowed to use AI to train AI.  Worse do not read LaTeX well, can't just look at that gobbly-gluck and see the math.  I see much red and get migranes.
 
 Here are some example problems:
 ---
@@ -91,7 +91,48 @@ python -c "from code.profiles import qsbl_coeffs; print(qsbl_coeffs(0.5,16,0.5,1
 - Finalize D calibration heuristic (grid_ratio vs target curvature reduction).
 - Prepare TDMA boundary-condition insertion example (if still desired) using corrected K_m*, K_h*.
 
-Let me know if you want the TDMA lower boundary integration example next or a Julia performance benchmark snapshot.
+---
 
-Regards,
+### Collaboration & Math Handling (Supplement)
+
+GitHub First
+- Repo: https://github.com/DavidEngland/ABL
+- Use Issues (labels: curvature, inversion, grid, hs-series) for tracking.
+- Pull Requests: include a short diff summary + key equations in Markdown.
+
+Math Policy
+- Avoid Word for equations; maintain LaTeX in .md (inline $$…$$) or optional .tex appendix.
+- Provide a plaintext fallback line under each displayed equation for browser/mathjax quirks.
+- Overleaf only if journal or external collaborator demands DOCX workflow—convert late with pandoc.
+
+Branch / Review
+- feature/<topic>, squash merge after review.
+- Tag preprint-ready states (v0.1.0, v0.2.0) for student cloning and citation.
+
+Reproducibility
+- Notebook outputs cleared before commit; pin parameter JSON + environment (conda or Project.toml).
+- Curvature tests assert neutral invariance (|curv(0)-2Δ| < 1e-12).
+
+Next Items (if agreeable)
+- Issue: “NearSurface_Curv_Bias” (analytic vs coarse Ri_b).
+- Issue: “TailModifier_D_Calibration”.
+- Optional: “Ri_ODE_Solver_Prototype” (numerical integration replacing constant Ri assumption).
+
+Let me know if you want an Overleaf export template or a minimal Makefile for PDF builds; otherwise I proceed with pure Markdown.
+
 David
+
+---
+
+### 1D Slope-Flow Testbed (Jupyter)
+
+Proposal
+- Redevelop a classic 1D slope-flow model (katabatic/anabatic; cf. McNider & Pielke 1981 lineage) as a Jupyter notebook for rapid testing of curvature-aware closures.
+- Drive with prescribed surface cooling/warming; compare baseline MOST vs corrected φ-sets on controlled slopes.
+- Outputs: Ri_g profiles, curvature in ζ and z, flux convergence behavior vs grid spacing (Δz sweeps).
+
+Use
+- Lightweight validation harness for students; portable, reproducible, no external dependencies beyond NumPy/Matplotlib.
+- Good venue to prototype variable-L(z) mapping and geometric-mean layer evaluation before moving to full column models.
+
+If agreeable, I can scaffold the notebook this week and open a PR for review.
