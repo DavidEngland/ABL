@@ -57,3 +57,80 @@ Think so, going to look at Ri curvature for other formulations. Been reading pap
 Curvature just depended on parameters of Businger-Dyer profiles (1-bz/L)^-a for heat and momentum.  If L constant then scales by L^2 for z.
 
 Guess I was just looking at near neutral case. See now that there are z/L and F(z/L) terms in general that will change.
+
+---
+
+Reply – David → Dick & Arastoo
+
+Dick, Arastoo,
+
+1. Repository
+Public repo initialized: https://github.com/DavidEngland/ABL  
+Current focus: curvature-aware MOST, Ri-based closures, quadratic SBL surrogate (Q‑SBL), variable‑L mapping utilities.
+
+2. Graduate Student Opportunity
+Suitable for a Masters/PhD student seeking:
+- Method paper: grid-dependent curvature correction preserving neutral invariance (2Δ).
+- Application paper: Arctic / urban stable cases (LES + tower + remote sensing).
+Initial tasks: parameter fitting (α,β) stable nights; curvature diagnostics; D calibration for tail modifier; HS series validation; adaptive refinement trigger (E_omit, |W_log/V_log^2|). Publication trajectory already scaffolded.
+
+3. Workflow / Tooling
+- Editor: VS Code (Markdown + Python + Julia).  
+- Preview: VS Code built-in Markdown preview; GitHub sometimes mis-renders inline math (fallback to escaped parentheses). Complex LaTeX blocks checked locally prior to commit.  
+- Branch model: feature/<topic> branches; squash merge after review; semantics in commit headers (feat:, fix:, docs:, perf:, test:, refactor:, chore:).  
+- Math rendering caveat: Some browsers drop backslashes in nested fractions; keep a plain-text fallback line under critical equations.  
+- Lint/format: Ruff + Black (Python); DocumentFormat (Julia) optional; pre-commit hooks lightweight (skip large data).  
+- Tests: Focused on neutral invariance (2Δ), inversion accuracy (ζ(Ri) Newton residual), curvature mapping consistency constant-L vs variable-L (E_omit threshold).
+
+4. Vibe Coding Warning
+Early-phase “vibe coding” in exploratory cells / scratch buffers:
+- APIs may change (names: rig_derivatives_zeta, ri_closure_pade, qsbl_coeffs).
+- Experimental flags (e.g. gamma, a,b exponents for invariance) can shift; avoid hard dependency in external models until tagged release (v0.1.0).
+- TODO / FIXME markers indicate pending numerical guard (pole proximity) or performance optimization (vectorization / Numba / Julia port).
+Recommendation: Students fork and pin to a tag for reproducibility; rebase carefully on main after review.
+
+5. profiles.py Excerpt (core Ri ↔ ζ + Ri-only closures)
+```python
+# excerpt: see full file in repo /code/profiles.py
+
+def qsbl_coeffs(alpha_m, beta_m, alpha_h, beta_h):
+    a_m = alpha_m * beta_m
+    b_m = 0.5 * alpha_m * (alpha_m + 1.0) * beta_m**2
+    a_h = alpha_h * beta_h
+    b_h = 0.5 * alpha_h * (alpha_h + 1.0) * beta_h**2
+    Delta = a_h - 2.0 * a_m
+    c1 = alpha_h * beta_h**2 - 2.0 * alpha_m * beta_m**2
+    return a_m, b_m, a_h, b_h, Delta, c1
+
+def ri_closure_series(alpha_m, beta_m, alpha_h, beta_h):
+    a_m, b_m, a_h, b_h, Delta, _ = qsbl_coeffs(alpha_m, beta_m, alpha_h, beta_h)
+    s1_m, s2_m = a_m, b_m - a_m * Delta
+    s1_h, s2_h = a_h, b_h - a_h * Delta
+    return (lambda Ri: 1 + s1_m * Ri + s2_m * Ri**2,
+            lambda Ri: 1 + s1_h * Ri + s2_h * Ri**2)
+
+def ri_closure_pade(alpha_m, beta_m, alpha_h, beta_h):
+    a_m, b_m, a_h, b_h, Delta, _ = qsbl_coeffs(alpha_m, beta_m, alpha_h, beta_h)
+    s1_m, s2_m = a_m, b_m - a_m * Delta
+    disc_m = s1_m**2 + 4 * s2_m
+    q_m = 0.5 * (-s1_m + math.sqrt(disc_m))
+    p_m = s1_m + q_m
+    # analogous heat branch...
+    return (lambda Ri: (1 + p_m * Ri) / (1 - q_m * Ri), ...)
+```
+
+6. Getting Started
+Clone repo, install Python deps (numpy, scipy, numba, xarray, matplotlib). Run quick neutrality test:
+```bash
+python -c "from code.profiles import qsbl_coeffs; print(qsbl_coeffs(0.5,16,0.5,16))"
+```
+
+7. Next Items
+- Provide constant vs variable-L curvature comparison plots.
+- Finalize D calibration heuristic (grid_ratio vs target curvature reduction).
+- Prepare TDMA boundary-condition insertion example (if still desired) using corrected K_m*, K_h*.
+
+Let me know if you want the TDMA lower boundary integration example next or a Julia performance benchmark snapshot.
+
+Regards,
+David
