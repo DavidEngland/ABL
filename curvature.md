@@ -44,7 +44,7 @@ Coefficients:
 \]
 Series:
 \[
-Ri_g=\zeta + \Delta \zeta^2 + \tfrac12(\Delta^2+c_1)\zeta^3 + O(\zeta^4).
+Ri_g=\zeta + \Delta \zeta^2 + \tfrac12(\Delta^2+c_1)\zeta^3 + O(\zeta^4);
 \]
 Curvature:
 \[
@@ -175,6 +175,7 @@ Implementation note
 | NLM | $\phi(1 + c z/h_{mix})$ | Nonlocal mixing depth |
 | GUARD | $\phi/(1+\epsilon|\zeta^2 \partial_\zeta^2 Ri_g|)$ | Dampen spikes |
 | URC | $f_m(Ri)=(1+b_m Ri/Ri_c)^{-e_m}$ | Direct Ri-based closure |
+| RI_EXP | $f(Ri)=\exp(-\gamma Ri/Ri_c)$ | Simple, pole-free Ri-based K-closure |
 
 Neutral calibration targets:
 - Curvature: $2(\alpha_h\beta_h-2\alpha_m\beta_m)$
@@ -368,34 +369,63 @@ def zeta_from_ri_newton(Ri_target, phi_m, phi_h, z0, tol=1e-10, maxit=20):
 
 def ri_to_phi_wrappers(tag, pars, Delta=None, c1=None):
     """
-    Returns (f_m(Ri), f_h(Ri)) built from a ζ-profile and ζ(Ri).
-    If DTP is requested, applies Pr_t(Ri)=1+a1 Ri+a2 Ri^2 to φ_h.
+    Returns (f_m(Ri), f_h(Ri)) for use in K = f(Ri) * l^2 * S.
+
+    Behavior by tag:
+      - 'URC'   : direct Ri-based f forms (e.g., (1 + b Ri/Ri_c)^(-e)).
+      - 'RI_EXP': direct Ri-based f forms f = exp(-γ Ri/Ri_c).
+      - others  : build from ζ-profile φ_m, φ_h and ζ(Ri) inversion via
+                  f_m = 1/φ_m(ζ)^2, f_h = 1/[φ_m(ζ) φ_h(ζ)].
+
+    Notes:
+      - If using a dynamic turbulent Prandtl (DTP) with φ_h = Pr_t( Ri ) * φ_m,
+        then f_h = f_m / Pr_t(Ri).
     """
     if tag.upper() == 'URC':
         return make_profile(tag, pars)
 
+    if tag.upper() == 'RI_EXP':
+        import math
+        gamma_m = pars.get('gamma_m', 3.2)
+        gamma_h = pars.get('gamma_h', gamma_m)
+        Ri_c_m  = pars.get('Ri_c_m', pars.get('Ri_c', 0.25))
+        Ri_c_h  = pars.get('Ri_c_h', Ri_c_m)
+        def fm(Ri): return math.exp(-gamma_m * Ri / Ri_c_m)
+        def fh(Ri): return math.exp(-gamma_h * Ri / Ri_c_h)
+        return fm, fh
+
+    # Build from ζ-profiles
     phi_m, phi_h = make_profile(tag, pars)
-    # choose series seed if Delta,c1 provided else small-Ri seed
+
     def zeta_of_Ri(Ri):
         z0 = zeta_from_ri_series(Ri, Delta, c1) if (Delta is not None and c1 is not None) else Ri
         return zeta_from_ri_newton(Ri, phi_m, phi_h, z0)
 
     if tag.upper() == 'DTP':
+        # base φ_m from base_tag; φ_h = Pr_t(Ri) * φ_m
         base_tag = pars['base_tag']; base_pars = pars['base_pars']
         a1, a2   = pars.get('a1', 0.0), pars.get('a2', 0.0)
-        base_m, base_h = make_profile(base_tag, base_pars)
-        def fm(Ri): 
-            z = zeta_of_Ri(Ri); return base_m(z)
-        def fh(Ri):
+        base_m, _ = make_profile(base_tag, base_pars)
+        def fm(Ri):
             z = zeta_of_Ri(Ri)
-            Prt = 1 + a1*Ri + a2*Ri*Ri
-            return Prt*base_m(z)
+            pm = base_m(z)
+            return 1.0 / (pm * pm)
+        def fh(Ri):
+            Prt = 1.0 + a1*Ri + a2*Ri*Ri
+            return fm(Ri) / Prt
         return fm, fh
 
+    # Default φ-based tags
     def fm(Ri):
-        z = zeta_of_Ri(Ri); return phi_m(z)
+        z = zeta_of_Ri(Ri)
+        pm = phi_m(z)
+        return 1.0 / (pm * pm)
+
     def fh(Ri):
-        z = zeta_of_Ri(Ri); return phi_h(z)
+        z = zeta_of_Ri(Ri)
+        pm = phi_m(z); ph = phi_h(z)
+        return 1.0 / (pm * ph)
+
     return fm, fh
 
 ## 15D. Constant vs Structured \(L(z)\) — Simplifications

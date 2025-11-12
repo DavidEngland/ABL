@@ -95,6 +95,45 @@ To enforce curvature continuity from near-neutral to elevated stable layers:
 - Continuity target: \(\left|\Delta_{\text{curv}}\right| = \left|(\partial_\zeta^2Ri_g^{\text{base}} - \partial_\zeta^2Ri_g^{\text{surrogate}})/\partial_\zeta^2Ri_g^{\text{base}}\right| < 0.05\) at blend height \(\zeta_b\).
 - Use sigmoid blend in ζ (e.g. \(\sigma(\zeta)=1/(1+e^{-s(\zeta-\zeta_b)})\)) if a sharp switch creates curvature artifacts.
 
+Add: Exponential Ri-based K-closure (RI_EXP)
+- Form: f(Ri) = exp(−γ Ri / Ri_c) for use in K = u_* l f(Ri).
+- Small-Ri expansion: f ≈ 1 − (γ/Ri_c) Ri + 0.5 (γ/Ri_c)^2 Ri^2.
+  - If you target near-neutral series coefficients (f ≈ 1 + s1 Ri + s2 Ri^2), match:
+    - s1 = −γ / Ri_c
+    - s2 = 0.5 (γ / Ri_c)^2
+  - Choose (γ, Ri_c) to fit observed/desired decay of K with Ri in the weakly stable regime.
+- Practical defaults: γ ≈ 3.2; Ri_c ≈ 0.25–0.5; allow γ_h ≠ γ_m and Ri_c_h ≠ Ri_c_m.
+
+Blending suggestion
+- Use RI_EXP when Ri is prognosed/diagnosed reliably; otherwise fallback to ζ-based φ with curvature-aware correction.
+- Ensure smooth switch by a sigmoid in Ri around Ri ≈ 0.1–0.2 to avoid kinks in K.
+
+## 7A. Mapping φ(ζ) to f(Ri) for Mixing-Length Closures
+
+When using the mixing-length form
+\[
+K_{m,h} = f_{m,h}(Ri)\; l^2\; S,
+\]
+with shear magnitude
+\[
+S = \sqrt{\left(\frac{\partial u}{\partial z}\right)^2 + \left(\frac{\partial v}{\partial z}\right)^2},\quad l \approx \kappa z,
+\]
+the MOST-to-Ri mapping is
+\[
+f_m(Ri) = \frac{1}{\phi_m(\zeta(Ri))^2},\qquad
+f_h(Ri) = \frac{1}{\phi_m(\zeta(Ri))\,\phi_h(\zeta(Ri))}.
+\]
+Derivation uses MOST identities:
+\(\partial U/\partial z = (u_*/\kappa z)\phi_m\),
+\(K_m=u_* \kappa z/\phi_m\), \(K_h=u_* \kappa z/\phi_h\),
+and S = |\partial U/\partial z|.
+
+Generalized lengths l_m, l_h yield
+\[
+f_m = \frac{u_* \kappa z}{\phi_m\,l_m^2\,S},\qquad
+f_h = \frac{u_* \kappa z}{\phi_h\,l_h^2\,S}.
+\]
+
 ## 8. Recommended Diagnostics Summary
 | Metric | Purpose | Threshold |
 |--------|---------|-----------|

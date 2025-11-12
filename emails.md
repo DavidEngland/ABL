@@ -158,3 +158,32 @@ Let me know if you prefer a short Overleaf skeleton; otherwise continuing with M
 
 Regards,
 David
+
+## Draft status email — Week of Nov 10, 2025
+
+From: David E. England  
+To: Dick McNider, Arastoo P. Biazar  
+Subject: Weekly status + decisions for curvature-aware SBL (Nov 2nd week)
+
+Dick, Arastoo,
+
+Quick status (details in Nov_2nd_Week_2025_status.md in the repo):
+
+- Framework stabilized: compact d²Ri_g/dζ² with neutral invariant (2Δ), ζ(Ri) inversion + Newton, variable‑L mapping (E_omit). Q‑SBL surrogate and grid‑damping template ready.
+- Implementation: code snippets and diagnostics drafted; geometric‑mean height and bias B formalized.
+- Plan: figures + minimal module + 1A paper outline in next two weeks.
+
+Requests (decisions this week):
+1) Stable φ baseline for ζ>0: Linear-stable vs Q‑SBL vs BH91?
+2) Calibration dataset: pick two of ARM NSA, SHEBA, GABLS1, Urban 325 m.
+3) Defaults for G(ζ,Δz): D=1.0, p=1.5, q=2, ζ_r=0.3, Δz_r=10 m?
+4) Journal target for 1A: BLM vs JAS.
+
+Proposed 20–30 min call (pick one, CST):
+- Tue 11:00, Wed 14:00, Thu 09:30
+
+Repo: https://github.com/DavidEngland/ABL  
+Status doc: /ABL/Nov_2nd_Week_2025_status.md
+
+Thanks,  
+David
