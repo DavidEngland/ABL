@@ -1,4 +1,4 @@
-#Surface Roughness, Geometric Mean Heights, and Drag Coefficient Bias
+# Surface Roughness, Geometric Mean Heights, and Drag Coefficient Bias
 Title: Geometric Mean Heights in Logarithmic Boundary Layers: Implications for Bulk Transfer Coefficients and Richardson Number Reconstruction
 
 Target Journal: Quarterly Journal of the Royal Meteorological Society or Journal of Geophysical Research: Atmospheres
