@@ -517,3 +517,28 @@ Usage notes:
 - Adjust choose_D heuristic as empirical calibration improves (e.g., fit a logistic D(Ri, Δz)).
 - Replace V_star/W_star with exact expressions if applying non-power-law structural changes beyond multiplicative tails.
 - For variable L(z), compute omit_metric per layer; switch to constant-L mapping when below threshold (e.g. <0.05).
+
+# Pros and Cons of Similarity-Based Near-Surface Ri Curvature (McNider Approach)
+
+Scope
+- Compute Ri_g(ζ)=ζ φ_h/φ_m² and d²Ri_g/dζ² analytically from chosen MOST φ_m, φ_h (linear, BH91-like, exponential surrogate). Map to height via 1/L² (constant L) or full chain rule for L(z). Use at a representative height (z_g).
+
+Pros
+- Neutral fidelity: preserves neutral curvature 2Δ exactly when φ near-neutral slopes are matched.
+- Analytical clarity: closed-form V_log, W_log enable fast, stable evaluation and clear diagnostics (Δ, c1, ζ_inf).
+- Computationally light: no ζ-iteration; suitable for operational first-layer BCs.
+- Integrates with grid-aware fixes: pairs naturally with geometric/log means and optional neutral-preserving damping G(ζ,Δz).
+
+Cons
+- Parameter dependence: curvature quality hinges on φ calibration in the SBL (Pr_t, αβ or linear slopes); unstable-derived fits can overstate |Δ|.
+- Domain issues: power-law poles and over-rapid exponential tails require guards/blends (ζ≤0.2–0.3 recommended for direct use).
+- Mapping error if L varies: constant-L shortcut biases height curvature when E_omit is not small; must switch to full mapping.
+- Nonlocal/aloft limitations: similarity-only curvature misses nonlocal transport or elevated inflections; needs blending or separate aloft treatment.
+
+Practical guidance
+- First layer: evaluate at z_g=√(z₀z₁); report 2Δ and use constant-L map only if E_omit<0.05; else apply full chain rule.
+- Very stable: prefer Q‑SBL (quadratic) φ up to ζ≈0.2–0.3; blend to capped form aloft.
+- Coarse grids: if bias persists, apply G(ζ,Δz)=exp[−D(Δz/Δz_r)^p(ζ/ζ_r)^q] with G(0)=1 and ∂G/∂ζ|₀=0 to preserve neutrality.
+
+Notes for Arctic use
+- Expect stronger |Δ| and higher ζ; prioritize SBL-calibrated φ (SHEBA/Arctic fits) and variable-L mapping checks (E_omit diagnostic).

@@ -62,3 +62,30 @@ Repo: https://github.com/DavidEngland/ABL
 3) Paper 1A scope/timeline and author roles.
 4) Student involvement (if applicable).
 
+# Pros and Cons — McNider Similarity-Based Ri Curvature (Quick Brief)
+
+Context
+- Idea: use MOST stability functions near the surface (φ_m, φ_h; e.g., linear or exponential approximations) to compute Ri_g(ζ) = ζ φ_h/φ_m² and its curvature d²Ri_g/dζ² analytically; map to height via 1/L² (constant L) or full chain rule for L(z).
+
+Pros
+- Physics-grounded: directly ties curvature to φ_m, φ_h; preserves neutral invariant 2Δ if φ near-neutral slopes are respected.
+- Closed-form and cheap: no ζ-iteration; easy to evaluate at representative height (prefer z_g).
+- Drop-in: compatible with existing MOST codes; can be used to set curvature-aware lower-boundary conditions.
+- Transparent diagnostics: 2Δ, c1, V_log, W_log available for QC and tuning.
+
+Cons
+- Sensitivity to φ choice: linear vs exponential vs BH/SHEBA fits change Δ and c1; misfit propagates to curvature.
+- Domain/guards: power-law poles (ζ<1/β) or exponential tails need guards; variable L(z) can bias height mapping if ignored (use E_omit).
+- Near-surface grid bias remains if evaluated at arithmetic means; must use geometric/log means for layers.
+- Limited aloft: similarity-only curvature may miss secondary inflections or nonlocal effects above the surface layer.
+- Pr_t dependence: assuming Pr_t≈1 simplifies algebra but can bias heat curvature in strong SBL unless calibrated.
+
+Recommendations
+- Use similarity-based curvature at z_g for the first layer; preserve 2Δ; apply constant-L map only if E_omit<0.05.
+- Prefer Q‑SBL (quadratic) surrogate for ζ≤0.2–0.3 in very stable cases to avoid pole artifacts.
+- If residual bias at coarse Δz, add neutral-preserving grid damping G(ζ,Δz); keep G(0)=1 and ∂G/∂ζ|0=0.
+
+Decision asks
+- Confirm φ baseline (linear/Q‑SBL/BH) for experiments.
+- Approve z_g usage and E_omit threshold (0.05) for height mapping choice.
+
