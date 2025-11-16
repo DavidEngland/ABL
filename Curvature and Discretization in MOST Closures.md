@@ -61,6 +61,29 @@ while for $z_g$ the first-order logarithmic bias term cancels.
 
 Recommendation: use $z_g$ for evaluating \(\phi_{m,h}\), \(Ri_g\), and curvature when \(\Delta z / z_1>0.2\).
 
+## 3.5 Numerical Integration of Ri_g for Ri_b
+
+If full profile $Ri_g(z)$ is available (analytic or interpolated):
+$$
+Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz.
+$$
+
+**Trapezoid rule (2-point):**
+$$
+Ri_b \approx \frac{1}{2}[Ri_g(z_0) + Ri_g(z_1)].
+$$
+
+**Simpson's rule (3-point):**
+$$
+Ri_b \approx \frac{1}{6}[Ri_g(z_0) + 4Ri_g(z_g) + Ri_g(z_1)].
+$$
+
+**Adaptive quadrature:**  
+Use SciPy `quad` or Gauss–Legendre nodes for smooth $Ri_g(z)$.
+
+**Comparison:**  
+Validate bulk formula $Ri_b = g\Delta\theta\Delta z / (\Delta U)^2$ against numerical integral to assess curvature-induced bias.
+
 ## 4. Height Mapping with Variable $L(z)$
 General chain rule:
 $$

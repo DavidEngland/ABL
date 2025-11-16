@@ -322,6 +322,29 @@ Ri_b = \frac{g}{\theta}\frac{(\theta_1 - \theta_0)(z_1 - z_0)}{(U_1 - U_0)^2}.
 \]
 On coarse vertical grids \(Ri_b\) underestimates local (point) stability when \(Ri_g(\zeta)\) is strongly **concave-down** near the surface (common in SBL), leading to **overmixing**.
 
+### 5.3 Numerical Ri Estimation
+
+**Point gradient (discrete tower):**
+$$
+\partial U/\partial z \approx (U_{k+1} - U_{k-1})/(z_{k+1} - z_{k-1}).
+$$
+
+**Bulk Ri_b via difference:**
+$$
+Ri_b = \frac{g}{\theta}\frac{\Delta\theta\,\Delta z}{(\Delta U)^2}.
+$$
+
+**Bulk Ri_b via integration:**
+$$
+Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz \approx \frac{1}{2}[Ri_g(z_0) + Ri_g(z_1)] \text{ (trapezoid)}.
+$$
+
+**Representative heights:**
+- $z_g = \sqrt{z_0 z_1}$ (geometric mean, midpoint in $\ln z$).
+- $z_L = \Delta z / \ln(z_1/z_0)$ (logarithmic mean, exact for log wind).
+
+Use $z_g$ for point evaluation when $Ri_g$ is concave; use $z_L$ for exact $\Delta U$ matching.
+
 ---
 
 ## 6. Why Curvature of \(Ri_g(\zeta)\) Matters

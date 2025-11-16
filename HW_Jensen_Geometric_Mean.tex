@@ -1,0 +1,445 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Code listing style
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray}
+}
+
+\title{\textbf{Homework Exercise:}\\
+Geometric Mean Height and Richardson Number Bias\\
+via Jensen's Inequality}
+\author{Boundary Layer Meteorology / Advanced Atmospheric Physics}
+\date{Graduate Level --- Estimated Time: 2--3 hours}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This exercise explores systematic bias in bulk Richardson number computation on coarse vertical grids in stable boundary layers. Students will apply Jensen's inequality to prove that layer-averaged $Ri_b$ underestimates the point value at the geometric mean height $z_g = \sqrt{z_0 z_1}$ when $Ri_g(z)$ is concave-down, and verify this bias numerically for realistic stable layer profiles.
+\end{abstract}
+
+%-----------------------------------------------------------
+\section{Problem Statement}
+
+Atmospheric models discretize the vertical using finite layers. In the stable boundary layer (SBL), the \textbf{bulk Richardson number} $Ri_b$ computed across a layer systematically differs from the \textbf{gradient Richardson number} $Ri_g$ evaluated at a representative height. Your task is to prove that when $Ri_g(z)$ is concave-down (typical in SBL), the layer-averaged $Ri_b$ underestimates the point value at the geometric mean height $z_g = \sqrt{z_0 z_1}$.
+
+\begin{equation}
+\boxed{Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g(z_g)}
+\label{eq:key_result}
+\end{equation}
+where $\Delta z = z_1 - z_0$ and $z_g = \sqrt{z_0 z_1}$.
+
+%-----------------------------------------------------------
+\section{Part A: Jensen's Inequality (Warm-Up)}
+
+\textbf{Hint:} Jensen's inequality states that for a \textbf{concave} function $f$,
+\begin{equation}
+f\!\left(\frac{1}{b-a}\int_a^b x\,dx\right) \geq \frac{1}{b-a}\int_a^b f(x)\,dx.
+\label{eq:jensen}
+\end{equation}
+
+\subsection*{A1. State Jensen's Inequality}
+State Jensen's inequality for a concave function. What conditions must $f$ satisfy? What does ``concave'' mean in terms of the second derivative?
+
+\vspace{1em}
+\noindent\textit{Answer space:}\\[2cm]
+
+\subsection*{A2. Logarithm Concavity}
+The natural logarithm $\ln(z)$ is concave. Prove this by computing $d^2(\ln z)/dz^2$ and showing it is negative for $z > 0$.
+
+\vspace{1em}
+\noindent\textit{Proof:}\\[3cm]
+
+%-----------------------------------------------------------
+\section{Part B: Why Geometric Mean Height?}
+
+\subsection*{B1. Logarithmic Mean for Exact Gradient Matching}
+The \textbf{logarithmic mean} of $z_0$ and $z_1$ is defined as
+\begin{equation}
+\bar{z}_{\ln} = \frac{z_1 - z_0}{\ln(z_1) - \ln(z_0)} = \frac{\Delta z}{\ln(z_1/z_0)}.
+\label{eq:log_mean}
+\end{equation}
+
+Show that for a log-linear wind profile $U(z) = (u_*/\kappa) \ln(z/z_0) + C$, evaluating the gradient $\partial U/\partial z$ at $\bar{z}_{\ln}$ gives the \textbf{exact} layer-averaged gradient:
+\begin{equation}
+\frac{\Delta U}{\Delta z} = \left.\frac{\partial U}{\partial z}\right|_{z=\bar{z}_{\ln}}.
+\label{eq:exact_gradient}
+\end{equation}
+
+\vspace{1em}
+\noindent\textit{Derivation:}\\[4cm]
+
+\subsection*{B2. Geometric Mean as Logarithmic Midpoint}
+The \textbf{geometric mean} height is
+\begin{equation}
+z_g = \sqrt{z_0 z_1}.
+\label{eq:geom_mean}
+\end{equation}
+
+Show that $z_g$ is the midpoint in \textbf{logarithmic coordinates}:
+\begin{equation}
+\ln z_g = \frac{\ln z_0 + \ln z_1}{2}.
+\label{eq:log_midpoint}
+\end{equation}
+
+\vspace{1em}
+\noindent\textit{Proof:}\\[2cm]
+
+\subsection*{B3. Thin-Layer Approximation}
+For thin layers ($z_1/z_0 \to 1$), prove that $\bar{z}_{\ln} \approx z_g$ to second order in $\ln(z_1/z_0)$ by Taylor expanding:
+\begin{equation}
+\frac{\Delta z}{\ln(z_1/z_0)} \approx z_g \left[1 + O\big((\ln(z_1/z_0))^2\big)\right].
+\label{eq:thin_layer}
+\end{equation}
+
+\textbf{Hint:} Use $\ln(z_1/z_0) = \ln(1 + (z_1-z_0)/z_0) \approx (z_1-z_0)/z_0 - \ldots$
+
+\vspace{1em}
+\noindent\textit{Derivation:}\\[4cm]
+
+%-----------------------------------------------------------
+\section{Part C: Concave-Down $Ri_g$ and Bias}
+
+Assume $Ri_g(z)$ is \textbf{concave-down} (i.e., $d^2 Ri_g/dz^2 < 0$) over the interval $[z_0, z_1]$.
+
+\subsection*{C1. Jensen Applied to $Ri_g$ in $z$ Coordinates}
+Apply Jensen's inequality to $Ri_g(z)$ treated as a concave function. Specifically, show that
+\begin{equation}
+\frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g\!\left(\frac{1}{\Delta z}\int_{z_0}^{z_1} z\,dz\right).
+\label{eq:jensen_ri_z}
+\end{equation}
+
+What is the arithmetic mean height $\bar{z}_a = (z_0 + z_1)/2$ in this context?
+
+\vspace{1em}
+\noindent\textit{Answer:}\\[3cm]
+
+\subsection*{C2. Ordering of Heights}
+We want to compare $Ri_b$ to $Ri_g$ at the \textbf{geometric} mean $z_g$, not the arithmetic mean. Use the fact that $\ln(z)$ is concave to show:
+\begin{equation}
+\ln(z_g) = \frac{\ln z_0 + \ln z_1}{2} > \ln\!\left(\frac{z_0 + z_1}{2}\right) = \ln(\bar{z}_a).
+\label{eq:zg_ordering}
+\end{equation}
+
+Thus $z_g < \bar{z}_a$ for $z_0 < z_1$.
+
+\vspace{1em}
+\noindent\textit{Proof:}\\[3cm]
+
+\subsection*{C3. Jensen in Logarithmic Coordinates}
+For a power-law or logarithmic profile structure, $Ri_g(z)$ is better approximated as concave in $\ln z$ rather than $z$. Change variables $s = \ln z$, so $z \in [z_0, z_1]$ maps to $s \in [\ln z_0, \ln z_1]$. Define
+\begin{equation}
+\tilde{Ri}(s) = Ri_g(e^s).
+\label{eq:ri_tilde}
+\end{equation}
+
+If $\tilde{Ri}(s)$ is concave in $s$, apply Jensen to show:
+\begin{equation}
+\frac{1}{\ln(z_1/z_0)}\int_{\ln z_0}^{\ln z_1} \tilde{Ri}(s)\,ds < \tilde{Ri}\!\left(\frac{\ln z_0 + \ln z_1}{2}\right) = Ri_g(z_g).
+\label{eq:jensen_log_coord}
+\end{equation}
+
+\vspace{1em}
+\noindent\textit{Derivation:}\\[4cm]
+
+\subsection*{C4. Logarithmically Weighted Average}
+Convert the integral back to $z$ coordinates using $dz = e^s ds = z\,ds$:
+\begin{equation}
+\int_{\ln z_0}^{\ln z_1} \tilde{Ri}(s)\,ds = \int_{z_0}^{z_1} Ri_g(z)\,\frac{dz}{z}.
+\label{eq:log_weighted}
+\end{equation}
+
+This is the \textbf{logarithmically weighted average}. For a thin layer or when $Ri_g$ varies slowly, approximate
+\begin{equation}
+\frac{1}{\ln(z_1/z_0)}\int_{z_0}^{z_1} Ri_g(z)\,\frac{dz}{z} \approx \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz = Ri_b.
+\label{eq:ri_b_approx}
+\end{equation}
+
+Conclude:
+\begin{equation}
+\boxed{Ri_b \lesssim Ri_g(z_g)}
+\label{eq:main_result}
+\end{equation}
+when $Ri_g$ is concave-down in $\ln z$.
+
+\vspace{1em}
+\noindent\textit{Final argument:}\\[4cm]
+
+%-----------------------------------------------------------
+\section{Part D: Numerical Verification}
+
+\subsection*{D1. Quadratic Profile}
+Assume a quadratic near-neutral form:
+\begin{equation}
+Ri_g(z) = c_1 z + c_2 z^2,
+\label{eq:ri_quadratic}
+\end{equation}
+with $c_1 > 0$, $c_2 < 0$ (concave-down).
+
+Choose $z_0 = 10$ m, $z_1 = 100$ m, $c_1 = 0.01$, $c_2 = -0.0001$.
+
+\textbf{Compute:}
+\begin{itemize}[leftmargin=*]
+\item $z_g = \sqrt{z_0 z_1}$
+\item $Ri_g(z_g)$
+\item $Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz$ (evaluate the integral analytically)
+\item Bias ratio $B = Ri_g(z_g) / Ri_b$
+\end{itemize}
+
+\vspace{1em}
+\noindent\textit{Solution:}\\[5cm]
+
+\subsection*{D2. Logarithmic Profile}
+Repeat for a logarithmic structure:
+\begin{equation}
+Ri_g(z) = A \ln(z/z_{\text{ref}}) + C,
+\label{eq:ri_log}
+\end{equation}
+with $A > 0$, $C > 0$, $z_{\text{ref}} = 1$ m. Note that $d^2/dz^2[\ln(z)] = -1/z^2 < 0$ (concave).
+
+Compute $B$ again. Is $B > 1$?
+
+\vspace{1em}
+\noindent\textit{Solution:}\\[5cm]
+
+%-----------------------------------------------------------
+\section{Part E: Physical Interpretation}
+
+\subsection*{E1. Overmixing Explanation}
+In your own words, explain why $Ri_b < Ri_g(z_g)$ leads to \textbf{overmixing} in a numerical model. Specifically, how does underestimating stability affect the computed eddy diffusivities $K_m$ and $K_h$?
+
+\vspace{1em}
+\noindent\textit{Answer:}\\[4cm]
+
+\subsection*{E2. Arithmetic vs Geometric Mean}
+If a model uses the \textbf{arithmetic mean} height $\bar{z}_a = (z_0 + z_1)/2$ instead of $z_g$, does the bias worsen or improve? Justify using Part C.
+
+\vspace{1em}
+\noindent\textit{Answer:}\\[3cm]
+
+\subsection*{E3. Practical Correction Strategy}
+Suggest one practical correction strategy to mitigate this bias without changing the vertical grid resolution. (Hint: Think about modifying $K_{m,h}$ or using a representative height correction.)
+
+\vspace{1em}
+\noindent\textit{Proposal:}\\[4cm]
+
+%-----------------------------------------------------------
+\section{Submission Guidelines}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Format:} Typed solutions (LaTeX preferred; Markdown with math acceptable).
+\item \textbf{Code:} Include Python/Julia/MATLAB scripts for Part D with plots of $Ri_g(z)$, $z_g$, and bias ratio.
+\item \textbf{Figures:} Plot $Ri_g(z)$ vs $z$ with horizontal line at $Ri_g(z_g)$ and shaded region showing layer $[z_0, z_1]$.
+\item \textbf{Length:} $\sim$5--8 pages including derivations and figures.
+\end{itemize}
+
+%-----------------------------------------------------------
+\section*{Optional Extension: Alternative Representative Heights and Numerical Ri Estimation}
+
+\subsection*{E1. Logarithmic Mean for Exact Gradient Matching}
+
+For a log-linear wind profile $U(z) = (u_*/\kappa) \ln(z/z_0)$, the \textbf{logarithmic mean} height
+\begin{equation}
+z_L = \frac{z_1 - z_0}{\ln(z_1/z_0)}
+\label{eq:zL}
+\end{equation}
+yields the \emph{exact} layer-averaged gradient:
+\begin{equation}
+\frac{\Delta U}{\Delta z} = \left.\frac{\partial U}{\partial z}\right|_{z=z_L} = \frac{u_*}{\kappa z_L}.
+\label{eq:exact_grad}
+\end{equation}
+
+**Relation to geometric mean:** For thin layers ($z_1/z_0 \to 1$),
+\begin{equation}
+z_L \approx z_g \left[1 + O\big((\ln(z_1/z_0))^2\big)\right].
+\label{eq:zL_approx}
+\end{equation}
+
+**Use case:**  
+- $z_L$ for exact $\Delta U$ reconstruction (single interval).  
+- $z_g$ for midpoint quadrature in $\ln z$ (multi-level stacks, second-order accurate).
+
+\subsection*{E2. Arithmetic Mean Bias}
+
+The arithmetic mean
+\begin{equation}
+z_a = \frac{z_0 + z_1}{2}
+\label{eq:za}
+\end{equation}
+overestimates the representative height for log profiles because $\ln(z)$ is concave:
+\begin{equation}
+\ln(z_g) = \frac{\ln z_0 + \ln z_1}{2} > \ln(z_a).
+\end{equation}
+
+Thus $z_g < z_a$ for $z_0 < z_1$, and using $z_a$ systematically underestimates drag coefficients and overestimates $Ri_b$ (weaker shear).
+
+\subsection*{E3. Numerical Gradient Estimation for $Ri_g$}
+
+Given discrete levels $z_k$ with observed $U_k, \theta_k$:
+
+\paragraph{Centered difference (interior points):}
+\begin{equation}
+\left.\frac{\partial U}{\partial z}\right|_{z_k} \approx \frac{U_{k+1} - U_{k-1}}{z_{k+1} - z_{k-1}},\quad
+\left.\frac{\partial \theta}{\partial z}\right|_{z_k} \approx \frac{\theta_{k+1} - \theta_{k-1}}{z_{k+1} - z_{k-1}}.
+\label{eq:centered}
+\end{equation}
+
+Then
+\begin{equation}
+Ri_g(z_k) \approx \frac{(g/\theta_k)\,(\theta_{k+1} - \theta_{k-1})/(z_{k+1} - z_{k-1})}{[(U_{k+1} - U_{k-1})/(z_{k+1} - z_{k-1})]^2}.
+\label{eq:rig_centered}
+\end{equation}
+
+\paragraph{Forward/backward difference (boundary layers):}
+\begin{equation}
+\left.\frac{\partial U}{\partial z}\right|_{z_0} \approx \frac{U_1 - U_0}{z_1 - z_0}.
+\label{eq:forward}
+\end{equation}
+
+\paragraph{Staggered grids:}  
+Evaluate $Ri_g$ at interfaces $z_{k+1/2}$ using centered differences around that point.
+
+\subsection*{E4. Numerical Integration for $Ri_b$}
+
+Bulk Richardson number as integral mean:
+\begin{equation}
+Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz.
+\label{eq:rib_integral}
+\end{equation}
+
+\paragraph{Trapezoid rule (uniform $\Delta z$):}
+\begin{equation}
+Ri_b \approx \frac{1}{2(z_1 - z_0)}\big[Ri_g(z_0) + Ri_g(z_1)\big].
+\label{eq:trapezoid}
+\end{equation}
+
+\paragraph{Simpson's rule (3 points):}
+\begin{equation}
+Ri_b \approx \frac{1}{6}\big[Ri_g(z_0) + 4Ri_g(z_g) + Ri_g(z_1)\big].
+\label{eq:simpson}
+\end{equation}
+
+\paragraph{Adaptive quadrature:}  
+Use SciPy \texttt{quad} or Gauss–Legendre nodes for smooth $Ri_g(z)$.
+
+\subsection*{E5. Practical Recommendation}
+
+\begin{itemize}[leftmargin=*]
+\item Use $z_g = \sqrt{z_0 z_1}$ for point evaluation in log-structured profiles (e.g., $Ri_g(z_g)$ for bias ratio).
+\item Use $z_L$ for exact layer-averaged $\Delta U$ (if wind is log-linear).
+\item Avoid $z_a$ for bulk transfers unless layer is thin ($z_1/z_0 < 1.2$).
+\item For $Ri_b$: integrate analytically if $Ri_g(z)$ form is known; else trapezoid/Simpson with $\ge 3$ points.
+\end{itemize}
+
+%-----------------------------------------------------------
+\section{Learning Objectives}
+
+By completing this exercise, you will:
+\begin{enumerate}[leftmargin=*]
+\item Understand Jensen's inequality and its application to atmospheric profiles.
+\item Justify the use of geometric mean height in log-structured boundary layers.
+\item Quantify systematic bias in bulk Richardson number due to curvature.
+\item Develop intuition for grid-sensitivity issues in stable layer parameterizations.
+\end{enumerate}
+
+%-----------------------------------------------------------
+\section*{Instructor Notes}
+
+This problem bridges mathematical analysis (Jensen, concavity) with physical intuition (mixing, stability) and numerical verification. It prepares students for advanced topics in turbulence closures and grid-aware parameterization design.
+
+\textbf{Solution key available upon request.}
+
+%-----------------------------------------------------------
+\appendix
+\section{Python Template for Part D}
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Part D1: Quadratic profile
+z0, z1 = 10.0, 100.0
+c1, c2 = 0.01, -0.0001
+dz = z1 - z0
+
+def rig_quad(z):
+    return c1 * z + c2 * z**2
+
+# Geometric mean
+z_g = np.sqrt(z0 * z1)
+rig_zg = rig_quad(z_g)
+
+# Bulk Ri (analytic integral)
+# int(c1*z + c2*z^2) dz = c1*z^2/2 + c2*z^3/3
+def integral_quad(z):
+    return c1 * z**2 / 2 + c2 * z**3 / 3
+
+ri_b = (integral_quad(z1) - integral_quad(z0)) / dz
+B = rig_zg / ri_b
+
+print(f"D1 Quadratic:")
+print(f"  z_g = {z_g:.2f} m")
+print(f"  Ri_g(z_g) = {rig_zg:.6f}")
+print(f"  Ri_b = {ri_b:.6f}")
+print(f"  Bias ratio B = {B:.4f}")
+
+# Plot
+z_arr = np.linspace(z0, z1, 100)
+plt.figure(figsize=(8, 5))
+plt.plot(z_arr, rig_quad(z_arr), 'b-', label='$Ri_g(z)$')
+plt.axhline(rig_zg, color='r', linestyle='--', 
+            label=f'$Ri_g(z_g)$ = {rig_zg:.4f}')
+plt.axhline(ri_b, color='g', linestyle=':', 
+            label=f'$Ri_b$ = {ri_b:.4f}')
+plt.axvline(z_g, color='orange', linestyle='-.', 
+            label=f'$z_g$ = {z_g:.1f} m')
+plt.axvspan(z0, z1, alpha=0.1, color='gray')
+plt.xlabel('Height $z$ (m)')
+plt.ylabel('Richardson Number')
+plt.title('Part D1: Quadratic $Ri_g$ Profile')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('hw_partD1_quadratic.pdf')
+plt.show()
+
+# Part D2: Logarithmic profile
+A, C, z_ref = 0.5, 0.2, 1.0
+
+def rig_log(z):
+    return A * np.log(z / z_ref) + C
+
+rig_zg_log = rig_log(z_g)
+
+# Bulk Ri (analytic integral)
+# int(A*ln(z/z_ref) + C) dz = A*(z*ln(z/z_ref) - z) + C*z + const
+def integral_log(z):
+    return A * (z * np.log(z / z_ref) - z) + C * z
+
+ri_b_log = (integral_log(z1) - integral_log(z0)) / dz
+B_log = rig_zg_log / ri_b_log
+
+print(f"\nD2 Logarithmic:")
+print(f"  z_g = {z_g:.2f} m")
+print(f"  Ri_g(z_g) = {rig_zg_log:.6f}")
+print(f"  Ri_b = {ri_b_log:.6f}")
+print(f"  Bias ratio B = {B_log:.4f}")
+\end{lstlisting}
+
+\end{document}

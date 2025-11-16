@@ -1,0 +1,347 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+% Define a custom command for the course info
+\newcommand{\courseinfo}[3]{
+    \begin{center}
+    \textbf{\Large Homework Exercise: Geometric Mean Height and Richardson Number Bias via Jensen's Inequality} \\
+    \vspace{0.2cm}
+    \rule{\linewidth}{0.8pt} \\
+    \vspace{-0.2cm}
+    \small \begin{tabular}{ll}
+        \textbf{Course:} & #1 \\
+        \textbf{Topic:} & #2 \\
+        \textbf{Difficulty:} & #3 \\
+    \end{tabular}
+    \rule{\linewidth}{0.8pt}
+    \end{center}
+    \vspace{0.2cm}
+}
+
+\pagestyle{fancy}
+\fancyhead[L]{Boundary Layer Meteorology}
+\fancyhead[R]{Richardson Number Bias}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+\courseinfo{Boundary Layer Meteorology / Advanced Atmospheric Physics}{Grid Sensitivity in Stable Boundary Layer Parameterizations}{Graduate Level}
+
+\noindent \textbf{Problem Statement:} Atmospheric models discretize the vertical using finite layers. In the stable boundary layer (SBL), the \textbf{bulk Richardson number} $Ri_b$ computed across a layer systematically differs from the \textbf{gradient Richardson number} $Ri_g$ evaluated at a representative height. Your task is to prove that when $Ri_g(z)$ is concave-down (typical in SBL), the layer-averaged $Ri_b$ underestimates the point value at the geometric mean height $z_g = \sqrt{z_0 z_1}$.
+
+\medskip
+
+\noindent \textbf{Key Result to Prove:}
+$$
+Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g(z_g)
+$$
+where $\Delta z = z_1 - z_0$ and $z_g = \sqrt{z_0 z_1}$.
+
+\section*{Part A: Jensen's Inequality (Warm-Up)}
+
+\noindent \textbf{Hint:} Jensen's inequality states that for a \textbf{concave} function $f$,
+$$
+f\!\left(\frac{1}{b-a}\int_a^b x\,dx\right) \geq \frac{1}{b-a}\int_a^b f(x)\,dx.
+$$
+
+\subsection*{A1. Concavity and Jensen's Inequality}
+State Jensen's inequality for a concave function. What conditions must $f$ satisfy? What does "concave" mean in terms of the second derivative?
+
+\begin{itemize}
+    \item \textbf{Jensen's Inequality for a Concave Function:} For a concave function $f$ and a probability distribution $P(x)$, we have $f(\mathbb{E}[x]) \geq \mathbb{E}[f(x)]$. For continuous uniform distributions over $[a, b]$, this simplifies to:
+    $$
+    f\!\left(\frac{1}{b-a}\int_a^b x\,dx\right) \geq \frac{1}{b-a}\int_a^b f(x)\,dx.
+    $$
+    \item \textbf{Conditions on $f$:} The function $f$ must be defined on a convex set (e.g., an interval $[a, b]$) and be \textbf{concave} over that set. For the integral form, $f$ must also be integrable.
+    \item \textbf{Concavity (Second Derivative):} A twice-differentiable function $f$ is concave on an interval if its second derivative is non-positive throughout that interval: $f''(x) \leq 0$. If $f''(x) < 0$, the function is strictly concave.
+\end{itemize}
+
+\subsection*{A2. Concavity of Natural Logarithm}
+The natural logarithm $\ln(z)$ is concave. Prove this by computing $d^2(\ln z)/dz^2$ and showing it is negative for $z > 0$.
+
+\noindent \textbf{Proof:}
+Let $f(z) = \ln z$.
+The first derivative is:
+$$
+f'(z) = \frac{d}{dz}(\ln z) = \frac{1}{z}
+$$
+The second derivative is:
+$$
+f''(z) = \frac{d}{dz}\left(\frac{1}{z}\right) = -\frac{1}{z^2}
+$$
+Since $z > 0$ (required for $\ln z$ to be defined), $z^2 > 0$, and therefore $f''(z) = -1/z^2 < 0$. Since the second derivative is strictly negative, $\ln z$ is a strictly \textbf{concave} function for $z > 0$.
+
+\section*{Part B: Why Geometric Mean Height?}
+
+\subsection*{B1. Logarithmic Mean and Layer-Averaged Gradient}
+Show that for a log-linear wind profile $U(z) = (u_*/\kappa) \ln(z/z_0) + C$, evaluating the gradient $\partial U/\partial z$ at the \textbf{logarithmic mean} $\bar{z}_{\ln}$ gives the exact layer-averaged gradient $\Delta U/\Delta z$.
+
+\noindent \textbf{Solution:}
+The wind profile is $U(z) = (u_*/\kappa) (\ln z - \ln z_0) + C$.
+The difference in velocity across the layer $[z_0, z_1]$ is $\Delta U = U(z_1) - U(z_0)$.
+$$
+\Delta U = \left[\frac{u_*}{\kappa} (\ln z_1 - \ln z_0) + C\right] - \left[\frac{u_*}{\kappa} (\ln z_0 - \ln z_0) + C\right] = \frac{u_*}{\kappa} (\ln z_1 - \ln z_0) = \frac{u_*}{\kappa} \ln\left(\frac{z_1}{z_0}\right)
+$$
+The layer-averaged gradient is:
+$$
+\frac{\Delta U}{\Delta z} = \frac{1}{\Delta z} \frac{u_*}{\kappa} \ln\left(\frac{z_1}{z_0}\right) = \frac{u_*}{\kappa} \frac{\ln(z_1) - \ln(z_0)}{z_1 - z_0}
+$$
+The point-wise gradient is:
+$$
+\frac{\partial U}{\partial z} = \frac{d}{dz} \left[ \frac{u_*}{\kappa} \ln z \right] = \frac{u_*}{\kappa} \frac{1}{z}
+$$
+We seek the height $z = \bar{z}_{\ln}$ such that $\partial U/\partial z\vert_{z=\bar{z}_{\ln}} = \Delta U/\Delta z$:
+$$
+\frac{u_*}{\kappa} \frac{1}{\bar{z}_{\ln}} = \frac{u_*}{\kappa} \frac{\ln(z_1) - \ln(z_0)}{z_1 - z_0}
+$$
+Solving for $\bar{z}_{\ln}$:
+$$
+\bar{z}_{\ln} = \frac{z_1 - z_0}{\ln(z_1) - \ln(z_0)}
+$$
+This is the definition of the logarithmic mean height, $\bar{z}_{\ln}$. Thus, the log-linear gradient is exactly represented at the logarithmic mean height.
+
+\subsection*{B2. Geometric Mean as Logarithmic Midpoint}
+Show that the \textbf{geometric mean} height $z_g = \sqrt{z_0 z_1}$ is the midpoint in \textbf{logarithmic coordinates}.
+
+\noindent \textbf{Proof:}
+Take the natural logarithm of $z_g$:
+$$
+\ln z_g = \ln(\sqrt{z_0 z_1}) = \ln((z_0 z_1)^{1/2})
+$$
+Using the properties of logarithms ($\ln(a^b) = b \ln a$ and $\ln(ab) = \ln a + \ln b$):
+$$
+\ln z_g = \frac{1}{2} \ln(z_0 z_1) = \frac{1}{2} (\ln z_0 + \ln z_1) = \frac{\ln z_0 + \ln z_1}{2}
+$$
+This shows that $\ln z_g$ is the arithmetic mean of the log-heights $\ln z_0$ and $\ln z_1$, proving that $z_g$ is the midpoint in logarithmic coordinates.
+
+\subsection*{B3. Thin Layer Approximation}
+For thin layers ($z_1/z_0 \to 1$), prove that $\bar{z}_{\ln} \approx z_g$ to second order in $\ln(z_1/z_0)$ by Taylor expanding.
+
+\noindent \textbf{Proof:}
+Let $\delta = \ln(z_1/z_0)$. Since $z_1/z_0 \approx 1$, we have $\delta \approx 0$.
+The logarithmic mean is $\bar{z}_{\ln} = \frac{z_1 - z_0}{\ln(z_1/z_0)} = \frac{z_0((z_1/z_0) - 1)}{\delta}$.
+From $z_1/z_0 = e^\delta$, we have $z_1 = z_0 e^\delta$.
+The numerator is $z_1 - z_0 = z_0(e^\delta - 1)$.
+Using the Taylor expansion $e^\delta = 1 + \delta + \frac{\delta^2}{2!} + \frac{\delta^3}{3!} + O(\delta^4)$:
+$$
+e^\delta - 1 = \delta + \frac{\delta^2}{2} + \frac{\delta^3}{6} + O(\delta^4)
+$$
+Substituting into $\bar{z}_{\ln}$:
+$$
+\bar{z}_{\ln} = \frac{z_0}{\delta} \left[ \delta + \frac{\delta^2}{2} + \frac{\delta^3}{6} + O(\delta^4) \right] = z_0 \left[ 1 + \frac{\delta}{2} + \frac{\delta^2}{6} + O(\delta^3) \right]
+$$
+Now consider the geometric mean $z_g = \sqrt{z_0 z_1} = z_0 \sqrt{z_1/z_0} = z_0 (e^\delta)^{1/2} = z_0 e^{\delta/2}$.
+Using the Taylor expansion $e^x = 1 + x + x^2/2 + O(x^3)$ with $x = \delta/2$:
+$$
+z_g = z_0 \left[ 1 + \left(\frac{\delta}{2}\right) + \frac{1}{2}\left(\frac{\delta}{2}\right)^2 + O(\delta^3) \right] = z_0 \left[ 1 + \frac{\delta}{2} + \frac{\delta^2}{8} + O(\delta^3) \right]
+$$
+Comparing the expansions for $\bar{z}_{\ln}$ and $z_g$:
+$$
+\bar{z}_{\ln} = z_0 \left[ 1 + \frac{\delta}{2} + \frac{\delta^2}{6} \right] + O(\delta^3)
+$$
+$$
+z_g = z_0 \left[ 1 + \frac{\delta}{2} + \frac{\delta^2}{8} \right] + O(\delta^3)
+$$
+The first two terms are identical. The difference appears in the $\delta^2$ term: $\frac{\delta^2}{6} - \frac{\delta^2}{8} = \frac{4\delta^2 - 3\delta^2}{24} = \frac{\delta^2}{24}$.
+Thus, $\bar{z}_{\ln} \approx z_g$ to first order in $\delta$, and their difference is $O(\delta^2)$ (second order).
+$$
+\bar{z}_{\ln} = z_g \left[ \frac{1 + \delta/2 + \delta^2/6}{1 + \delta/2 + \delta^2/8} \right] \approx z_g \left[1 + O\big(\delta^2\big)\right] = z_g \left[1 + O\big((\ln(z_1/z_0))^2\big)\right]
+$$
+This confirms that for thin layers, the logarithmic mean and geometric mean are nearly identical.
+
+\section*{Part C: Concave-Down $Ri_g$ and Bias}
+
+Assume $Ri_g(z)$ is \textbf{concave-down} (i.e., $d^2 Ri_g/dz^2 < 0$) over the interval $[z_0, z_1]$.
+
+\subsection*{C1. Jensen's Inequality and Arithmetic Mean}
+Apply Jensen's inequality to $Ri_g(z)$ treated as a concave function. Specifically, show that
+$$
+\frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g\!\left(\frac{1}{\Delta z}\int_{z_0}^{z_1} z\,dz\right).
+$$
+
+\noindent \textbf{Derivation:}
+Let $f(z) = Ri_g(z)$. We are given that $f(z)$ is concave-down, so $f''(z) < 0$. We apply the strict version of Jensen's inequality for a strictly concave function:
+$$
+\frac{1}{b-a}\int_a^b f(x)\,dx < f\!\left(\frac{1}{b-a}\int_a^b x\,dx\right)
+$$
+Substituting $f(z) = Ri_g(z)$, $a=z_0$, and $b=z_1$:
+$$
+\frac{1}{z_1 - z_0}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g\!\left(\frac{1}{z_1 - z_0}\int_{z_0}^{z_1} z\,dz\right)
+$$
+The left side is $Ri_b$. The integral on the right is the arithmetic mean height $\bar{z}_a$:
+$$
+\frac{1}{z_1 - z_0}\int_{z_0}^{z_1} z\,dz = \frac{1}{\Delta z} \left[ \frac{z^2}{2} \right]_{z_0}^{z_1} = \frac{1}{2\Delta z} (z_1^2 - z_0^2) = \frac{1}{2\Delta z} (z_1 - z_0)(z_1 + z_0) = \frac{z_1 + z_0}{2} = \bar{z}_a
+$$
+Therefore, the inequality simplifies to:
+$$
+Ri_b < Ri_g(\bar{z}_a)
+$$
+The arithmetic mean height in this context is $\bar{z}_a = (z_0 + z_1)/2$.
+
+\subsection*{C2. Comparing Geometric and Arithmetic Means}
+Use the fact that $\ln(z)$ is concave (from A2) to show:
+$$
+\ln(z_g) = \frac{\ln z_0 + \ln z_1}{2} < \ln\!\left(\frac{z_0 + z_1}{2}\right) = \ln(\bar{z}_a).
+$$
+
+\noindent \textbf{Derivation:}
+We use the arithmetic mean-geometric mean inequality for $z_0$ and $z_1$:
+$$
+\sqrt{z_0 z_1} \leq \frac{z_0 + z_1}{2} \quad \implies \quad z_g \leq \bar{z}_a
+$$
+Since $z_0 < z_1$, the inequality is strict: $z_g < \bar{z}_a$.
+Alternatively, we apply Jensen's inequality (A1) to the concave function $f(z) = \ln z$.
+Let $x_1 = z_0$ and $x_2 = z_1$. The discrete form of Jensen's inequality for a concave function $f$ and weights $w_i \geq 0$ where $\sum w_i = 1$ is:
+$$
+\sum w_i f(x_i) \leq f\!\left(\sum w_i x_i\right)
+$$
+Using equal weights $w_1 = w_2 = 1/2$:
+$$
+\frac{1}{2} \ln z_0 + \frac{1}{2} \ln z_1 \leq \ln\!\left(\frac{1}{2} z_0 + \frac{1}{2} z_1\right)
+$$
+Substituting $\ln z_g = (\ln z_0 + \ln z_1)/2$ and $\bar{z}_a = (z_0 + z_1)/2$:
+$$
+\ln(z_g) \leq \ln(\bar{z}_a)
+$$
+Since $\ln(z)$ is a monotonically increasing function, this implies $z_g \leq \bar{z}_a$. As $z_0 \neq z_1$, the inequality is strict:
+$$
+\ln(z_g) < \ln(\bar{z}_a) \quad \text{and} \quad z_g < \bar{z}_a
+$$
+
+\subsection*{C3. Concavity in Log-Coordinates}
+Change variables $s = \ln z$, and assume $\tilde{Ri}(s) = Ri_g(e^s)$ is concave in $s$. Apply Jensen's inequality.
+
+\noindent \textbf{Derivation:}
+The interval $z \in [z_0, z_1]$ maps to $s \in [\ln z_0, \ln z_1]$. Let $\Delta s = \ln z_1 - \ln z_0 = \ln(z_1/z_0)$.
+Apply Jensen's inequality to the concave function $\tilde{Ri}(s)$ over the uniform distribution in $s$:
+$$
+\frac{1}{\Delta s}\int_{\ln z_0}^{\ln z_1} \tilde{Ri}(s)\,ds < \tilde{Ri}\!\left(\frac{1}{\Delta s}\int_{\ln z_0}^{\ln z_1} s\,ds\right)
+$$
+The right-hand side is the value of $\tilde{Ri}(s)$ evaluated at the arithmetic mean of $s$:
+$$
+\frac{1}{\Delta s}\int_{\ln z_0}^{\ln z_1} s\,ds = \frac{\ln z_0 + \ln z_1}{2} = \ln z_g
+$$
+Substituting this back, and using $\tilde{Ri}(\ln z_g) = Ri_g(e^{\ln z_g}) = Ri_g(z_g)$:
+$$
+\frac{1}{\ln(z_1/z_0)}\int_{\ln z_0}^{\ln z_1} \tilde{Ri}(s)\,ds < Ri_g(z_g)
+$$
+
+\subsection*{C4. Conclusion}
+Convert the integral back to $z$ coordinates, approximate the logarithmic average with $Ri_b$, and state the conclusion.
+
+\noindent \textbf{Conversion and Approximation:}
+Using the change of variables $s = \ln z$, we have $ds = d(\ln z) = (1/z) dz$, or $dz = z\,ds$.
+The integral from C3 becomes:
+$$
+\frac{1}{\ln(z_1/z_0)}\int_{\ln z_0}^{\ln z_1} \tilde{Ri}(s)\,ds = \frac{1}{\ln(z_1/z_0)}\int_{z_0}^{z_1} Ri_g(z)\,\frac{dz}{z}
+$$
+The left side is the \textbf{logarithmically weighted average} of $Ri_g(z)$.
+The bulk Richardson number is $Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz$.
+For a thin layer ($z_1/z_0 \to 1$), we have $\Delta z \approx z_g \ln(z_1/z_0)$ (from B3, since $z_g \approx \bar{z}_{\ln}$). If $Ri_g$ varies slowly, we can approximate $Ri_g(z)/z \approx Ri_g(z)/\bar{z}$ for some mean height $\bar{z}$. A more rigorous approximation is:
+$$
+\frac{1}{\ln(z_1/z_0)}\int_{z_0}^{z_1} Ri_g(z)\,\frac{dz}{z} \approx \frac{1}{\ln(z_1/z_0)} \frac{1}{\bar{z}_{\text{Harmonic}}} \int_{z_0}^{z_1} Ri_g(z)\,dz \approx \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz = Ri_b
+$$
+Using the thin-layer approximation and the result from C3, we conclude:
+$$
+Ri_b \lesssim Ri_g(z_g)
+$$
+This proves that when $Ri_g$ is concave-down in \textbf{log-height}, the bulk Richardson number $Ri_b$ underestimates the point value at the geometric mean height $z_g$.
+
+\section*{Part D: Numerical Verification}
+(Numerical computation is required here. The full $\LaTeX$ document would include the code and the final results/plots.)
+
+\subsection*{D1. Quadratic Profile}
+Assume $Ri_g(z) = c_1 z + c_2 z^2$, with $z_0 = 10$ m, $z_1 = 100$ m, $c_1 = 0.01$, $c_2 = -0.0001$.
+
+\begin{itemize}
+    \item $\Delta z = 100 - 10 = 90$ m.
+    \item $z_g = \sqrt{10 \times 100} = \sqrt{1000} \approx 31.62$ m.
+    \item $Ri_g(z_g) = 0.01(31.62) - 0.0001(31.62)^2 \approx 0.3162 - 0.1000 = 0.2162$.
+    \item $Ri_b = \frac{1}{90}\int_{10}^{100} (c_1 z + c_2 z^2)\,dz = \frac{1}{90} \left[ \frac{c_1 z^2}{2} + \frac{c_2 z^3}{3} \right]_{10}^{100}$
+    $$
+    Ri_b = \frac{1}{90} \left[ \frac{0.01}{2}(100^2 - 10^2) - \frac{0.0001}{3}(100^3 - 10^3) \right]
+    $$
+    $$
+    Ri_b = \frac{1}{90} \left[ 0.005(9900) - \frac{0.0001}{3}(999000) \right] = \frac{1}{90} [49.5 - 33.3] = \frac{16.2}{90} = 0.1800
+    $$
+    \item Bias ratio $B = Ri_g(z_g) / Ri_b = 0.2162 / 0.1800 \approx 1.201$. ($B > 1$, confirming the bias).
+\end{itemize}
+
+\subsection*{D2. Logarithmic Profile}
+Assume $Ri_g(z) = A \ln(z/z_{\text{ref}}) + C$, with $A > 0$, $C > 0$, $z_{\text{ref}} = 1$ m. (A full calculation would require choosing specific $A$ and $C$ and performing the integration $\int \ln z\,dz = z \ln z - z$.)
+
+\section*{Part E: Physical Interpretation}
+
+\subsection*{E1. Overmixing in Models}
+Explain why $Ri_b < Ri_g(z_g)$ leads to \textbf{overmixing} in a numerical model.
+
+\noindent \textbf{Explanation:}
+The Richardson number $Ri$ is a measure of atmospheric stability; higher values indicate greater stability and a tendency for turbulence to be suppressed. In numerical models, the turbulent eddy diffusivities for momentum ($K_m$) and heat ($K_h$) are parameterized as functions of $Ri$, typically decreasing as $Ri$ increases. The layer-averaged bulk Richardson number $Ri_b$ is used in the parameterization, but our derivation shows $Ri_b$ is an \textbf{underestimation} of the true point-value stability $Ri_g(z_g)$.
+$$
+Ri_b < Ri_g(z_g)
+$$
+Since $Ri_b$ is too low, the model calculates eddy diffusivities $K_m$ and $K_h$ that are \textbf{too large} for the actual stability of the layer. Higher $K_m$ and $K_h$ lead to excessive vertical transport of momentum and heat, which is known as \textbf{overmixing}. This falsely reduces vertical gradients and deepens the model's boundary layer.
+
+\subsection*{E2. Arithmetic Mean Height Bias}
+If a model uses the \textbf{arithmetic mean} height $\bar{z}_a = (z_0 + z_1)/2$, does the bias worsen or improve?
+
+\noindent \textbf{Justification:}
+The bias is the difference between the bulk value and the point value: $Ri_b - Ri_g(z_{\text{rep}})$. We seek the height $z_{\text{rep}}$ that minimizes this bias.
+From Part C1, we established that $Ri_b < Ri_g(\bar{z}_a)$.
+From Part C2, we showed that $z_g < \bar{z}_a$.
+Since $Ri_g(z)$ is concave-down, its slope $d(Ri_g)/dz$ is negative (it decreases with height). Therefore, for any $z_1 > z_2$, we must have $Ri_g(z_1) < Ri_g(z_2)$.
+Since $z_g < \bar{z}_a$, it follows that:
+$$
+Ri_g(z_g) > Ri_g(\bar{z}_a)
+$$
+The ideal representative value is $Ri_g(z_g)$. If the model uses $Ri_g(\bar{z}_a)$, the resulting stability is an even greater underestimate of the actual stability $Ri_g(z_g)$, meaning the bias is \textbf{worsened}.
+$$
+Ri_b < Ri_g(\bar{z}_a) < Ri_g(z_g)
+$$
+Using the arithmetic mean height exacerbates the stability underestimation and therefore the overmixing problem.
+
+\subsection*{E3. Correction Strategy}
+Suggest one practical correction strategy to mitigate this bias without changing the vertical grid resolution.
+
+\noindent \textbf{Correction Strategy:}
+One practical correction is to use a \textbf{representative height correction factor} $\alpha$ to define a corrected height $z_{\text{corr}}$ such that $Ri_g(z_{\text{corr}}) \approx Ri_b$. Since $Ri_b$ is the bulk input, one can simply use the geometric mean height $z_g$ as the representative height for the computation of the eddy diffusivities $\mathbf{K_m}$ and $\mathbf{K_h}$.
+
+Specifically, instead of using the local $Ri_b$ directly in the stability function $f(Ri_b)$:
+$$
+K_{m,h} \propto \frac{1}{\phi_{m,h}} = f(Ri_b)
+$$
+The model can instead use the stability function evaluated at the geometrically mean height:
+$$
+K_{m,h} \propto \frac{1}{\phi_{m,h}(z_g)}
+$$
+This is equivalent to replacing the bulk $Ri_b$ with a corrected value, $Ri_b^{\text{corr}}$, which is the value of the stability function at $z_g$. In many modern parameterizations, this is achieved by using $z_g$ (or a similar mean) to define the turbulent length scale, which implicitly corrects the stability function's input. The most straightforward correction is to simply compute the bulk Richardson number using the layer-average of the \textbf{monin-Obukhov functions} $\phi_m$ and $\phi_h$, which are more linear in $\ln z$ than $Ri_g$, or by using the log-mean height $\bar{z}_{\ln}$ (which is $\approx z_g$) to calculate the momentum and heat gradients that enter the definition of $Ri_b$.
+
+\section*{Submission Guidelines}
+(To be completed by the student)
+
+\section*{Additional Challenge (Optional, +10\%)}
+
+Derive an \textbf{exact correction factor} $G(\Delta z, \Delta)$ such that $Ri_b^{\text{corrected}} = Ri_b \times G \approx Ri_g(z_g)$, where $\Delta = d^2 Ri_g/dz^2$ is the local curvature. Express $G$ in terms of $z_0$, $z_1$, and $\Delta$ to leading order in $\Delta z$.
+
+\noindent \textbf{Derivation Hint:}
+Taylor expand $Ri_g(z)$ around the geometric mean height $z_g$:
+$$
+Ri_g(z) \approx Ri_g(z_g) + Ri_g'(z_g)(z - z_g) + \frac{1}{2} Ri_g''(z_g)(z - z_g)^2 + O((z-z_g)^3)
+$$
+The bulk Richardson number is $Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz$. Integrate the Taylor expansion term by term.
+\begin{enumerate}
+    \item $\frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z_g)\,dz = Ri_g(z_g)$.
+    \item $\frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g'(z_g)(z - z_g)\,dz = Ri_g'(z_g) \left(\frac{1}{\Delta z}\int_{z_0}^{z_1} z\,dz - z_g\right) = Ri_g'(z_g) (\bar{z}_a - z_g)$. (This is the linear bias, which is small since $z_g \approx \bar{z}_a$).
+    \item $\frac{1}{2\Delta z}\int_{z_0}^{z_1} Ri_g''(z_g)(z - z_g)^2\,dz \approx \frac{Ri_g''(z_g)}{2\Delta z}\int_{z_0}^{z_1} (z - z_g)^2\,dz$.
+\end{enumerate}
+The bias is primarily due to the non-zero integral of the quadratic term. The resulting factor $G$ will be of the form $1 / (1 + \text{Bias})$.
+
+\end{document}

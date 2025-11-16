@@ -61,5 +61,26 @@ Concise algorithm (near-neutral):
 2. ζ ≈ Ri_g − Δ Ri_g² (cubic if needed).
 3. Evaluate φ_m, φ_h; obtain K_m,K_h.
 
-## 11. Summary
+## 11. Numerical Estimation of Ri_g and Ri_b
+
+Given discrete $z_k, U_k, \theta_k$:
+
+**Point gradient (centered):**
+$$
+\partial U/\partial z \Big|_{z_k} \approx (U_{k+1} - U_{k-1})/(z_{k+1} - z_{k-1}).
+$$
+
+**Bulk Ri_b (layer $[z_0,z_1]$):**
+- Definition: $Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz$.
+- Trapezoid: $Ri_b \approx \frac{1}{2}[Ri_g(z_0) + Ri_g(z_1)]$.
+- Simpson (3-pt): $Ri_b \approx \frac{1}{6}[Ri_g(z_0) + 4Ri_g(z_g) + Ri_g(z_1)]$.
+
+**Representative heights:**
+- $z_g = \sqrt{z_0 z_1}$ (geometric mean, midpoint in $\ln z$).
+- $z_L = (z_1 - z_0)/\ln(z_1/z_0)$ (logarithmic mean, exact for $\Delta U$ in log wind).
+- $z_a = (z_0 + z_1)/2$ (arithmetic mean, biases high for log profiles).
+
+Use $z_g$ for point $Ri_g$ evaluation; use $z_L$ for exact layer-averaged gradient matching.
+
+## 12. Summary
 Series + curvature supply analytic bridge for Ri-based closures, bias diagnostics, and neutral-invariant correction design.

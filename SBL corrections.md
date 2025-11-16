@@ -230,17 +230,38 @@ $$
 | Inflection height | ζ_inf: ∂²Ri_g/∂ζ² = 0 | Stability regime transition (if exists) |
 | Layer error | E_i = \|Ri_g(z_i+1) − Ri_g(z_i) − Δz ∂Ri_g/∂z\|_zg | Reconstruction bias |
 
-### 5.4 Variable L(z) Omission Metric
+### 5.4 Numerical Ri Diagnostics (Tower Data)
 
-If L varies with height:
+**Step 1: Gradient estimation**  
+Centered difference at level $k$:
 $$
-E_{\text{omit}} \;=\; \left|\frac{(d^2\zeta/dz^2)(dRi_g/d\zeta)}{(d\zeta/dz)^2(d^2Ri_g/d\zeta^2)}\right|.
+S_k = \sqrt{\left(\frac{U_{k+1} - U_{k-1}}{z_{k+1} - z_{k-1}}\right)^2 + \left(\frac{V_{k+1} - V_{k-1}}{z_{k+1} - z_{k-1}}\right)^2},
+$$
+$$
+\frac{\partial\theta}{\partial z}\Big|_{z_k} \approx \frac{\theta_{k+1} - \theta_{k-1}}{z_{k+1} - z_{k-1}}.
 $$
 
-**Threshold:** Use constant-L mapping if $E_{\text{omit}} < 0.05$; otherwise apply full chain rule:
+**Step 2: Point Ri_g**
 $$
-\frac{d^2Ri_g}{dz^2} = \left(\frac{d\zeta}{dz}\right)^2\frac{d^2Ri_g}{d\zeta^2} + \frac{d^2\zeta}{dz^2}\frac{dRi_g}{d\zeta}.
+Ri_g(z_k) = \frac{(g/\theta_k)\,\partial\theta/\partial z}{S_k^2}.
 $$
+
+**Step 3: Bulk Ri_b (layer)**
+$$
+Ri_b = \frac{g}{\theta_{\text{ref}}}\frac{(\theta_1 - \theta_0)(z_1 - z_0)}{(U_1 - U_0)^2 + (V_1 - V_0)^2}.
+$$
+
+**Step 4: Bias ratio**
+$$
+B = \frac{Ri_g(z_g)}{Ri_b},\quad z_g = \sqrt{z_0 z_1}.
+$$
+
+**Step 5: Numerical integration (if full profile available)**
+$$
+Ri_b^{\text{int}} = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz \approx \text{trapezoid or Simpson}.
+$$
+
+Compare $Ri_b^{\text{int}}$ vs direct bulk formula; validate curvature correction by checking $B$ reduction.
 
 ---
 

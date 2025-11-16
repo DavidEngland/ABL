@@ -95,6 +95,39 @@ Bias ratio:
   - ζ̃_arith=22 m, ζ̃_geom≈√(12·32)=19.6 m, ζ̃_logm≈(32−12)/ln(32/12)=20.7 m,
   - B_CD≈[ln(22/0.5)/ln(19.6/0.5)]²≈[3.78/3.67]²≈1.06 → 6% bias.
 
+4.5 Numerical Ri Estimation (Discrete Data)
+
+Given tower levels $z_k$ with $U_k, \theta_k$:
+
+**Centered difference (interior):**
+$$
+\left.\frac{\partial U}{\partial z}\right|_{z_k} \approx \frac{U_{k+1} - U_{k-1}}{z_{k+1} - z_{k-1}},\quad
+Ri_g(z_k) = \frac{(g/\theta_k)\,\Delta\theta/\Delta z}{(\Delta U/\Delta z)^2}.
+$$
+
+**Forward difference (first layer):**
+$$
+\left.\frac{\partial U}{\partial z}\right|_{z_0} \approx \frac{U_1 - U_0}{z_1 - z_0}.
+$$
+
+**Bulk Ri_b via integration:**
+$$
+Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz.
+$$
+
+**Trapezoid rule:**
+$$
+Ri_b \approx \frac{1}{2}\big[Ri_g(z_0) + Ri_g(z_1)\big].
+$$
+
+**Simpson's rule (3-point):**
+$$
+Ri_b \approx \frac{1}{6}\big[Ri_g(z_0) + 4Ri_g(z_g) + Ri_g(z_1)\big].
+$$
+
+**Staggered grids:**
+Evaluate $Ri_g$ at interfaces $z_{k+1/2}$ using centered differences.
+
 5. Validation plan
 - Towers: CASES-99, Cabauw, ARM NSA (stable nights). Metrics: stress bias, Ri_b bias, retrieval consistency of z₀, z₀_h.
 - LES: Neutral and weakly stable ensembles with known z₀, z₀_h. Recover bias scaling vs layer aspect ratio r = z₂/z₁.
