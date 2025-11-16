@@ -314,6 +314,34 @@ Strategic focus: leverage curvature-aware MOST corrections, grid-dependence diag
 
 ---
 
+### 5C. Graduate Homework Problem Set
+**Title (working):** "Special Functions in Atmospheric Similarity Theory: Central Binomials, Hypergeometric Series, and Richardson Number Curvature"
+
+**Target Venue:** Supplementary material for *Bulletin of the American Meteorological Society* education section; standalone module for atmospheric science curricula.
+
+**Core Contribution:**
+- Exact series representation of MOST power-law profiles via central binomial generating functions.
+- Convergence analysis and asymptotic growth rates for truncation error bounds.
+- Richardson number curvature computation to machine precision using symbolic series.
+- Python/Julia implementation comparing series vs finite-difference methods.
+
+**Pedagogical Value:**
+- Bridges pure mathematics (combinatorics, special functions) with applied atmospheric physics.
+- Motivates **why** certain parameter sets (e.g., Businger et al. 1971) have zero neutral curvature.
+- Prepares students for hypergeometric ${}_2F_1$ generalizations in advanced turbulence closures.
+
+**Deliverables:**
+- `HW_Central_Binomial_MOST.md` (5-part problem set with solutions).
+- `central_binomial_MOST_solution.ipynb` (Jupyter notebook with symbolic + numeric verification).
+- Instructor guide: common student errors, grading rubric, extension projects.
+
+**Extension Hooks:**
+- Generalized hypergeometric ${}_pF_q$ for multi-parameter stability functions.
+- Connection to Jacobi polynomials for orthogonal basis representations.
+- Machine-learning surrogate training using series-generated synthetic data.
+
+---
+
 ## Strategic Priorities & Sequencing
 
 ### Phase 1 (Year 1): Establish Core Framework
