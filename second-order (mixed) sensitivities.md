@@ -200,3 +200,26 @@ Would you like me to:
 	3.	(C) Compute numerical values of the full first- and second-order sensitivity matrices at a chosen (V,x,\mathbf{p}) point (give me numeric parameter values and V,m,h,\dots).
 
 Pick A, B or C and I’ll proceed.
+
+# Second-Order / Mixed Sensitivities: Pr_t and Ri_g Curvature
+
+Mixed sensitivity of Pr_t to stability:
+$$\frac{\partial^2 Pr_t}{\partial Ri_g^2}\Big|_{0} = -2(a_h-a_m)\Delta.$$
+Interpretation:
+- If $(a_h-a_m)>0$ and $\Delta<0$ (typical SBL), second derivative positive → Pr_t flattens (reduced rise) with increasing Ri_g.
+Combined K_h sensitivity (holding $u_*,z$ fixed):
+$$\frac{\partial K_h}{\partial Ri_g}\approx -\frac{\kappa z u_*}{\phi_h^2}\frac{d\phi_h}{dRi_g},\quad \frac{d\phi_h}{dRi_g}=\frac{d\phi_h/d\zeta}{dRi_g/d\zeta}.$$
+Near-neutral:
+$$\frac{dRi_g}{d\zeta}=1+2\Delta\zeta+O(\zeta^2),\quad \frac{d\phi_h}{d\zeta}=a_h+2b_h\zeta+O(\zeta^2).$$
+Thus:
+$$\frac{d\phi_h}{dRi_g}\approx a_h - 2a_h\Delta\zeta+O(\zeta^2).$$
+Grid correction preserving Δ avoids artificial inflation of second-order Pr_t sensitivity.
+
+Scalar second derivative (neutral):
+\[
+\left.\frac{\partial^2 f_q}{\partial Ri_g^2}\right|_{0}=2(b_q-a_q\Delta+2a_m a_q).
+\]
+Schmidt sensitivity:
+\[
+\frac{d Sc_t^{(q)}}{d Ri_g}\Big|_{0}=a_q-a_m.
+\]

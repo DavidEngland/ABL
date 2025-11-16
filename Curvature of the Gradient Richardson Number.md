@@ -89,6 +89,19 @@ Pr_t(\zeta)=\frac{\phi_h}{\phi_m}=(1-\beta_h\zeta)^{-\alpha_h}(1-\beta_m\zeta)^{
 Pr_t(\zeta)=1+(\alpha_h\beta_h-\alpha_m\beta_m)\zeta+O(\zeta^2).
 Note \Delta=(\alpha_h\beta_h-\alpha_m\beta_m)-(\alpha_m\beta_m); thus \Delta=0 (curvature neutral) does not imply Pr_t=1.
 
+# Turbulent Prandtl Link (Addendum)
+
+Given $Pr_t=\phi_h/\phi_m$ and $Ri_g=\zeta \phi_h/\phi_m^2$:
+Near-neutral series:
+$$Pr_t=1+(a_h-a_m)\zeta + O(\zeta^2),\quad Ri_g=\zeta+\Delta\zeta^2+O(\zeta^3).$$
+Eliminate ζ:
+$$Pr_t(Ri_g)\approx 1+(a_h-a_m)Ri_g - (a_h-a_m)\Delta Ri_g^2.$$
+Second derivative:
+$$\frac{d^2Pr_t}{dRi_g^2}\Big|_0=-2(a_h-a_m)\Delta.$$
+Curvature correction leaving $\Delta$ unchanged preserves this intrinsic Pr_t response.
+
+Scalar closure addendum: $K_q=\kappa z u_*/\phi_q$, $f_q(Ri_g)=1/(\phi_m\phi_q)$ shares curvature-driven bias via $\Delta$ in series inversion.
+
 Diagnostic & reporting suggestions
 
 Report as a minimal set for comparing parameterizations:

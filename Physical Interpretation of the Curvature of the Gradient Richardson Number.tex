@@ -5,6 +5,8 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{enumitem}
+% Optional: natbib if you prefer \citet/\citep; ametsoc2014 works with standard \cite as well.
+\usepackage{natbib}
 
 \title{Physical Interpretation of the Curvature of the Gradient Richardson Number in the Stable Atmospheric Boundary Layer}
 \author{David E. England}
@@ -570,5 +572,9 @@ Holtslag, A. A. M., et al., 2013: Stable atmospheric boundary layers and diurnal
 Cuxart, J., et al., 2006: Single-column model intercomparison for a stably stratified atmospheric boundary layer. \textit{Boundary-Layer Meteorol.}, \textbf{118}, 273--303.
 
 \end{thebibliography}
+
+% To switch to BibTeX with AMS/JAMC style, use:
+\bibliographystyle{ametsoc2014} % AMS journals (incl. JAMC) bibliography style
+\bibliography{grid}             % uses /Users/davidengland/Documents/GitHub/ABL/grid.bib
 
 \end{document}

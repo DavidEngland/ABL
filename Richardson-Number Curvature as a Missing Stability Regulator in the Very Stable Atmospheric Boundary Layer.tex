@@ -121,6 +121,21 @@ Observed patchy turbulence in CASES-99, SHEBA, and polar deployments maps to alt
 \section{Conclusions}
 Gradient Richardson number curvature supplies missing structural information in VSBL regimes, discriminating regions of potential turbulence maintenance from zones of collapse, beyond critical-Ri heuristics. A curvature-aware diffusive modulation preserving neutral invariants offers a physically grounded pathway to reduce grid-dependent biases without ad hoc floors, aligning MOST with local scaling principles.
 
+% Added: concise turbulent Prandtl / Ri_g link for regulator framing
+\subsubsection*{Turbulent Prandtl and Curvature-Regulated Stability}
+\begin{equation}
+Pr_t=\frac{K_m}{K_h}=\frac{\phi_h}{\phi_m}=Pr_t(\zeta)=Pr_t(Ri_g),\qquad Ri_g=\zeta \frac{\phi_h}{\phi_m^2}.
+\end{equation}
+Near-neutral:
+\begin{equation}
+Ri_g=\zeta+\Delta\zeta^2+\tfrac12(\Delta^2+c_1)\zeta^3+\dots,\quad \Delta=a_h-2a_m.
+\end{equation}
+Thus
+\begin{equation}
+Pr_t(Ri_g)\approx 1+(a_h-a_m)Ri_g-(a_h-a_m)\Delta Ri_g^2+\dots
+\end{equation}
+Curvature invariant $2\Delta$ must remain unaltered in correction schemes to avoid spurious modulation of $Pr_t$ at neutrality.
+
 \section*{Acknowledgments}
 We acknowledge foundational discussions within the stable boundary layer research community and prior advances motivating this synthesis.
 

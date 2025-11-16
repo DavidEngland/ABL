@@ -2,28 +2,28 @@
 
 ## 0. Abstract
 This note refines the interpretation of the gradient Richardson number curvature
-\[
-Ri_g(\zeta)=\zeta\,\frac{\phi_h(\zeta)}{\phi_m(\zeta)^2},\qquad \zeta=z/L,
-\]
+$$
+Ri_g(\zeta)=\zeta\,\frac{\phi_h(\zeta)}{\phi_m(\zeta)^2},\qquad \zeta=\frac{z}{L},
+$$
 and its implications for stability-function formulation and vertical discretization in Monin–Obukhov Similarity Theory (MOST). We formalize near-neutral curvature control via the coefficient \(\Delta\), provide quantitative criteria for when a constant-\(L\) approximation is acceptable, and justify the geometric-mean height for layer evaluation. Implementation diagnostics and a ready figure caption are included.
 
 ## 1. Core Curvature Expression
 Let
-\[
-F(\zeta)=\frac{\phi_h(\zeta)}{\phi_m(\zeta)^2},\qquad
-V_{\log}=(\phi_h'/\phi_h)-2(\phi_m'/\phi_m),\qquad
-W_{\log}=dV_{\log}/d\zeta.
-\]
+$$
+F(\zeta)=\frac{\phi_h}{\phi_m^2},\quad
+V_{\log}=\frac{\phi_h'}{\phi_h}-2\frac{\phi_m'}{\phi_m},\quad
+W_{\log}=\frac{dV_{\log}}{d\zeta}.
+$$
 Then
-\[
-\frac{d^2Ri_g}{d\zeta^2}=F(\zeta)\Big[2V_{\log}+\zeta(V_{\log}^2-W_{\log})\Big].
-\]
+$$
+\frac{d^2Ri_g}{d\zeta^2}=F(\zeta)\Big[2V_{\log}+\zeta\big(V_{\log}^2-W_{\log}\big)\Big].
+$$
 
 Near neutrality (\(\zeta\to0\)):
-\[
+$$
 \Delta=V_{\log}(0)=\alpha_h\beta_h-2\alpha_m\beta_m,\quad
 \left.\frac{d^2Ri_g}{d\zeta^2}\right|_{0}=2\Delta.
-\]
+$$
 
 Interpretation:
 - \(\Delta>0\): initial concave-up (heat corrections dominate).
@@ -32,53 +32,52 @@ Interpretation:
 
 ## 1A. Unified Log Terms
 Component logs:
-\[
+$$
 v_m=\frac{\phi_m'}{\phi_m},\ v_h=\frac{\phi_h'}{\phi_h},\ V_{\log}=v_h-2v_m,\ W_{\log}=V_{\log}'.
-\]
+$$
 Curvature:
-\[
+$$
 \partial_\zeta^2 Ri_g = F[2V_{\log}+\zeta(V_{\log}^2-W_{\log})],\quad F=\phi_h/\phi_m^2.
-\]
+$$
 This replaces earlier generic G,G′ (G=V_log, G′=W_log).
 
 ## 2. Elevated Regime Behavior
 Away from neutral (\(\zeta\gesssim 0.1\) or approaching stable growth), the \(\zeta(V_{\log}^2-W_{\log})\) term drives rapid curvature escalation or decay. Parameter sets that keep \(V_{\log}^2\) and \(W_{\log}\) in partial balance delay curvature amplification, improving numerical stability in coarse vertical grids.
 
 ## 3. Discretization and Representative Height Selection
-Given two model levels \(z_1<z_2\) with \(z_2/z_1\gg1\) possible under coarse grids:
+Given two model levels $z_1<z_2$:
+- Arithmetic mean $z_a=(z_1+z_2)/2$ biases MOST because profiles are log-like.
+- Geometric mean $z_g=\sqrt{z_1 z_2}$ satisfies
+$$
+\ln z_g \;=\; \frac{1}{z_2-z_1}\int_{z_1}^{z_2} \ln z\,dz,
+$$
+minimizing midpoint error for log-linear structure.
 
-1. Arithmetic mean \(z_a=(z_1+z_2)/2\) biases evaluation for MOST because profiles scale approximately with \(\ln z\).
-2. Geometric mean \(z_g=\sqrt{z_1 z_2}\) satisfies
-\[
-\ln z_g = \frac{1}{z_2-z_1}\int_{z_1}^{z_2} \ln z\,dz
-\]
-minimizing the mean-square error of replacing the layer-average of any function linear in \(\ln z\) by a point evaluation.
-
-Approximate curvature preservation error when using \(z_a\) instead of \(z_g\):
-\[
+Approximate curvature preservation error when using $z_a$ instead of $z_g$:
+$$
 \epsilon_{\text{geom}}\approx \frac{1}{2}\Big|\frac{d^2Ri_g}{dz^2}\Big|_{z_g}\left(z_a-z_g\right)^2
-\]
-while for \(z_g\) the first-order logarithmic bias term cancels.
+$$
+while for $z_g$ the first-order logarithmic bias term cancels.
 
-Recommendation: use \(z_g\) for evaluating \(\phi_{m,h}\), \(Ri_g\), and curvature when \(\Delta z / z_1>0.2\).
+Recommendation: use $z_g$ for evaluating \(\phi_{m,h}\), \(Ri_g\), and curvature when \(\Delta z / z_1>0.2\).
 
-## 4. Height Mapping with Variable \(L(z)\)
+## 4. Height Mapping with Variable $L(z)$
 General chain rule:
-\[
-\frac{\partial^2Ri_g}{\partial z^2} = \left(\frac{d\zeta}{dz}\right)^2\frac{d^2Ri_g}{d\zeta^2} + \frac{d^2\zeta}{dz^2}\frac{dRi_g}{d\zeta},\quad \zeta=\frac{z}{L(z)}.
-\]
+$$
+\frac{\partial^2Ri_g}{\partial z^2} \;=\; \left(\frac{d\zeta}{dz}\right)^2\frac{d^2Ri_g}{d\zeta^2} + \frac{d^2\zeta}{dz^2}\frac{dRi_g}{d\zeta},\qquad \zeta=\frac{z}{L(z)}.
+$$
 Variation metrics:
-\[
+$$
 \varepsilon_1=\frac{z|L'|}{L},\qquad
 \chi=\left|\frac{(d^2\zeta/dz^2)(dRi_g/d\zeta)}{(d\zeta/dz)^2(d^2Ri_g/d\zeta^2)}\right|.
-\]
+$$
 Use constant-\(L\) shortcut (\(\partial_z^2Ri_g\approx (1/L^2)\partial_\zeta^2Ri_g\)) if \(\varepsilon_1<0.05\) and \(\chi<0.05\); otherwise include full mapping.
 
 ## 5. Discretization Error Diagnostic
 Layer reconstruction for a vertical interval \([z_i,z_{i+1}]\):
-\[
+$$
 E_i = \Big|\frac{Ri_g(z_{i+1}) - Ri_g(z_i)}{z_{i+1}-z_i} - \left.\frac{dRi_g}{dz}\right|_{z_g}\Big|
-\]
+$$
 Estimate using \(\frac{dRi_g}{dz} \approx (d\zeta/dz)dRi_g/d\zeta\). Flag layers with \(E_i / |dRi_g/dz|_{z_g} > \eta\) (e.g. \(\eta=0.2\)) for adaptive refinement or alternative φ-form (e.g. quadratic surrogate).
 
 ## 6. Practical Implementation Steps
@@ -111,28 +110,28 @@ Blending suggestion
 ## 7A. Mapping φ(ζ) to f(Ri) for Mixing-Length Closures
 
 When using the mixing-length form
-\[
+$$
 K_{m,h} = f_{m,h}(Ri)\; l^2\; S,
-\]
+$$
 with shear magnitude
-\[
+$$
 S = \sqrt{\left(\frac{\partial u}{\partial z}\right)^2 + \left(\frac{\partial v}{\partial z}\right)^2},\quad l \approx \kappa z,
-\]
+$$
 the MOST-to-Ri mapping is
-\[
+$$
 f_m(Ri) = \frac{1}{\phi_m(\zeta(Ri))^2},\qquad
 f_h(Ri) = \frac{1}{\phi_m(\zeta(Ri))\,\phi_h(\zeta(Ri))}.
-\]
+$$
 Derivation uses MOST identities:
 \(\partial U/\partial z = (u_*/\kappa z)\phi_m\),
 \(K_m=u_* \kappa z/\phi_m\), \(K_h=u_* \kappa z/\phi_h\),
 and S = |\partial U/\partial z|.
 
 Generalized lengths l_m, l_h yield
-\[
+$$
 f_m = \frac{u_* \kappa z}{\phi_m\,l_m^2\,S},\qquad
 f_h = \frac{u_* \kappa z}{\phi_h\,l_h^2\,S}.
-\]
+$$
 
 ## 8. Recommended Diagnostics Summary
 | Metric | Purpose | Threshold |

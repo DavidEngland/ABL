@@ -221,3 +221,13 @@ Recommended actions
 Net implication
 Using z0h = z0 in polar modeling distorts heat flux and stability scaling, propagating through Ri_g curvature to boundary-layer mixing, amplifying or muting Arctic Amplification signals and modulating large-scale oscillation statistics; separation of scalar and momentum roughness is therefore required for physically consistent SBL feedbacks.
 
+## Roughness Impact on Pr_t(Ri_g)
+
+Distinct roughness lengths $z_0,z_{0h}$:
+$$\phi_m=\frac{\kappa z}{u_*}\frac{\partial U}{\partial z},\quad \phi_h=\frac{\kappa z}{\theta_*}\frac{\partial \theta}{\partial z}.$$
+Neutral drag / heat transfer:
+$$C_D=\left[\frac{\kappa}{\ln(z/z_0)}\right]^2,\quad C_H=\frac{\kappa^2}{\ln(z/z_0)\ln(z/z_{0h})}.$$
+Roughness contrast (kB^{-1}):
+$$kB^{-1}=\ln(z_0/z_{0h})$$
+modulates $Pr_t=\phi_h/\phi_m$ independently of curvature Δ; ensure curvature correction does not adjust $kB^{-1}$-driven neutral ratios.
+

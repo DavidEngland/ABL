@@ -42,7 +42,7 @@ Curvature:
 This replaces earlier generic G,G′ (G=V_log, G′=W_log).
 
 ## 2. Elevated Regime Behavior
-Away from neutral (\(\zeta\gtrsim 0.1\) or approaching stable growth), the \(\zeta(V_{\log}^2-W_{\log})\) term drives rapid curvature escalation or decay. Parameter sets that keep \(V_{\log}^2\) and \(W_{\log}\) in partial balance delay curvature amplification, improving numerical stability in coarse vertical grids.
+Away from neutral (\(\zeta\gesssim 0.1\) or approaching stable growth), the \(\zeta(V_{\log}^2-W_{\log})\) term drives rapid curvature escalation or decay. Parameter sets that keep \(V_{\log}^2\) and \(W_{\log}\) in partial balance delay curvature amplification, improving numerical stability in coarse vertical grids.
 
 ## 3. Discretization and Representative Height Selection
 Given two model levels \(z_1<z_2\) with \(z_2/z_1\gg1\) possible under coarse grids:
@@ -138,3 +138,10 @@ def layer_curvature(z1,z2,L1,L2,phi_m,phi_h):
     V = (logF(zeta_g+h)-logF(zeta_g-h))/(2*h)
     W = (logF(zeta_g+h)-2*logF(zeta_g)+logF(zeta_g-h))/(h*h)
     curv_zeta = F(zeta_g)*(2*V + zeta_g*(V*V - W))
+```
+
+Scalar diffusivity:
+\[
+K_q=\frac{\kappa z u_*}{\phi_q},\quad Sc_t^{(q)}=\phi_q/\phi_m.
+\]
+Use same geometric mean $z_g$; curvature bias in $Ri_g$ propagates to $f_q(Ri_g)$ via $a_q,b_q$.

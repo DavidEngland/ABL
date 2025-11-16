@@ -1,92 +1,92 @@
 # Gradient Richardson Number Curvature: Formal Derivation and Analytical Toolkit
 
-> Note on z vs. ζ: We seek ∂²Ri_g/∂z², but derive in ζ=z/L and convert at the end using ∂²/∂z²=(1/L²)∂²/∂ζ² (L treated locally constant).
+> Note on $z$ vs. $\zeta$: We seek $\partial^{2}Ri_g/\partial z^{2}$, but derive in $\zeta=z/L$ and convert at the end using $\partial^{2}/\partial z^{2}=(1/L^{2})\,\partial^{2}/\partial \zeta^{2}$ (with $L$ treated locally constant).
 
 ## 1. Definitions
 Let
-\[
+$$
 \phi_m(\zeta)=(1-\beta_m\zeta)^{-\alpha_m},\qquad
 \phi_h(\zeta)=(1-\beta_h\zeta)^{-\alpha_h},\qquad \zeta=\frac{z}{L},
-\]
-with domains \(1-\beta_{m,h}\zeta>0\). Define
-\[
-Ri_g(\zeta)=\zeta\,\frac{\phi_h}{\phi_m^2}=\zeta F(\zeta),\quad
+$$
+with domains $1-\beta_{m,h}\zeta>0$. Define
+$$
+Ri_g(\zeta)=\zeta\,\frac{\phi_h(\zeta)}{\phi_m(\zeta)^2}=\zeta F(\zeta),\quad
 F=(1-\beta_h\zeta)^{-\alpha_h}(1-\beta_m\zeta)^{2\alpha_m}.
-\]
+$$
 
 ## 2. Logarithmic Structure
-\[
-\frac{F'}{F}=V_{\log}=\frac{\alpha_h\beta_h}{1-\beta_h\zeta}-\frac{2\alpha_m\beta_m}{1-\beta_m\zeta},\quad
+$$
+\frac{F'}{F}=V_{\log}=\frac{\alpha_h\beta_h}{1-\beta_h\zeta}-\frac{2\alpha_m\beta_m}{1-\beta_m\zeta},\qquad
 W_{\log}=\frac{dV_{\log}}{d\zeta}= \frac{\alpha_h\beta_h^2}{(1-\beta_h\zeta)^2}-\frac{2\alpha_m\beta_m^2}{(1-\beta_m\zeta)^2}.
-\]
+$$
 
 ## 2A. Unified Log-Derivative Notation
-\[
+$$
 v_m=\frac{\phi_m'}{\phi_m},\quad v_h=\frac{\phi_h'}{\phi_h},\quad
 V_{\log}=v_h-2v_m,\quad W_{\log}=V_{\log}'=v_h'-2v_m'.
-\]
+$$
 Generic curvature:
-\[
+$$
 \frac{d^{2}Ri_g}{d\zeta^{2}}=F\left[2V_{\log}+\zeta(V_{\log}^{2}-W_{\log})\right].
-\]
+$$
 This matches earlier “G” (\(=V_{\log}\)) and “G′” (\(=W_{\log}\)).
 
 ## 3. Curvature
-\[
+$$
 \frac{d^2 Ri_g}{d\zeta^2}=F\Big[2V_{\log}+\zeta(V_{\log}^2-W_{\log})\Big].
-\]
+$$
 (This matches and subsumes earlier expanded forms.)
 
 ## 4. Neutral Expansions
 Coefficients:
-\[
+$$
 \Delta = \alpha_h\beta_h-2\alpha_m\beta_m,\quad c_1=\alpha_h\beta_h^2-2\alpha_m\beta_m^2.
-\]
+$$
 Series:
-\[
+$$
 Ri_g=\zeta + \Delta \zeta^2 + \tfrac12(\Delta^2+c_1)\zeta^3 + O(\zeta^4);
-\]
+$$
 Curvature:
-\[
+$$
 \partial_{\zeta}^2 Ri_g=2\Delta +3(\Delta^2-c_1)\zeta + O(\zeta^2).
-\]
+$$
 
 ## 5. Inversion
-\[
+$$
 \zeta = Ri_g - \Delta Ri_g^2 + \Big(\tfrac{3}{2}\Delta^2-\tfrac12 c_1\Big)Ri_g^3 + O(Ri_g^4).
-\]
+$$
 
 ## 6. Inflection Criterion
 Inflection solves \(2V_{\log}+\zeta(V_{\log}^2-W_{\log})=0\).
 Approximate interior root (if exists):
-\[
+$$
 \zeta_{\text{inf}}\approx -\frac{2\Delta}{\Delta^2-c_1}.
-\]
+$$
 
 ## 7. Singular Asymptotics
 Heat singular (\(\beta_h>\beta_m\)):
-\[
+$$
 Ri_g \sim (\beta_h(\zeta_h-\zeta))^{-\alpha_h},\quad \zeta_h=1/\beta_h;
 \quad \frac{d^2Ri_g}{d\zeta^2}\sim C (\zeta_h-\zeta)^{-(\alpha_h+1)}.
-\]
+$$
 
 ## 8. Flux Richardson Relation
-\[
+$$
 R_f=-\frac{\zeta}{F},\quad Ri_g = -R_f F^2.
-\]
+$$
 Near neutrality: \(Ri_g=-R_f+2\Delta R_f^2+O(R_f^3)\).
 
 ## 9. Turbulent Prandtl Number
-\[
+$$
 Pr_t=\frac{\phi_h}{\phi_m}=(1-\beta_h\zeta)^{-\alpha_h}(1-\beta_m\zeta)^{\alpha_m},\quad
 Pr_t=1+(\alpha_h\beta_h-\alpha_m\beta_m)\zeta+O(\zeta^2).
-\]
+$$
 
 ## 10. Error Control
 Binomial remainder for φ functions ensures absolute error bound for truncated curvature series; choose truncation \(N\) s.t.
-\[
+$$
 \max(\beta_m,\beta_h)^N |\zeta|^N < \varepsilon (1-\max \beta|\zeta|)^{\alpha_h+2\alpha_m+N}.
-\]
+$$
 
 ## 11. Implementation Outline
 1. If \(|\zeta|<\zeta_{th}\), use series up to target order.
@@ -100,18 +100,18 @@ Binomial remainder for φ functions ensures absolute error bound for truncated c
 - Arctic amplification: elevated static stability ⇒ larger \(v_h\) gradients; curvature aids vertical diffusion constraint tuning.
 
 ## 12. Summary Identities (Ready for Coding)
-\[
+$$
 \boxed{
 \begin{aligned}
-Ri_g &= \zeta(1-\beta_h\zeta)^{-\alpha_h}(1-\beta_m\zeta)^{2\alpha_m},\\
+Ri_g &= \zeta(1-\beta_h\zeta)^{-\alpha_h}(1-\beta_m\zeta)^{2\alpha_m},\\[4pt]
 \partial_{\zeta}^2 Ri_g &= (1-\beta_h\zeta)^{-\alpha_h}(1-\beta_m\zeta)^{2\alpha_m}
-\Big( \frac{2\alpha_h\beta_h}{1-\beta_h\zeta}-\frac{4\alpha_m\beta_m}{1-\beta_m\zeta}\\
+\Big( \tfrac{2\alpha_h\beta_h}{1-\beta_h\zeta}-\tfrac{4\alpha_m\beta_m}{1-\beta_m\zeta} \\
 &\quad + \zeta \big[
-(\frac{\alpha_h\beta_h}{1-\beta_h\zeta}-\frac{2\alpha_m\beta_m}{1-\beta_m\zeta})^2
-- (\frac{\alpha_h\beta_h^2}{(1-\beta_h\zeta)^2}-\frac{2\alpha_m\beta_m^2}{(1-\beta_m\zeta)^2})
+(\tfrac{\alpha_h\beta_h}{1-\beta_h\zeta}-\tfrac{2\alpha_m\beta_m}{1-\beta_m\zeta})^2
+- (\tfrac{\alpha_h\beta_h^2}{(1-\beta_h\zeta)^2}-\tfrac{2\alpha_m\beta_m^2}{(1-\beta_m\zeta)^2})
 \big]\Big).
 \end{aligned}}
-\]
+$$
 
 ## 13. Minimal Data Products
 - Neutral curvature \(2\Delta\).
@@ -123,40 +123,40 @@ All previous explanatory prose retained in prior document; this file is the cond
 
 ## 15. Height-Coordinate Curvature (chain rule)
 Given $\zeta=z/L$,
-\[
+$$
 \boxed{\frac{\partial^{2}Ri_g}{\partial z^{2}}=\frac{1}{L^{2}}\;\frac{\partial^{2}Ri_g}{\partial \zeta^{2}}.}
-\]
+$$
 If desired, assess sensitivity to vertical variation of $L$ separately; for MOST surface-layer diagnostics we evaluate with the local $L$.
 
 ## 15A. Parameter Choice: α≈0.5, β≈14–16
 Neutral curvature fixed by \(\Delta=\alpha_h\beta_h-2\alpha_m\beta_m\).
 Example symmetric choice: \(\alpha_m=\alpha_h=0.5,\ \beta_m=\beta_h=16\):
-\[
+$$
 \Delta=-8,\quad \partial_{\zeta}^2 Ri_g|_{0}=-16,\quad \partial_{z}^2 Ri_g|_{0}=-16/L^2.
-\]
+$$
 Large \(\beta\) increases \(|\Delta|\) but restricts ζ domain (\(\zeta<1/\beta\)).
 Series regime: with \(\beta=16\), practical ζ seldom exceeds 0.05 ⇒ \(\rho=\beta\zeta\le 0.8\) ensures fast convergence.
 If \(\beta_h\neq\beta_m\) (e.g. \(\beta_h=16,\beta_m=14\)):
-\[
+$$
 \Delta=0.5\cdot16-2(0.5\cdot14)=8-14=-6,\quad \partial_{\zeta}^2 Ri_g|_{0}=-12.
-\]
+$$
 Thus curvature is immediately determined once (\(\alpha,\beta\)) pair is fixed; only vertical coordinate change introduces the \(1/L^2\) scaling.
 
 ## 15B. Quadratic SBL Truncation (Q‑SBL)
 A pole‑free stable‑regime surrogate that preserves neutral coefficients:
 - φ model:
-  \[
+  $$
   \phi_m^{Q}=1+a_m\zeta+b_m\zeta^2,\ \ \phi_h^{Q}=1+a_h\zeta+b_h\zeta^2,
-  \]
+  $$
   with
-  \[
+  $$
   a_{m,h}=\alpha_{m,h}\beta_{m,h},\quad b_{m,h}=\tfrac12\alpha_{m,h}(\alpha_{m,h}+1)\beta_{m,h}^2.
-  \]
+  $$
 - Ri and curvature (cubic form):
-  \[
+  $$
   Ri_g^{Q}=\zeta+\Delta\zeta^2+\tfrac12(\Delta^2+c_1)\zeta^3,\quad
   \partial_\zeta^2 Ri_g^{Q}=2\Delta+3(\Delta^2-c_1)\zeta,
-  \]
+  $$
   where \(\Delta=\alpha_h\beta_h-2\alpha_m\beta_m,\ c_1=\alpha_h\beta_h^2-2\alpha_m\beta_m^2\).
 
 Use on ζ∈[0,ζ_max] with ζ_max≈0.2–0.5; enforce monotone/convex behavior via a_{m,h},b_{m,h}≥0 and (optionally) a linear cap \(\phi\le 1+c\,\zeta\) (e.g., c≈5). Blend with the exact power law for ζ≤ζ_b to maintain continuity.
@@ -221,11 +221,11 @@ Actionables
 
 ## 19. Multi‑Profile Pack (Reusable Curvature Recipe)
 General recipe (any φ)
-\[
+$$
 F=\phi_h/\phi_m^2,\quad V_{\log}=(\phi_h'/\phi_h)-2(\phi_m'/\phi_m),\quad
 W_{\log}=dV_{\log}/d\zeta,\quad
 \partial_\zeta^2 Ri_g = F[2V_{\log}+\zeta(V_{\log}^2-W_{\log})].
-\]
+$$
 
 Profiles to test (examples; fit coefficients to site/LES)
 - Power‑law (Businger–Dyer baseline).
@@ -431,47 +431,47 @@ def ri_to_phi_wrappers(tag, pars, Delta=None, c1=None):
 ## 15D. Constant vs Structured \(L(z)\) — Simplifications
 
 General mapping (from 15C):
-\[
+$$
 \partial_z^2 Ri_g=(\zeta'_z)^2\,\partial_\zeta^2 Ri_g+\zeta''_z\,\partial_\zeta Ri_g,\quad
 \zeta'_z=\frac{L-zL'}{L^2},\ \zeta''_z=-\frac{2L'}{L^{2}}-\frac{zL''}{L^{2}}+\frac{2z(L')^{2}}{L^{3}}.
-\]
+$$
 
 Special cases:
 
 1. Constant \(L=L_0\):
-\[
+$$
 \partial_z^2 Ri_g=\frac{1}{L_0^2}\partial_\zeta^2 Ri_g.
-\]
+$$
 
 2. Affine \(L=L_0+\lambda z\):
-\[
+$$
 \zeta'_z=\frac{L_0}{(L_0+\lambda z)^2},\quad
 \zeta''_z=-\frac{2\lambda L_0}{(L_0+\lambda z)^3}.
-\]
+$$
 
 3. Power-law \(L=L_0(z/z_0)^p\):
-\[
+$$
 L'=\frac{pL}{z},\ L''=\frac{p(p-1)L}{z^2},\quad
 \zeta'_z=\frac{1-p}{L},\ \zeta''_z=\frac{p(2p-1)}{zL}.
-\]
+$$
 
 4. Exponential \(L=L_0 e^{\lambda z}\):
-\[
+$$
 \zeta'_z=\frac{e^{-\lambda z}}{L_0}(1-\lambda z),\quad
 \zeta''_z=\frac{e^{-\lambda z}}{L_0}(\lambda^{2} z -2\lambda).
-\]
+$$
 
 Neglect test:
-\[
+$$
 E_{\text{omit}}=\left|\frac{\zeta''_z\,\partial_\zeta Ri_g}{(\zeta'_z)^2\,\partial_\zeta^2 Ri_g}\right|.
-\]
+$$
 Use constant-\(L\) form if \(E_{\text{omit}}<\epsilon\) (e.g. 5%).
 
 Perturbative small variation: \(L=L_0(1+\delta\ell(z)), |\delta|\ll1\):
-\[
+$$
 \zeta'_z=\frac{1}{L_0}\big[1-\delta(\ell+z\ell')\big]+O(\delta^2),\quad
 \zeta''_z=\frac{-\delta}{L_0}\big[2\ell'+z\ell''-2z\ell'^2\big]+O(\delta^2).
-\]
+$$
 
 Implementation hook (switch):
 ```python

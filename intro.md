@@ -41,7 +41,7 @@ Core definitions
   - Example stable branch: \(\phi_{m,h}=(1-\beta_{m,h}\zeta)^{-\alpha_{m,h}}\) with domain guard \(1-\beta\zeta>0\).
 
 Gradient Richardson number (MOST form)
-- \(Ri_g(\zeta)=\zeta\,\phi_h/\phi_m^2=\zeta F(\zeta)\).
+- $Ri_g(\zeta)=\zeta\,\phi_h/\phi_m^2=\zeta F(\zeta)$.
 
 Notes for students
 - L can vary with height and time in real SBLs; start with bulk L and add local-L mapping when needed.
@@ -51,11 +51,10 @@ Notes for students
 ## 2. Curvature of Ri_g and Why It Matters (Slide 7–10)
 
 Compact curvature formula
-- \(\frac{d^2 Ri_g}{d\zeta^2}=F[2V_{\log}+\zeta(V_{\log}^2-W_{\log})]\),
-  with \(F=\phi_h/\phi_m^2\), \(V_{\log}=(\phi_h'/\phi_h)-2(\phi_m'/\phi_m)\), \(W_{\log}=dV_{\log}/d\zeta\).
+- $ \dfrac{d^2 Ri_g}{d\zeta^2}=F\big[2V_{\log}+\zeta\,(V_{\log}^2-W_{\log})\big]$, with $F=\phi_h/\phi_m^2$, $V_{\log}=(\phi_h'/\phi_h)-2(\phi_m'/\phi_m)$, $W_{\log}=dV_{\log}/d\zeta$.
 
 Neutral curvature invariant
-- \(\Delta=\alpha_h\beta_h-2\alpha_m\beta_m\), \( \left.\frac{d^2 Ri_g}{d\zeta^2}\right|_0=2\Delta\).
+- $\Delta=\alpha_h\beta_h-2\alpha_m\beta_m$, and $\left.\dfrac{d^2 Ri_g}{d\zeta^2}\right|_0=2\Delta$.
 - Interpretation: sign sets initial concavity; magnitude sets strength of early departure from linearity.
 
 Practical impact
@@ -463,9 +462,10 @@ c1    = ah*bh*bh - 2*am*bm*bm
 ```
 
 Variable \(L(z)\) mapping (if required):
-\[
-\frac{d^2 Ri_g}{dz^2} \approx \frac{1}{L^2} \frac{d^2 Ri_g}{d\zeta^2} \quad\text{(if }E_{\text{omit}} \text{ small)}.
-\]
+$$
+\frac{d^2 Ri_g}{dz^2} \;\approx\; \frac{1}{L^2}\,\frac{d^2 Ri_g}{d\zeta^2}
+\quad \text{if } E_{\text{omit}}<0.05.
+$$
 
 ---
 
@@ -508,4 +508,6 @@ If desired, proceed to:
 
 For stable boundary layers on coarse grids, uncorrected bulk Richardson number underestimates true near-surface stability due to concave-down \(Ri_g(\zeta)\). Analytic curvature (through \(\Delta\) and higher terms) enables bias-aware eddy diffusivity adjustment while preserving neutral physics. Careful parameter selection (SBL-focused), optional quadratic surrogates, and variable-\(L\) diagnostics reduce grid sensitivity and improve physical fidelity of nocturnal cooling and turbulence suppression.
 
-<!-- End revised introductory overview -->
+Scalar extension:
+- Generic $q$: $K_q=\kappa z u_*/\phi_q$, $f_q(Ri_g)=1/(\phi_m\phi_q)$, $Sc_t^{(q)}=\phi_q/\phi_m$.
+Near-neutral $f_q\approx 1+a_q Ri_g+(b_q-a_q\Delta+2a_m a_q)Ri_g^2$.

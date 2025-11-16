@@ -72,3 +72,46 @@ While theory requires $Ri_g(\zeta) \to Ri_c$ as $\zeta \to \infty$, the actual v
 * **Observations of Strong Stability:** Some field data and recent research suggest that turbulence can survive, albeit intermittently and in highly anisotropic form, at $Ri$ values **much greater than 0.25** (even $Ri > 1$). In this regime, the traditional MOST framework breaks down, and the flow is no longer considered "fully turbulent."
 
 **Conclusion:** Your analytical structure is a robust way to enforce physical constraints. By requiring the exponents of your stability functions to satisfy $\mathbf{\alpha_h = 2\alpha_m + 1}$, you ensure that the *parameterization itself* respects the theoretical **asymptotic limit** $Ri_g \to Ri_c$ required for consistency with the overall MOST framework.
+
+# Critical Richardson Number: Static vs Dynamic and Curvature Link
+
+## 1. Classical Rc
+Operational threshold (often 0.20–0.25) for turbulence suppression; empirical persistence observed up to Ri_g≈1 with prior TKE.
+
+## 2. Curvature Perspective
+Rapid concave-down growth (large |Δ|) accelerates approach to Rc in point Ri_g while bulk Ri_b lags ⇒ need dynamic adjustment.
+
+Neutral invariant:
+$$2\Delta=\left.\frac{d^2Ri_g}{d\zeta^2}\right|_{0}.$$
+If |Δ| large, apply Rc inflation to avoid premature cutoff.
+
+## 3. Dynamic Form
+$$Ri_c^*=Ri_c\Big[1+\alpha_B\Big(\frac{Ri_{\text{bulk}}}{Ri_c}-1\Big)+\alpha_\Gamma\Big(\frac{\Gamma}{\Gamma_{\text{ref}}}-1\Big)+\alpha_{\text{mem}}\frac{\text{TKE}_{prev}}{\text{TKE}_{ref}}\Big],$$
+clip to [Ri_{c,\min}, Ri_{c,\max}].
+
+Terms:
+- Bulk ratio: compensates layer averaging deficit.
+- Lapse rate Γ: stronger inversion → larger Rc*.
+- Memory (TKE_prev): turbulence persistence.
+
+## 4. Hysteresis
+Stable decay path Ri_g↑ with TKE>0; restart path after collapse needs Ri_g < Ri_{restart} < Ri_c^*. Curvature sharpens separation.
+
+## 5. Implementation Sketch
+```python
+def ric_star(Ri_bulk, lapse, tke_prev, p):
+    Rc= p.Rc0
+    termB = p.aB * max(Ri_bulk/Rc - 1, 0.0)
+    termG = p.aG * max(lapse/p.lapse_ref - 1, 0.0)
+    termM = p.aM * min(tke_prev/p.tke_ref, 1.0)
+    val = Rc * (1 + termB + termG + termM)
+    return min(max(val, p.Rc_min), p.Rc_max)
+```
+
+## 6. Curvature-Guided Tuning
+Heuristic:
+- If $|2\Delta|> \Delta_{thr}$ increase aB.
+- If inflection ζ_inf exists below first model level, increase aG to delay cutoff.
+
+## 7. Summary
+Dynamic Rc* aligns turbulence persistence with curvature-driven stratification growth; neutral curvature preserved while tail behavior adaptively moderated.

@@ -9,6 +9,9 @@ Key Feedback Loops
 4. Permafrost Carbon Feedback: Thaw → CO₂/CH₄ release → added radiative forcing → continued thaw.
 5. Sea‑Ice – Cloud Coupling: Open water increases heat/moisture flux → cloud changes that can either trap heat (winter) or alter shortwave balance (summer).
 
+## Curvature–Pr_t Link in Amplification
+Bias $Ri_b<Ri_g(z_g)$ (Δ<0) → overmixing → weakened inversion → increased nocturnal heat loss suppression signal error. Preserving $2\Delta$ and correct $Pr_t(Ri_g)$ slope stabilizes inversion retention, improving surface flux partition and timing of amplified warming feedbacks.
+
 Why It Matters Beyond the Arctic
 - Jet Stream Geometry: Enhanced meridional gradients can promote amplified Rossby wave patterns, increasing persistence of blocking or “stuck” weather regimes.
 - Cold Air Outbreak Modulation: Fewer but sometimes sharper excursions; planning must consider warm‑biased winters punctuated by short, intense cold events.

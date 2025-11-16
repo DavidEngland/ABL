@@ -57,3 +57,5 @@
 38. Zilitinkevich, S. S., et al. (2012). Turbulence closures for SBL depth. JAS, 69, 3650–3664.
 39. Li, D., Bou‑Zeid, E. (2014). Contrasting stable regimes. Boundary‑Layer Meteorol., 155, 1–22.
 40. Mahrt, L., Thomas, C. K. (2016). Surface heterogeneity & SBL regimes. Boundary‑Layer Meteorol., 159, 3–22.
+
+Key equation tags: E-Pr1, E-Ri1–E-Ri3, E-Curv1–E-Curv2, E-G1, E-Rc1 for citation of Pr_t(Ri_g), Ri_g curvature, damping, dynamic Rc.

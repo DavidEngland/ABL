@@ -1,36 +1,30 @@
-# Curvature of the Gradient Richardson Number \(Ri_g\)
+# Curvature of the Gradient Richardson Number $Ri_g$
 
-> Note on z vs. ζ: We compute analytically in ζ = z/L (locally constant L) then map via \(\partial^2/\partial z^2=(1/L^2)\partial^2/\partial \zeta^2\). For variable \(L(z)\) use full chain rule (see Section 11).
+> Note on $z$ vs. $\zeta$: We compute analytically in $\zeta=z/L$ (locally constant $L$) then map via $\partial^2/\partial z^2=(1/L^2)\,\partial^2/\partial \zeta^2$. For variable $L(z)$ use full chain rule (see Section 11).
 
 ## 1. Purpose
-Provide a citation‑ready derivation and interpretation of \(\partial^{2}Ri_g/\partial \zeta^{2}\) for power‑law MOST stability functions supporting curvature-aware correction discussions.
+Provide a citation‑ready derivation and interpretation of $\partial^{2}Ri_g/\partial \zeta^{2}$ for power‑law MOST stability functions supporting curvature-aware correction discussions.
 
 ## 2. Definitions
-\[
-\zeta=z/L,\quad
-\phi_m=(1-\beta_m \zeta)^{-\alpha_m},\quad
-\phi_h=(1-\beta_h \zeta)^{-\alpha_h},\quad
+$$
+\zeta=z/L,\qquad
+\phi_m=(1-\beta_m \zeta)^{-\alpha_m},\qquad
+\phi_h=(1-\beta_h \zeta)^{-\alpha_h},\qquad
 (1-\beta_{m,h}\zeta)>0.
-\]
-\[
-Ri_g(\zeta)=\zeta\,\frac{\phi_h}{\phi_m^2}=\zeta F(\zeta),\quad
+$$
+$$
+Ri_g(\zeta)=\zeta\,\frac{\phi_h}{\phi_m^2}=\zeta F(\zeta),\qquad
 F=(1-\beta_h \zeta)^{-\alpha_h}(1-\beta_m \zeta)^{2\alpha_m}.
-\]
+$$
 
-Historical note. To our knowledge, the compact form \(Ri_g(\zeta)=\zeta\,\phi_h(\zeta)/\phi_m(\zeta)^2\) was explicitly written in England & McNider (1995, Boundary‑Layer Meteorology). Earlier MOST papers define \(\phi_{m,h}\) and \(Ri_g\) components but often did not print this exact composition.
-
-Verification checklist (quick search tips):
-- Search pre‑1995 literature (Boundary‑Layer Meteorology, QJRMS, JAM) for exact strings:
-  - "Ri_g = ζ φ_h / φ_m^2", "Ri = ζ φ_h / φ_m^2", "Ri_g = ζ F(ζ), F = φ_h/φ_m^2".
-- Check Businger et al. (1971), Dyer (1974), Högström (1988), Beljaars & Holtslag (1991) for explicit printed equality (not just implied via definitions).
-- Use Google Scholar/ADS with quotes and Greekless variants ("phi_h/phi_m^2", "Ri_g = zeta F(zeta)").
-- If needed, query Web of Science/Scopus by topic "gradient Richardson number surface layer" with year < 1995 and scan PDFs for the formulation.
+Historical note. The compact form $Ri_g(\zeta)=\zeta\,\phi_h(\zeta)/\phi_m(\zeta)^2$ is explicitly used in England & McNider (1995, BLM).
 
 ## 3. Curvature
-\[
-\frac{dRi_g}{d\zeta}=F(1+\zeta V_{\log}),\qquad
-\boxed{\frac{d^{2}Ri_g}{d\zeta^{2}}=F\big[2V_{\log}+\zeta(V_{\log}^2-W_{\log})\big]}.
-\]
+$$
+\frac{dRi_g}{d\zeta}=F\big(1+\zeta V_{\log}\big),\qquad
+V_{\log}=\frac{\alpha_h\beta_h}{1-\beta_h\zeta}-\frac{2\alpha_m\beta_m}{1-\beta_m\zeta}.
+$$
+Evaluate variable-$L$ effects per the chain rule when needed.
 
 ## 4. Neutral Limit
 \[
@@ -128,3 +122,8 @@ Curvature depends only on \(F,V_{\log},W_{\log}\); neutral behavior controlled b
 - Compute \(\Delta,c_1\) for candidate (α,β) sets.
 - Tabulate \(A(\zeta)\) below 0.7/β.
 - Evaluate \(E_{\text{omit}}\) for variable \(L(z)\) cases.
+
+## Addendum: Pr_t Neutral Link
+Since $Pr_t=\phi_h/\phi_m$ and $Ri_g=\zeta \phi_h/\phi_m^2$, neutral slopes ($a_h,a_m$) set both $Pr_t'(0)=a_h-a_m$ and curvature $d^2Ri_g/d\zeta^2|_0=2(a_h-2a_m)$; corrections must leave these unchanged.
+
+Generic scalar mapping: $f_q(Ri_g)=1/(\phi_m\phi_q)$; neutral slopes $a_q$ enter via expansion $f_q\approx1+a_q Ri_g+(b_q-a_q\Delta+2a_m a_q)Ri_g^2$.

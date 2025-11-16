@@ -2,13 +2,13 @@
 
 ## Executive Summary
 
-Coarse vertical grids in atmospheric models systematically underestimate near-surface stability in the stable boundary layer (SBL), leading to excessive turbulent mixing and warm-biased surface temperatures. This document provides a comprehensive framework for **curvature-aware corrections** that preserve neutral physics (the invariant 2Δ) while reducing grid-induced bias by 40%+ in operational settings.
+Coarse vertical grids in atmospheric models systematically underestimate near-surface stability in the stable boundary layer (SBL), leading to excessive turbulent mixing and warm-biased surface temperatures. This document provides a comprehensive framework for curvature-aware corrections that preserve neutral physics (the invariant $2\Delta$) while reducing grid-induced bias by 40%+ in operational settings.
 
-**Key Innovation:** Analytic curvature of the gradient Richardson number Ri_g(ζ) quantifies the nonlinear stability structure; preserving the neutral curvature
-\[
-2\Delta = 2\Big[\Big.\frac{d\ln\phi_h}{d\zeta}\Big|_{\zeta=0} - 2\Big.\frac{d\ln\phi_m}{d\zeta}\Big|_{\zeta=0}\Big]
-\]
-anchors the correction to physically consistent near-neutral SBL behavior (for linear-stable: Δ = a_h/\mathrm{Pr} − 2a_m) while damping coarse-grid tail effects.
+Key innovation: Analytic curvature of the gradient Richardson number $Ri_g(\zeta)$ quantifies the nonlinear stability structure; preserving the neutral curvature
+$$
+2\Delta \;=\; 2\left[\left.\frac{d\ln\phi_h}{d\zeta}\right|_{\zeta=0} - 2\left.\frac{d\ln\phi_m}{d\zeta}\right|_{\zeta=0}\right]
+$$
+anchors the correction to physically consistent near-neutral SBL behavior (for linear-stable: $\Delta = a_h/\mathrm{Pr} - 2a_m$) while damping coarse-grid tail effects.
 
 ---
 
@@ -21,15 +21,15 @@ anchors the correction to physically consistent near-neutral SBL behavior (for l
 
 ### 1.2 Root Cause
 Second derivative ∂²Ri_g/∂ζ² < 0 (concave-down) for typical stable parameter sets → layer-averaging inequality (Jensen):
-\[
+$$
 Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g(z_g),
 \quad z_g = \sqrt{z_0 z_1}.
-\]
+$$
 
 Bias amplification ratio:
-\[
+$$
 B = \frac{Ri_g(z_g)}{Ri_b} > 1,
-\]
+$$
 often B ≈ 1.3–2.0 for strongly stable cases with coarse Δz.
 
 ---
@@ -38,49 +38,50 @@ often B ≈ 1.3–2.0 for strongly stable cases with coarse Δz.
 
 ### 2.1 Core Definitions
 Monin–Obukhov similarity:
-\[
-\zeta = \frac{z}{L},\quad L = -\frac{u_*^3 \theta}{κ g \,\overline{w'\theta'}},
-\]
-\[
-\phi_m(\zeta) = \frac{κ z}{u_*}\frac{\partial U}{\partial z},\quad
-\phi_h(\zeta) = \frac{κ z}{\theta_*}\frac{\partial \theta}{\partial z},\quad
-\theta_* = -\frac{\overline{w'\theta'}}{u_*}.
-\]
+$$
+\zeta \;=\; \frac{z}{L},\qquad
+L \;=\; -\frac{u_*^3 \,\theta}{\kappa g \,\overline{w'\theta'}}
+$$
+$$
+\phi_m \;=\; \frac{\kappa z}{u_*}\frac{\partial U}{\partial z},\qquad
+\phi_h \;=\; \frac{\kappa z}{\theta_*}\frac{\partial \theta}{\partial z},\quad
+\theta_* \;=\; -\frac{\overline{w'\theta'}}{u_*}
+$$
 
 Gradient Richardson number:
-\[
-Ri_g(\zeta) = \zeta\,\frac{\phi_h}{\phi_m^2} = \zeta F(\zeta),\quad F = \frac{\phi_h}{\phi_m^2}.
-\]
+$$
+Ri_g(\zeta) \;=\; \zeta\,\frac{\phi_h}{\phi_m^2} \;=\; \zeta\,F(\zeta),\qquad F \;=\; \frac{\phi_h}{\phi_m^2}.
+$$
 
 ### 2.2 Logarithmic Sensitivities
-\[
+$$
 v_m = \frac{\phi_m'}{\phi_m},\quad v_h = \frac{\phi_h'}{\phi_h},\quad
 V_{\log} = v_h - 2v_m,\quad W_{\log} = V_{\log}'.
-\]
+$$
 
 ### 2.3 Curvature Expression
-\[
+$$
 \boxed{\frac{d^2 Ri_g}{d\zeta^2} = F\left[2V_{\log} + \zeta\left(V_{\log}^2 - W_{\log}\right)\right]}.
-\]
+$$
 
 Neutral limit (ζ → 0) [SBL-generic]:
-\[
+$$
 \boxed{\Delta = V_{\log}(0) = \Big.\frac{d\ln\phi_h}{d\zeta}\Big|_{0} - 2\Big.\frac{d\ln\phi_m}{d\zeta}\Big|_{0}},\quad
 \left.\frac{d^2 Ri_g}{d\zeta^2}\right|_0 = 2\Delta.
-\]
+$$
 For linear-stable φ_m = 1 + a_m ζ, φ_h = \mathrm{Pr} + a_h ζ: Δ = a_h/\mathrm{Pr} − 2a_m.
 
 ### 2.4 Near-Neutral Series
-\[
+$$
 Ri_g(\zeta) = \zeta + \Delta\zeta^2 + \tfrac{1}{2}(\Delta^2 + c_1)\zeta^3 + O(\zeta^4),
-\]
-\[
+$$
+$$
 \boxed{c_1 = \Big.\frac{d^2\ln\phi_h}{d\zeta^2}\Big|_{0} - 2\Big.\frac{d^2\ln\phi_m}{d\zeta^2}\Big|_{0}}
-\]
+$$
 Inversion:
-\[
+$$
 \zeta(Ri) = Ri - \Delta Ri^2 + \left(\tfrac{3}{2}\Delta^2 - \tfrac{1}{2}c_1\right)Ri^3 + O(Ri^4).
-\]
+$$
 
 ---
 
@@ -88,10 +89,10 @@ Inversion:
 
 ### 3.1 Power-Law (Businger–Dyer) — Unstable Only (ζ < 0; do not use for SBL)
 // Retain for context but mark as inapplicable to ζ>0
-\[
-\phi_m = (1 - \beta_m\zeta)^{-\alpha_m},\quad
-\phi_h = (1 - \beta_h\zeta)^{-\alpha_h},\quad \zeta < 0.
-\]
+$$
+\phi_m = (1 - \beta_m\zeta)^{-\alpha_m},\qquad
+\phi_h = (1 - \beta_h\zeta)^{-\alpha_h},\qquad \zeta < 0.
+$$
 **Not applicable to SBL (ζ > 0). Using this in stable regimes is a misapplication and leads to incorrect curvature and poles.**
 **Limitations (for unstable regime context only):**
 - Finite-height pole at ζ = 1/β → requires hard cutoff or guard.
@@ -99,19 +100,19 @@ Inversion:
 - Rapid growth causes excessive sensitivity to Δz.
 
 ### 3.2 Linear Stable (Högström, Beljaars–Holtslag)
-\[
-\phi_m = 1 + a_m\zeta,\quad \phi_h = \mathrm{Pr} + a_h\zeta,\quad \zeta>0.
-\]
-**Curvature:** Δ = a_h/\mathrm{Pr} − 2a_m (concave-down if Δ < 0).
+$$
+\phi_m \;=\; 1 + a_m\,\zeta,\qquad \phi_h \;=\; \mathrm{Pr} + a_h\,\zeta,\qquad \zeta>0
+$$
+Curvature: $\Delta = a_h/\mathrm{Pr} - 2a_m$ (concave-down if $\Delta<0$).
 **Limitations:**
 - Curvature is constant in the neutral limit; may under-represent curvature growth aloft.
 - May overmix if a_h/\mathrm{Pr} ≈ 2a_m (Δ ≈ 0).
 
 ### 3.3 Beljaars–Holtslag (1991)
 Hybrid polynomial + exponential:
-\[
+$$
 \phi_m = 1 + a\zeta + b\zeta\left[1 + c\zeta\right]^{1/3}.
-\]
+$$
 
 **Advantages:** Smoother, no hard pole.  
 **Limitations:** Complex functional form, parameters empirically tuned, still exhibits grid sensitivity.
@@ -127,41 +128,36 @@ Hybrid polynomial + exponential:
 4. **Monotonicity:** Avoid introducing spurious oscillations or instabilities.
 
 ### 4.2 Grid Damping Factor Approach
-
 Modify eddy diffusivities:
-\[
-K_m^* = K_m \times G(\zeta, \Delta z),\quad
-K_h^* = K_h \times G(\zeta, \Delta z),
-\]
-
-**Constraints on G:**
-\[
-\begin{aligned}
-G(0, \Delta z) &= 1, \quad\text{(preserve 2Δ)}\\
-\left.\frac{\partial G}{\partial \zeta}\right|_{\zeta=0} &= 0, \quad\text{(preserve first derivative)}\\
-\lim_{\Delta z \to 0} G(\zeta, \Delta z) &= 1, \quad\text{(grid convergence)}\\
-G(\zeta, \Delta z) &\le 1, \quad\text{monotone non-increasing in ζ for fixed coarse Δz)}.
-\end{aligned}
-\]
-
-**Functional Template:**
-\[
-\boxed{G(\zeta, \Delta z) = \exp\left[-D\left(\frac{\Delta z}{\Delta z_r}\right)^p\left(\frac{\zeta}{\zeta_r}\right)^q\right]},
-\]
+$$
+K_m^* \;=\; K_m \times G(\zeta,\Delta z),\qquad
+K_h^* \;=\; K_h \times G(\zeta,\Delta z)
+$$
+Constraints on $G$:
+$$
+G(0,\Delta z)=1,\quad
+\left.\frac{\partial G}{\partial \zeta}\right|_{\zeta=0}=0,\quad
+\lim_{\Delta z\to 0}G=1,\quad
+\frac{\partial G}{\partial \zeta}\le 0 \text{ for fixed }\Delta z.
+$$
+Functional template:
+$$
+G(\zeta,\Delta z) \;=\; \exp\!\left[-D\left(\frac{\Delta z}{\Delta z_r}\right)^{p}\left(\frac{\zeta}{\zeta_r}\right)^{q}\right],\qquad p\ge 1,\;q\ge 2.
+$$
 with:
-- p ≥ 1 (grid-ratio exponent),
-- q ≥ 2 (ensures ∂G/∂ζ|₀ = 0),
-- D: calibration coefficient (target bias reduction),
+- $p \ge 1$ (grid-ratio exponent),
+- $q \ge 2$ (ensures ∂G/∂ζ|₀ = 0),
+- $D$: calibration coefficient (target bias reduction),
 - Reference scales: Δz_r = 10 m, ζ_r = 0.5.
 
 ### 4.3 Tail Modifier in φ Functions (Alternative)
 
 Embed correction directly:
-\[
-\phi_m^*(\zeta, \Delta z) = \phi_m(\zeta) \times f_c(\zeta, \Delta z),\quad
+$$
+\phi_m^*(\zeta, \Delta z) = \phi_m(\zeta) \times f_c(\zeta, \Delta z),\qquad
 \phi_h^*(\zeta, \Delta z) = \phi_h(\zeta) \times f_c(\zeta, \Delta z),
-\]
-with same exponential form for f_c, calibrated to preserve V_log(0) and W_log(0).
+$$
+with same exponential form for $f_c$, calibrated to preserve $V_{\log}(0)$ and $W_{\log}(0)$.
 
 **Advantage:** Unified treatment in similarity framework.  
 **Disadvantage:** Requires careful chain-rule handling in flux–gradient relationships.
@@ -169,18 +165,18 @@ with same exponential form for f_c, calibrated to preserve V_log(0) and W_log(0)
 ### 4.4 Quadratic SBL Surrogate (Q-SBL)
 
 For ζ ∈ [0, ζ_max] (typically ζ_max ≈ 0.2–0.3):
-\[
-\phi_m^{\text{Q}} = 1 + a_m\zeta + b_m\zeta^2,\quad
+$$
+\phi_m^{\text{Q}} = 1 + a_m\zeta + b_m\zeta^2,\qquad
 \phi_h^{\text{Q}} = \mathrm{Pr} + a_h\zeta + b_h\zeta^2,
-\]
+$$
 Choose a_m, a_h, Pr from SBL datasets (e.g., Högström, BH91, SHEBA); set b_m, b_h to match c_1 if available or via fit.
 // Removed α,β-based definitions (unstable-only).
-\[
+$$
 Ri_g^{\text{Q}} = \zeta + \Delta\zeta^2 + \tfrac{1}{2}(\Delta^2 + c_1)\zeta^3,
-\]
-\[
+$$
+$$
 \frac{d^2 Ri_g^{\text{Q}}}{d\zeta^2} = 2\Delta + 3(\Delta^2 - c_1)\zeta.
-\]
+$$
 
 **Advantages:**
 - No finite-height pole.
@@ -216,9 +212,9 @@ Ri_g^{\text{Q}} = \zeta + \Delta\zeta^2 + \tfrac{1}{2}(\Delta^2 + c_1)\zeta^3,
 ### 5.2 Bias Amplification Ratio
 
 At first model level (z₀ to z₁):
-\[
+$$
 B = \frac{Ri_g(z_g)}{Ri_b},\quad z_g = \sqrt{z_0 z_1}.
-\]
+$$
 
 **Target Performance:**
 - Fine grid (Δz ≈ 10 m): B ≈ 1.0–1.05.
@@ -237,14 +233,14 @@ B = \frac{Ri_g(z_g)}{Ri_b},\quad z_g = \sqrt{z_0 z_1}.
 ### 5.4 Variable L(z) Omission Metric
 
 If L varies with height:
-\[
-E_{\text{omit}} = \left|\frac{(d^2\zeta/dz^2)(dRi_g/d\zeta)}{(d\zeta/dz)^2(d^2Ri_g/d\zeta^2)}\right|.
-\]
+$$
+E_{\text{omit}} \;=\; \left|\frac{(d^2\zeta/dz^2)(dRi_g/d\zeta)}{(d\zeta/dz)^2(d^2Ri_g/d\zeta^2)}\right|.
+$$
 
-**Threshold:** Use constant-L mapping if E_omit < 0.05; otherwise apply full chain rule:
-\[
+**Threshold:** Use constant-L mapping if $E_{\text{omit}} < 0.05$; otherwise apply full chain rule:
+$$
 \frac{d^2Ri_g}{dz^2} = \left(\frac{d\zeta}{dz}\right)^2\frac{d^2Ri_g}{d\zeta^2} + \frac{d^2\zeta}{dz^2}\frac{dRi_g}{d\zeta}.
-\]
+$$
 
 ---
 
@@ -306,9 +302,9 @@ for k in range(nz):
 **Surface Layer (k=0):**
 - Use bulk Richardson number Ri_b or reconstruct Ri_g(z_g) via geometric mean.
 - Apply logarithmic transformation for z₀ dependence:
-  \[
+  $$
   \frac{\partial}{\partial z} = \frac{1}{z}\frac{\partial}{\partial \ln z}.
-  \]
+  $$
 
 **First Interior Level (k=1):**
 - Critical layer for curvature bias; apply strongest correction here.
@@ -336,19 +332,15 @@ for k in range(nz):
 
 ### 7.2 Observational Validation
 
-**ARM NSA (Alaska):**
-- 60 m tower (10 levels); radiative SBL dominance.
-- Stable nights (>6 h continuous ζ > 0.1).
-- Compare modeled vs observed: Ri_g(z), θ(z), U(z), surface fluxes.
+**ARM NSA (Alaska):** stable nights ($\zeta>0.1$).  
+**SHEBA:** assess $L(z)$ variability and omission metric
+$$
+E_{\text{omit}} \;=\; \left|\frac{(d^2\zeta/dz^2)(dRi_g/d\zeta)}{(d\zeta/dz)^2(d^2Ri_g/d\zeta^2)}\right|.
+$$
 
-**SHEBA (Arctic Sea Ice):**
-- Long-duration stable stratification; L variability assessment.
-- Test E_omit diagnostic and variable-L curvature mapping.
 
-**Urban Tower (Remote Sensing 2024 Study):**
-- 325 m megacity tower + lidar/radiometer fusion.
-- Resolution matrix: 25/50/100 m spatial × 1/30/60 min temporal.
-- Document curvature bias amplification vs aggregation.
+**Dallas/Ft. Worth (Urban):** 325 m tower + lidar/radiometer fusion.  
+**Metrics:** curvature bias amplification vs aggregation.
 
 ### 7.3 Success Criteria
 
@@ -367,9 +359,9 @@ for k in range(nz):
 ### 8.1 Dynamic Critical Richardson Number
 
 Instead of fixed Ri_c = 0.25:
-\[
+$$
 Ri_c^* = f(\text{inversion strength}, \text{shear}, \text{history}),
-\]
+$$
 based on:
 - Lapse rate Γ = ∂θ/∂z above inversion.
 - Turbulence memory (previous timestep TKE).
@@ -385,31 +377,24 @@ Ri_c_dynamic = 0.25 + 0.5 * min(gamma_inv / gamma_ref, 1.0)
 ### 8.2 Ri-Based Direct Closures
 
 Avoid ζ iteration by using Ri directly in the mixing-length form
-\[
+$$
 K_{m,h} = f_{m,h}(Ri)\; l^2\; S,
-\]
+$$
 with
-\[
+$$
 S = \sqrt{\left(\frac{\partial u}{\partial z}\right)^2 + \left(\frac{\partial v}{\partial z}\right)^2},\quad l \approx \kappa z.
-\]
-
+$$
 Mapping from MOST φ(ζ) to f(Ri) using ζ(Ri):
-\[
+$$
 \boxed{f_m(Ri) = \frac{1}{\phi_m(\zeta(Ri))^2}},\qquad
 \boxed{f_h(Ri) = \frac{1}{\phi_m(\zeta(Ri))\;\phi_h(\zeta(Ri))}}.
-\]
-This preserves K_m = u_* κ z / φ_m and K_h = u_* κ z / φ_h when l = κz and S = |\partial U/\partial z|.
-
-General lengths (l_m, l_h) and S:
-\[
-f_m = \frac{u_* \kappa z}{\phi_m\, l_m^2\, S},\qquad
-f_h = \frac{u_* \kappa z}{\phi_h\, l_h^2\, S}.
-\]
+$$
+This preserves $K_m = u_* \kappa z / \phi_m$ and $K_h = u_* \kappa z / \phi_h$ when $l = \kappa z$ and $S = |\partial U/\partial z|$.
 
 **Series Inversion (near-neutral):**
-\[
+$$
 \zeta(Ri) = Ri - \Delta Ri^2 + \left(\tfrac{3}{2}\Delta^2 - \tfrac{1}{2}c_1\right)Ri^3.
-\]
+$$
 
 **Newton Refinement (1–2 iterations):**
 ```python
@@ -450,8 +435,8 @@ K_h[k] = f_h * (l*l) * S
 ```
 
 Add: Exponential Ri-based stability function (simple, pole-free)
-- Definition (used directly in K): f(Ri) = exp(−γ Ri / Ri_c), with γ ≈ 3.2.
-- Use separate f_m,f_h if desired; maintain Pr_t consistency by choosing γ_h accordingly.
+- Definition (used directly in K): $f(Ri) = \exp(-\gamma Ri / Ri_c)$, with $\gamma \approx 3.2$.
+- Use separate $f_m,f_h$ if desired; maintain Pr_t consistency by choosing $\gamma_h$ accordingly.
 
 ---
 
@@ -514,24 +499,24 @@ Add: Exponential Ri-based stability function (simple, pole-free)
 **McNider Lead Tasks:**
 1. **Turbulence Memory Parameter:**
    - Develop persistence metric for Ri_c evolution:
-     \[
+     $$
      Ri_c(t) = Ri_{c,\text{eq}} + \tau_{\text{mem}} \frac{d\text{TKE}}{dt},
-     \]
+     $$
    - Link to LLJ acceleration/deceleration cycles.
    - Validate against CASES-99 intermittent nights.
 
 2. **Collapse Prediction Metric:**
    - Formulate curvature-based early warning for turbulence shutdown:
-     \[
+     $$
      \Lambda_{\text{collapse}} = \frac{|\partial^2 Ri_g/\partial\zeta^2|}{\text{TKE}} \times \frac{\partial\theta/\partial t}{|\partial U/\partial z|}.
-     \]
+     $$
    - Identify critical thresholds from tower/LES ensembles.
 
 3. **Radiative-Turbulent Coupling:**
    - Quantify feedback between surface cooling rate and Ri_g curvature:
-     \[
+     $$
      \frac{dL}{dt} = f\left(\frac{\partial F_{\text{rad}}}{\partial z}, K_h(\zeta), \frac{d^2Ri_g}{d\zeta^2}\right).
-     \]
+     $$
    - Test sensitivity to cloud-base height and moisture stratification.
 
 **Deliverables:**
@@ -555,16 +540,16 @@ Add: Exponential Ri-based stability function (simple, pole-free)
 
 2. **Grid Resolution Study for Air Quality:**
    - Extend curvature bias analysis to CMAQ/CAMx frameworks:
-     \[
+     $$
      E_{\text{AQ}} = \left|\frac{C_{\text{model}}(\Delta z) - C_{\text{obs}}}{C_{\text{obs}}}\right| \text{ vs } B(\Delta z).
-     \]
+     $$
    - Target: Reduce nighttime O₃ overprediction by 30% in stable events.
 
 3. **Deposition Velocity Corrections:**
    - Reassess v_d(z₀) under corrected K_h:
-     \[
+     $$
      v_d^* = \frac{1}{r_a + r_b + r_c}, \quad r_a^* = \int_{z_0}^{z_r} \frac{dz}{K_h^*(z)}.
-     \]
+     $$
    - Impact on dry deposition fluxes for O₃, NO₂, SO₂.
 
 4. **Regulatory Model Protocol:**
@@ -586,16 +571,16 @@ Add: Exponential Ri-based stability function (simple, pole-free)
 **McNider Lead Tasks:**
 1. **Slope-Modified Stability Functions:**
    - Generalize ζ to include buoyancy-shear angle θ_s:
-     \[
+     $$
      \zeta_s = \zeta \cos\theta_s + \text{drainage forcing term}.
-     \]
+     $$
    - Derive curvature correction for anabatic/katabatic regimes.
 
 2. **Valley Cold Pool Dynamics:**
    - Link inversion strength to curvature-induced mixing suppression:
-     \[
+     $$
      \frac{d\theta_{\text{pool}}}{dt} = Q_{\text{rad}} - \nabla \cdot (K_h^* \nabla \theta) + \text{advection}.
-     \]
+     $$
    - Test in Great Basin, Intermountain West winter inversions.
 
 3. **LLJ-Topography Interaction:**
@@ -621,9 +606,9 @@ Add: Exponential Ri-based stability function (simple, pole-free)
 
 2. **Anthropogenic Heat Flux Impact:**
    - Add Q_anth to surface energy budget:
-     \[
-     L^{-1} = -\frac{κ g}{\theta u_*^3}(\overline{w'\theta'}_{\text{turb}} + Q_{\text{anth}}/\rho c_p).
-     \]
+     $$
+     L^{-1} = -\frac{\kappa g}{\theta u_*^3}(\overline{w'\theta'}_{\text{turb}} + Q_{\text{anth}}/\rho c_p).
+     $$
    - Assess curvature sensitivity to Q_anth diurnal/weekly cycles.
 
 3. **Pollution "Hot Spots" Under Weak Mixing:**
@@ -661,3 +646,10 @@ Add: Exponential Ri-based stability function (simple, pole-free)
 - Workshop: "Integrating Remote Sensing and In-Situ Data for SBL Research."
 
 ---
+
+### Scalar (q) Extension
+Apply same grid damping $G$:
+\[
+K_q^*=K_q G,\quad K_q=\frac{\kappa z u_*}{\phi_q},\quad f_q(Ri_g)=\frac{1}{\phi_m\phi_q}.
+\]
+Bias metrics identical; preserve neutral curvature (2Δ) for momentum, derive $a_q,b_q$ from scalar profile fits.

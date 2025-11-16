@@ -542,3 +542,12 @@ Practical guidance
 
 Notes for Arctic use
 - Expect stronger |Δ| and higher ζ; prioritize SBL-calibrated φ (SHEBA/Arctic fits) and variable-L mapping checks (E_omit diagnostic).
+
+## Implementation Insert (Pr_t and Curvature)
+Steps:
+1. Fit (a_m,a_h,b_m,b_h) stable segments (Arctic cases).
+2. Compute Δ=a_h-2a_m; store 2Δ.
+3. Ri_g profile; bias B=Ri_g(z_g)/Ri_b.
+4. If B>B_target: apply $G(\zeta,\Delta z)$ with neutral constraints.
+5. Pr_t(Ri_g) from φ ratio at ζ(Ri_g); ensure unchanged near-neutral slope $(a_h-a_m)$.
+6. Report: {2Δ, B reduction %, max|curv|, ζ_inf (if), Pr_t curvature sign}.

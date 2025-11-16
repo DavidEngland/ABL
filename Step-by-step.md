@@ -7,9 +7,6 @@ Step-by-step
 
 Add LinkedIn awareness post content.
 
-````markdown
-<!-- ...existing code... -->
-
 ## LinkedIn Post: Arctic Amplification & Feedbacks
 
 Arctic Amplification is not just “the Arctic warms faster.” It is a web of reinforcing feedbacks accelerating regional change and exporting volatility to mid‑latitudes.
@@ -43,6 +40,18 @@ Call to Engage
 Connect to discuss integrating advanced stability diagnostics and planetary feedback awareness into operational climate risk workflows.
 
 <!-- End LinkedIn Post -->
-````
 
-Made changes.
+# Implementation Steps: Pr_t(Ri) and Curvature-Aware Correction
+
+1. Fit stable φ_m, φ_h coefficients (a_m,a_h,b_m,b_h) or power-law (α,β).
+2. Compute Δ=a_h-2a_m and c_1=b_h-2b_m; store 2Δ (neutral curvature).
+3. Evaluate Ri_g(ζ)=ζ φ_h/φ_m^2 on native fine grid; derive bulk Ri_b for coarse test spacing.
+4. Invert ζ(Ri_g) near-neutral (series seed + 1 Newton):
+   ζ₀ = Ri_g - Δ Ri_g²; apply Newton if Ri_g > Ri_thresh.
+5. Map φ_m, φ_h → f_m(Ri), f_h(Ri); obtain Pr_t(Ri)=φ_h/φ_m.
+6. Compute bias B=Ri_g(z_g)/Ri_b; if B>B_target apply damping:
+   G=exp[-D (Δz/Δz_r)^p (ζ/ζ_r)^q].
+7. Adjust K_m,K_h: multiply by G; ensure G(0)=1, ∂G/∂ζ|₀=0.
+8. Optional: dynamic Ri_c^* from Ri_bulk, lapse rate, TKE memory.
+9. Diagnostics: {2Δ, B, max|d²Ri_g/dζ²|, ζ_inf (if any), Pr_t slope}.
+10. Validate against LES/tower; tune D,p,q to reduce B while |2Δ*−2Δ|/|2Δ|<0.05.
