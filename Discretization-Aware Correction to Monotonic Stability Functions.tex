@@ -1,0 +1,94 @@
+% Stability Function Correction Manuscript
+% LaTeX Draft
+
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{physics}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{A Discretization-Aware Correction to Monotonic Stability Functions in the Atmospheric Boundary Layer}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This manuscript develops a physically based correction \emph{fc} to commonly used stability functions \(f_s(Ri)\) that preserves mixing in coarse-resolution atmospheric boundary-layer models. When vertical resolution \(\Delta z\) is large, computed gradient Richardson numbers are artificially inflated, suppressing turbulence unrealistically. We formulate a resolution-dependent ODE for the corrected stability function, derive explicit solutions, and justify an exponential form that is pole-free, curvature-preserving, and physically consistent with shear-driven mixing. Figures and visual aids are suggested throughout.
+\end{abstract}
+
+\section{Background}
+
+A standard gradient Richardson number in discrete form is:
+\begin{equation}
+    Ri = \frac{g_0}{\theta_0} \frac{\Delta \theta}{\Delta z} \frac{(\Delta z)^2}{(\Delta V)^2},
+\end{equation}
+which increases with \(\Delta z\), causing any stability function \(f_s(Ri)\) to underestimate turbulent mixing.
+
+We seek a correction function \(f_c(Ri, \Delta z)\) satisfying the constraint:
+\begin{equation}
+    \frac{\partial}{\partial \Delta z}\big(f_s(Ri) f_c(Ri,\Delta z)\big) = 0.
+\end{equation}
+This ensures that the \emph{effective} stability function is resolution invariant.
+
+\section{Correction ODE}
+
+Let
+\begin{equation}
+    F(Ri,\Delta z) = f_s(Ri) f_c(Ri,\Delta z).
+\end{equation}
+Then the constraint yields:
+\begin{equation}
+    \frac{\partial f_c}{\partial \Delta z} = - \frac{f_c}{f_s} \frac{\partial f_s}{\partial Ri} \frac{\partial Ri}{\partial \Delta z}.
+\end{equation}
+The resolving derivative of Richardson number is:
+\begin{equation}
+    \frac{\partial Ri}{\partial \Delta z} = 2\frac{Ri}{\Delta z}.
+\end{equation}
+Hence the ODE becomes:
+\begin{equation}
+    \frac{\partial f_c}{\partial \Delta z} = -2 f_c \frac{Ri}{\Delta z} \frac{f_s'}{f_s}.
+\end{equation}
+Its solution is:
+\begin{equation}
+    f_c(Ri,\Delta z) = A(Ri) \exp\left(-2 Ri \frac{f_s'}{f_s} \ln \Delta z\right).
+\end{equation}
+The prefactor \(A(Ri)\) enforces boundary conditions (e.g., \(f_c=1\) at a reference resolution).
+
+\section{Preferred Stability Function Form}
+
+We now recommend an exponential functional form for \(f_s(Ri)\):
+\begin{equation}
+    f_m(Ri) = \exp\left(-\gamma_m \frac{Ri}{Ri_c^*}\right),
+    \qquad
+    f_h(Ri) = \exp\left(-\gamma_h \frac{Ri}{Ri_c^*}\right),
+\end{equation}
+with dimensionless coefficients \(\gamma_m, \gamma_h\) and a reference critical Richardson number \(Ri_c^*\).
+
+\subsection{Advantages}
+
+\paragraph{1. Pole-free behavior.} Unlike forms such as
+\[
+    f_{BH}(Ri) = \frac{1}{1 + \beta Ri},
+\]
+which contain an implicit pole at negative \(Ri\), the exponential model remains analytic and positive for \(Ri \ge 0\).
+
+\paragraph{2. Correct curvature in shear-dominated turbulence.} Observations from SHEBA and ARM suggest exponential decay captures the gradual suppression of shear production without introducing an artificial cutoff.
+
+\paragraph{3. Smooth behavior at high \(Ri\).} The exponential model avoids abrupt collapse of turbulence and preserves weak residual mixing, consistent with nocturnal boundary-layer measurements.
+
+\paragraph{4. Natural compatibility with the correction ODE.} The derivative ratio \(f_s'/f_s\) becomes constant:
+\[
+    \frac{f_s'}{f_s} = -\frac{\gamma}{Ri_c^*},
+\]
+which leads to a simple power-law correction:
+\begin{equation}
+    f_c(Ri,\Delta z) = \left(\frac{\Delta z}{\Delta z_0}\right)^{2 \gamma Ri / Ri_c^*}.
+\end{equation}
+Thus
+\begin{equation}
+    F(Ri,\Delta z) = f_s(Ri) f_c(Ri,\Delta z)
