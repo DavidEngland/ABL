@@ -218,6 +218,64 @@ $$
 
 ---
 
+## Part E: Computational Efficiency (Bonus +15%)
+
+### E1. Series vs Iterative Evaluation
+
+**Task:** Compare computational cost and accuracy:
+
+1. **Method A (Series + Stirling):**
+   ```python
+   phi_h = sum([comb(2*n, n) * (x**n) for n in range(10)])  # Exact
+   phi_h += sum([(4**n/sqrt(pi*n)) * (x**n) for n in range(10,15)])  # Stirling tail
+   ```
+
+2. **Method B (Newton-Raphson ζ(Ri)):**
+   ```python
+   zeta = Ri - Delta * Ri**2  # Seed
+   for _ in range(2):
+       phi_h = (1 - beta_h * zeta)**(-0.5)
+       # Derivative, update...
+   ```
+
+**Metrics:**
+- FLOP count for single evaluation
+- Vectorization efficiency (1000 points)
+- Relative error vs exact $(1 - \beta\zeta)^{-1/2}$
+
+**Expected Result:**
+- Series: ~50 FLOPs, SIMD-friendly, error $< 10^{-8}$
+- Newton: ~80 FLOPs, data-dependent convergence, error $< 10^{-10}$ (if converges)
+
+### E2. Precomputed ζ(Ri) Table
+
+**Task:** Generate lookup table via series reversion:
+$$
+\zeta = Ri - \Delta Ri^2 + \left(\frac{3}{2}\Delta^2 - \frac{1}{2}c_1\right)Ri^3 + O(Ri^4)
+$$
+
+1. Compute coefficients from central binomial Cauchy products.
+2. Evaluate ζ at $Ri \in [0, 0.5]$ (1000 points).
+3. Store as `zeta_ri_table.npy`.
+4. Benchmark interpolation vs Newton solver.
+
+**Deliverable:**
+- Plot: interpolation error vs table resolution
+- Timing comparison (1 million evaluations)
+
+### E3. Machine Precision Limits
+
+**Question:** At what order $N$ does the series saturate to machine precision ($\sim 10^{-16}$ for float64)?
+
+**Method:**
+- Compute φ_h(ζ) using $N = 5, 10, 15, 20, 30$ terms.
+- Compare to quad-precision $(1 - \beta\zeta)^{-1/2}$.
+- Plot error vs $N$.
+
+**Expected:** Series converges exponentially until rounding error dominates at $N \sim 20$–25.
+
+---
+
 ## Submission Guidelines
 
 - **Format:** Typed (LaTeX/Markdown preferred); handwritten derivations acceptable if scanned clearly.

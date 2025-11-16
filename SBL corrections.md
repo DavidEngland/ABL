@@ -691,3 +691,41 @@ If \(0<\zeta_{\text{inf}}<\zeta_1\):
 4. Skip damping or reduce D above inflection.
 
 Fallback: If numerical root ill-conditioned (|V_log| + |W_log| very small), treat layer as single-concavity for stability.
+
+### 8.5 Fast Asymptotic Evaluation via Central Binomials
+
+**Motivation:** Avoid iterative ζ(Ri) solvers for operational speed; use exact series for half-integer exponents.
+
+#### Method
+For $\alpha_h = -1/2$ (heat, unstable Businger-Dyer):
+$$
+\phi_h(\zeta) = \sum_{n=0}^{N} \binom{2n}{n} \left(\frac{\beta_h \zeta}{4}\right)^n + \text{Stirling tail}
+$$
+
+**Truncation:**
+- $N=10$ exact central binomials
+- $N_{\text{tail}} = 5$ Stirling-corrected terms: $\binom{2n}{n} \approx \frac{4^n}{\sqrt{\pi n}}(1 - \frac{1}{8n})$
+
+**Relative error:** $< 10^{-8}$ for $|\zeta| < 0.1/\beta$ (validated against exact power-law).
+
+#### Implementation Hook
+```python
+# In operational diffusion loop (replace iterative φ evaluation)
+if abs(alpha_h + 0.5) < 1e-10:
+    phi_h = phi_series_stirling(zeta, -0.5, beta_h, N_exact=10, N_asymp=5)
+else:
+    phi_h = (1 - beta_h * zeta)**(-alpha_h)  # Direct power-law
+```
+
+#### Precomputed ζ(Ri) Table
+For Ri-based closures:
+```python
+# Offline: generate lookup table via series reversion
+Ri_grid = np.linspace(0, 0.5, 1000)
+zeta_table = zeta_from_ri_series_table(Ri_grid, Delta, c1, order=6)
+
+# Online: interpolate
+zeta = np.interp(Ri, Ri_grid, zeta_table)
+```
+
+**Cost:** $O(1)$ table lookup vs $O(\log \epsilon^{-1})$ Newton iterations.
