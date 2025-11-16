@@ -66,6 +66,26 @@ Strategic focus: leverage curvature-aware MOST corrections, grid-dependence diag
 
 ---
 
+### 1D. Dynamic Critical Richardson Number and Hybrid MOST/Ri Closures
+**Title (draft):** "Adaptive Regime Transitions in Stable Boundary Layers: A Dynamic Critical Richardson Number Framework for Hybrid MOST/Ri Closures"
+
+**Target Journal:** *Monthly Weather Review* or *Journal of Applied Meteorology and Climatology*
+
+**Core Contribution:**
+- Dynamic $Ri_c^*$ formulation informed by inversion strength, shear, TKE memory
+- Seamless MOST→Ri transition with curvature-aware blending
+- Eliminates iterative L solver overhead in strong stability (>40% cost reduction)
+- Validation: SHEBA, ARM SGP, GABLS LES; regime classification accuracy >85%
+
+**Why MWR/JAMC:** Operational focus; algorithm suitable for operational NWP
+
+**Extension Hooks:**
+- Hysteresis for intermittent turbulence
+- Machine-learned blend functions
+- Coupling with TKE-based schemes (IFS, ECMWF)
+
+---
+
 ## Tier 2: Application & Validation Papers (12–24 months)
 
 ### 2A. Arctic / Polar Stable Boundary Layer Performance
