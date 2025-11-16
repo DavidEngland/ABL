@@ -127,3 +127,8 @@ Curvature depends only on \(F,V_{\log},W_{\log}\); neutral behavior controlled b
 Since $Pr_t=\phi_h/\phi_m$ and $Ri_g=\zeta \phi_h/\phi_m^2$, neutral slopes ($a_h,a_m$) set both $Pr_t'(0)=a_h-a_m$ and curvature $d^2Ri_g/d\zeta^2|_0=2(a_h-2a_m)$; corrections must leave these unchanged.
 
 Generic scalar mapping: $f_q(Ri_g)=1/(\phi_m\phi_q)$; neutral slopes $a_q$ enter via expansion $f_q\approx1+a_q Ri_g+(b_q-a_q\Delta+2a_m a_q)Ri_g^2$.
+
+## Effective Coefficients for General φ
+For any φ(ζ): extract (a,b) from near-neutral expansion; reuse Δ=a_h−2a_m, c₁=2b_h−4b_m.
+Padé(1,1) ⇒ a=p−q, b=q²−pq. Exponential ⇒ a=γ, b=½γ².
+Mixed concavity (ζ_inf root) requires piecewise Ri_b evaluation; Jensen bias only guaranteed on monotone-concavity subintervals.

@@ -660,3 +660,34 @@ Apply same grid damping $G$:
 K_q^*=K_q G,\quad K_q=\frac{\kappa z u_*}{\phi_q},\quad f_q(Ri_g)=\frac{1}{\phi_m\phi_q}.
 \]
 Bias metrics identical; preserve neutral curvature (2Δ) for momentum, derive $a_q,b_q$ from scalar profile fits.
+
+### 8.3 Alternative φ Forms and Effective Curvature
+Near-neutral expansion: φ = 1 + a ζ + b ζ² + …
+Compute effective (a,b) analytically or numerically; curvature invariant:
+\[
+\Delta=a_h-2a_m,\quad c_1=2b_h-4b_m.
+\]
+Works for Padé(1,1), exponential, damped exponential, quadratic surrogate.
+
+Padé(1,1):
+\[
+\phi=\frac{1+p\zeta}{1+q\zeta}\Rightarrow a=p-q,\ b=q^2-pq.
+\]
+Exponential:
+\[
+\phi=e^{\gamma\zeta}\Rightarrow a=\gamma,\ b=\tfrac12\gamma^2.
+\]
+Damped exponential:
+\[
+\phi=e^{\gamma\zeta}/(1+\delta\zeta)\Rightarrow a=\gamma-\delta,\ b=\tfrac12\gamma^2-\gamma\delta+\delta^2.
+\]
+
+### 8.4 Inflection-Aware Bias Correction
+Detect \(\zeta_{\text{inf}}\) from \(2V_{\log}+\zeta(V_{\log}^2-W_{\log})=0\).
+If \(0<\zeta_{\text{inf}}<\zeta_1\):
+1. Split layer at \(z_{\text{inf}}\).
+2. Compute \(Ri_{b1}, Ri_{b2}\).
+3. Apply grid damping only in \([z_0,z_{\text{inf}}]\) (concave-down).
+4. Skip damping or reduce D above inflection.
+
+Fallback: If numerical root ill-conditioned (|V_log| + |W_log| very small), treat layer as single-concavity for stability.

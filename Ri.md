@@ -84,3 +84,15 @@ Use $z_g$ for point $Ri_g$ evaluation; use $z_L$ for exact layer-averaged gradie
 
 ## 12. Summary
 Series + curvature supply analytic bridge for Ri-based closures, bias diagnostics, and neutral-invariant correction design.
+
+## 13. Mixed Concavity and Inflection Handling
+If \(d^2Ri_g/d\zeta^2\) changes sign inside a layer (inflection at \(\zeta_{\text{inf}}\)):
+- Split layer at \(z_{\text{inf}}=\zeta_{\text{inf}}L\).
+- Apply bias logic (Ri_b < Ri_g midpoint) only to concave-down segment.
+- Concave-up segment may yield \(Ri_b > Ri_g\) locally.
+Report:
+\[
+Ri_b = \frac{(z_{\text{inf}}-z_0)Ri_{b1} + (z_1-z_{\text{inf}})Ri_{b2}}{\Delta z},\quad
+B_1=\frac{Ri_g(z_{g1})}{Ri_{b1}},\ B_2=\frac{Ri_g(z_{g2})}{Ri_{b2}}.
+\]
+Use damping only below \(\zeta_{\text{inf}}\).

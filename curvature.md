@@ -485,3 +485,88 @@ def height_curvature_if_constant(L0, ri2):
 ```
 
 Apply constant shortcut where \(|z dL/L|\) and \(E_{\text{omit}}\) both small.
+
+## 20. Alternative Functional Forms: Effective Coefficients
+
+Curvature invariant depends only on the near-neutral expansion
+\[
+\phi(\zeta)=1+a\,\zeta+b\,\zeta^2+O(\zeta^3).
+\]
+For any chosen analytic form, define effective
+\[
+a=\phi'(0),\qquad b=\tfrac12\phi''(0).
+\]
+Then neutral curvature parameters become
+\[
+\Delta = a_h - 2 a_m,\qquad c_1 = 2 b_h - 4 b_m \ \text{(power-law notation equivalence)};\quad
+Ri_g = \zeta + \Delta \zeta^2 + \tfrac12(\Delta^2 + c_1)\zeta^3 + O(\zeta^4).
+\]
+
+### 20.1 Padé (1,1)
+\[
+\phi(\zeta)=\frac{1+p\zeta}{1+q\zeta}=(1+p\zeta)(1-q\zeta+q^2\zeta^2+\dots)
+\]
+Near-neutral:
+\[
+\phi=1+(p-q)\zeta+(q^2-pq)\zeta^2+O(\zeta^3)\Rightarrow a=p-q,\ b=q^2-pq.
+\]
+Use this directly for momentum / heat ⇒ substitute in Δ, c₁.
+
+### 20.2 Pure Exponential
+\[
+\phi(\zeta)=\exp(\gamma\zeta)=1+\gamma\zeta+\tfrac12\gamma^2\zeta^2+\dots
+\Rightarrow a=\gamma,\ b=\tfrac12\gamma^2.
+\]
+
+### 20.3 Damped Exponential (rational-exponential)
+\[
+\phi(\zeta)=\frac{\exp(\gamma\zeta)}{1+\delta\zeta}=\exp(\gamma\zeta)(1-\delta\zeta+\delta^2\zeta^2+\dots)
+\]
+Combine expansions:
+\[
+\phi=1+(\gamma-\delta)\zeta+\left(\tfrac12\gamma^2-\gamma\delta+\delta^2\right)\zeta^2+\dots
+\Rightarrow a=\gamma-\delta,\ b=\tfrac12\gamma^2-\gamma\delta+\delta^2.
+\]
+
+### 20.4 Arbitrary φ via Numerical Differentiation
+If closed form unavailable, approximate derivatives at ζ=0:
+\[
+a\approx\frac{\phi(h)-\phi(-h)}{2h},\qquad b\approx\frac{\phi(h)-2\phi(0)+\phi(-h)}{2h^2}
+\]
+with small h (e.g. 1e-6). Then compute Δ, c₁, curvature.
+
+## 21. Jensen Inequality, Concavity, and Inflection
+
+Jensen application assumed uniform concavity (sign of \(Ri_g''(z)\)) over layer. If an inflection \(Ri_g''(\zeta_{\text{inf}})=0\) lies inside \([\zeta_0,\zeta_1]\):
+
+1. Split integral: \(Ri_b = \frac{1}{\Delta z}\left[\int_{z_0}^{z_{\text{inf}}}Ri_g\,dz+\int_{z_{\text{inf}}}^{z_1}Ri_g\,dz\right]\).
+2. Apply Jensen separately to each sub-interval where concavity sign is constant.
+3. Bias may reverse above inflection (concave-up segment: layer mean exceeds midpoint value).
+4. Net bias depends on length-weighted contributions:
+\[
+B=\frac{Ri_g(z_g)}{Ri_b}\quad\text{no longer guaranteed }B>1.
+\]
+
+### 21.1 Inflection Detection
+Solve \(2V_{\log}+\zeta(V_{\log}^2-W_{\log})=0\) for ζ_inf; if real and \(0<\zeta_{\text{inf}}<\zeta_1\) mark layer as “mixed concavity.”
+
+### 21.2 Practical Handling
+- If \(\zeta_{\text{inf}}\) outside layer ⇒ use standard bias logic.
+- If inside:
+  - Evaluate sub-layer geometric means \(z_{g1}=\sqrt{z_0 z_{\text{inf}}}\), \(z_{g2}=\sqrt{z_{\text{inf}} z_1}\).
+  - Compute partial means \(Ri_{b1}, Ri_{b2}\).
+  - Aggregate \(Ri_b = (z_{\text{inf}}-z_0)Ri_{b1}/\Delta z + (z_1-z_{\text{inf}})Ri_{b2}/\Delta z\).
+  - Report piecewise bias indicators \(B_1,B_2\) instead of a single B.
+
+### 21.3 Correction Strategy in Mixed Concavity
+Apply damping only where concave-down (lower sub-layer); do not damp concave-up segment (avoid undermixing). Use mask:
+\[
+G(\zeta)=
+\begin{cases}
+\exp[-D(\Delta z/\Delta z_r)^p(\zeta/\zeta_r)^q], & \zeta<\zeta_{\text{inf}}\\
+1,& \zeta\ge \zeta_{\text{inf}}
+\end{cases}
+\]
+
+## 22. Summary
+Δ and c₁ generalize to any φ via effective (a,b); Padé/exponential forms map cleanly. Jensen-based bias interpretation valid only on intervals of uniform concavity; inflection requires piecewise treatment.
