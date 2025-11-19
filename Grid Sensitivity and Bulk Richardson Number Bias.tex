@@ -1,0 +1,36 @@
+\section{Grid Sensitivity and Bulk Richardson Number Bias}
+\label{sec:grid_bias}
+
+\subsection{Bulk Richardson Number}
+
+Atmospheric models discretize the vertical using finite layers. The \textbf{bulk Richardson number} across the first layer ($z_0$ to $z_1$) is
+\begin{equation}
+Ri_b = \frac{g}{\theta}\,\frac{(\theta_1-\theta_0)(z_1-z_0)}{(U_1-U_0)^2}.
+\label{eq:rib_definition}
+\end{equation}
+
+For power-law or logarithmic profiles, the dynamically representative height is the \textbf{geometric mean}
+\begin{equation}
+z_g = \sqrt{z_0 z_1}.
+\label{eq:zg}
+\end{equation}
+
+\subsection{Concavity and Underestimation}
+
+By Jensen's inequality, if $Ri_g(z)$ is concave down over $[z_0,z_1]$, the layer average satisfies
+\begin{equation}
+Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g(z_g).
+\label{eq:jensen}
+\end{equation}
+
+Thus, \textbf{$Ri_b$ systematically underestimates local stability} when $\Delta<0$. This causes turbulent diffusivities $K_m$ and $K_h$ to be overestimated, producing excessive mixing and degraded simulation of stable nocturnal boundary layers.
+
+\subsection{Amplification Ratio}
+
+Define the bias amplification ratio
+\begin{equation}
+B = \frac{Ri_g(z_g)}{Ri_b}.
+\label{eq:bias_ratio}
+\end{equation}
+
+For $\Delta<0$ and coarse $\Delta z$, $B>1$ and can exceed 1.5--2.0 in strongly stable cases.

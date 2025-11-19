@@ -1,0 +1,89 @@
+% filepath: /Users/davidengland/Documents/GitHub/ABL/McNider_Biazar_Ri_c_Status_Report.tex
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{geometry}
+\geometry{margin=1in}
+\begin{document}
+
+\begin{center}
+\LARGE\textbf{Status Report: Dynamic Critical Richardson Number (Ri\_c*)}\\[4pt]
+\normalsize For: R. McNider \& A. Biazar \\
+Date: \today
+\end{center}
+
+\section*{Purpose}
+Summarize current understanding (Ri.md material received), and request focused contributions from McNider (physics, mixing-length path) and Biazar (operational K-path, model integration) to develop, calibrate and validate a practical dynamic Ri\_c* for hybrid MOST/Ri closures.
+
+\section*{Current status (brief)}
+\begin{itemize}
+\item Ri curvature and neutral invariant $\Delta$ documented; Jensen bias (bulk vs point) identified and quantified.
+\item Proposed hybrid strategy: use Ri\_c* as regime classifier with MOST below and Ri-based closures above; blend/hysteresis specified.
+\item Prototype formula and pseudocode exist in the repository (dynamic\_Ric\_strategy.md / dynamic critical notes).
+\end{itemize}
+
+\section*{Requested contributions (clear asks)}
+\paragraph{McNider (physics lead)}
+\begin{itemize}
+\item Derive/justify physically motivated form(s) for Ri\_c*(t) using inversion strength, shear and turbulence memory; propose candidate functional forms and plausible coefficient ranges.
+\item Develop mixing-length modification functions $l^*(Ri,Ri_c^*)$ (examples: $l/(1+a_l (Ri/Ri_c^*)^n)$). Provide analytic limits to preserve neutral curvature $2\Delta$.
+\item Lead slope/terrain and intermittent turbulence tests (CASES-99, GABLS3-like LES); provide diagnostics and thresholds for hysteresis (Ri\_suppress/Ri\_restart).
+\end{itemize}
+
+\paragraph{Biazar (operational lead)}
+\begin{itemize}
+\item Prototype a multiplicative diffusivity path $K^*=K\cdot g_K(Ri,Ri_c^*)$ (exponential or power-law), implement in a small test branch of CMAQ/WRF or in the provided Python prototype.
+\item Assess computational cost, backward compatibility, and namelist options; prepare guidance for WRF/CMAQ insertion points and necessary regression tests.
+\item Lead air-quality impact experiments (urban case studies) to quantify sensitivity of nocturnal pollutant trapping to Ri\_c* tuning.
+\end{itemize}
+
+\section*{Data and benchmarks}
+\begin{itemize}
+\item Tower: SHEBA, ARM SGP, Cabauw (recommended for tuning $\alpha_\Gamma,\alpha_S,\alpha_T$).
+\item LES: GABLS suite (GABLS1–3) for "truth" curvature and regime timing.
+\item Urban: Dallas/DFW remote-sensing + tower for air-quality metrics.
+\end{itemize}
+
+\section*{Algorithm sketch}
+\begin{enumerate}
+\item Compute local diagnostics: $Ri_g(z_g)$, $Ri_b$, curvature $\partial^2Ri_g/\partial\zeta^2$, TKE (or proxy).
+\item Compute Ri\_c*:
+\[
+Ri_c^* = Ri_{c,0}\Big[1+\alpha_\Gamma\frac{\Gamma}{\Gamma_{\text{ref}}}+\alpha_S\frac{S}{S_{\text{ref}}}+\alpha_T\frac{\text{TKE}_{\text{prev}}}{\text{TKE}_{\text{ref}}}\Big]
+\]
+with optional curvature term $\alpha_{\rm curv}|\partial^2Ri_g/(2\Delta)|$.
+\item Regime logic: MOST if $Ri<0.7Ri_c^*$; blend if in band; Ri-closure if $Ri>1.3Ri_c^*$; hysteresis on/off per prior state.
+\item Choose intervention: mixing-length reduction (McNider) or K-multiplier (Biazar). Preserve $2\Delta$ by enforcing $G(0)=1$ and $G'(0)=0$.
+\end{enumerate}
+
+\section*{Validation metrics and targets}
+\begin{itemize}
+\item Bias ratio $B$ reduction: target 40\%+ reduction at $\Delta z=60$--100\,m.
+\item Surface flux RMSE reduction (tower/LES): target $<$10--15\,W\,m$^{-2}$ improvement.
+\item Regime classification accuracy vs manual/LES labels: $>$85\%.
+\item Computational overhead: $<$5\% for operational module.
+\end{itemize}
+
+\section*{Timeline (proposed)}
+\begin{itemize}
+\item 0--2 weeks: diagnostic runs and compute Ri\_c* statistics from archived WRF/LES outputs (Biazar assist with I/O).
+\item 2--8 weeks: McNider proposes candidate Ri\_c* forms and l\_mod functions; Biazar implements K-path prototype in Python/CMAQ branch.
+\item 8--20 weeks: calibration (Bayesian/optimization) on selected datasets; offline 1D column tests and LES comparisons.
+\item 20--36 weeks: integrate into WRF/CMAQ, regression tests and case studies; prepare manuscript and code release.
+\end{itemize}
+
+\section*{Deliverables}
+\begin{itemize}
+\item Parameterized Ri\_c* functional forms (analytic + code).
+\item Two intervention modules: (A) mixing-length updater; (B) K-multiplier — both with unit tests preserving $2\Delta$.
+\item Validation report: tower/LES/urban case studies and computational-cost assessment.
+\item Draft manuscript for BLM/MWR and GitHub release with examples and namelist options.
+\end{itemize}
+
+\section*{Immediate next steps for you (one-line)}
+Please confirm which intervention (mixing-length first vs K-multiplier first) you prefer to prototype; McNider to deliver physics forms, Biazar to prepare operational hooks — target diagnostic runs in 2 weeks.
+
+\vspace{6pt}
+\noindent Respectfully,\\
+Project lead (contact in repo)
+
+\end{document}
