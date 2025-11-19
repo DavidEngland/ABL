@@ -529,60 +529,18 @@ Relative error = 0.0001 (PASS)
 
 ---
 
-## 🧪 Validation Workflow
+## New: Dynamic Critical Richardson Number & Practical Notes (summary)
+- Introduce Ri_c* (dynamic) as Ri_c0 + α_inv·(inversion_strength/Γ_ref) + β_mem·(1 - TKE/TKE_ref).
+- Two intervention patterns:
+  - Modify mixing length l (physics-first, McNider lead).
+  - Modify diffusivity K (operational-first, Biazar lead).
+- Jensen diagnostic: compute B = Ri_g(z_g)/Ri_b (z_g = √(z0 z1)); B>1 indicates layer-averaging underestimates local stability.
+- Estimation recommendation: use geometric mean for point Ri_g; use log mean for exact ΔU matching; prefer Simpson/trapezoid for integrated Ri_b when profile available.
 
-### Step 1: Parameter Fitting
-```python
-# Fit (α, β) from neutral tower segments
-# → Compute Δ, c1
-# → Classify curvature sign
-```
-
-### Step 2: Functional Form Selection
-
-**NEW: Systematic comparison**
-```python
-# Given tower/LES data (Ri_obs, f_m_obs):
-# 1. Fit exponential: f = exp(-γ Ri/Ri_c)
-# 2. Fit Padé [1/1]: f = (1 + a Ri) / (1 + b Ri)
-# 3. Fit Padé [2/1]: f = (1 + a Ri + b Ri²) / (1 + c Ri)
-# 4. Compute AIC = n·ln(RMSE²) + 2k (k = num params)
-# 5. Select lowest AIC; report RMSE improvement
-```
-
-### Step 3: Curvature Diagnostics
-```python
-# Plot ∂²Ri/∂ζ² vs ζ
-# → Identify inflection points
-# → Compare neutral limit to 2Δ (validation)
-```
-
-### Step 4: Series Truncation Error
-
-**NEW: Validate central binomial truncation**
-```python
-# For half-integer exponents:
-# 1. Evaluate φ_h(ζ) using series to order N
-# 2. Compute |φ_series - φ_exact| / φ_exact
-# 3. Plot error vs N; verify exponential decay
-# 4. Report N_required for 1% accuracy
-```
-
-### Step 5: Grid Convergence Test
-```python
-# Generate Ri profiles at Δz = [5, 10, 20, 50, 100] m
-# → Measure RMSE vs fine reference
-# → Apply curvature correction
-# → Report bias reduction percentage
-```
-
-### Step 6: LES Comparison
-```python
-# Extract GABLS1 profiles (U, T, fluxes)
-# → Compute theoretical curvature
-# → Compare to LES-resolved Ri curvature
-# → Quantify agreement (R², bias, RMSE)
-```
+## Action Items (short)
+- McNider: propose l-modification functional forms and test on slope-flow cases.
+- Biazar: prototype K-multiplier in CMAQ/WRF vertical diffusion module and measure computational cost.
+- Shared: define Ri_c* calibration dataset (SHEBA, ARM, GABLS) and validation metrics (B reduction, flux RMSE, inversion height).
 
 ---
 

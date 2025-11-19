@@ -555,7 +555,7 @@ $$
 3. **Deposition Velocity Corrections:**
    - Reassess v_d(z₀) under corrected K_h:
      $$
-     v_d^* = \frac{1}{r_a + r_b + r_c}, \quad r_a^* = \int_{z_0}^{z_r} \frac{dz}{K_h^*(z)}.
+     v_d^* = \frac{1}{r_a + r_b + r_c}, \quad r_a^* = \int_{z_0}^{
      $$
    - Impact on dry deposition fluxes for O₃, NO₂, SO₂.
 
@@ -729,3 +729,64 @@ zeta = np.interp(Ri, Ri_grid, zeta_table)
 ```
 
 **Cost:** $O(1)$ table lookup vs $O(\log \epsilon^{-1})$ Newton iterations.
+
+---
+
+## 4. Dynamic Critical Richardson Number (Ri_c*) — concept and implementation
+- Purpose: allow Ri threshold to vary with inversion strength, shear history and turbulence memory to avoid rigid on/off behavior.
+- Prototype formula (operational):
+  Ri_c* = Ri_c0 + α_inv * clamp(Γ/Γ_ref,0,1) + β_mem * (1 - TKE/TKE_ref)
+  where:
+  - Ri_c0 ≈ 0.25 baseline,
+  - Γ = inversion lapse (∂θ/∂z across inversion), Γ_ref ~ observed strong inversion value,
+  - TKE_ref normalizes TKE memory (use previous timestep or running mean).
+- Interpretation: stronger inversion → larger Ri_c* (turbulence persists longer); low TKE → raise Ri_c*.
+
+## 4.1 Two operational interventions
+Option A — Modify mixing length (preferred for physics-faithful change; McNider lead)
+- l* = l · g_l(Ri, Ri_c*) where g_l ≤ 1 smooth function (e.g., g_l = 1 / (1 + a_l (Ri/Ri_c*)^n))
+- Effect: reduces eddy size directly, preserves MOST structure.
+
+Option B — Modify diffusivity multiplier (preferred for pragmatic model integration; Biazar lead)
+- K* = K · g_K(Ri, Ri_c*) where g_K = exp( - γ (Ri/Ri_c*)^p )
+- Effect: scales diffusivities without altering length-scale diagnostics; simpler to implement.
+
+Calibration guidance
+- Tune parameters (a_l, n) or (γ, p) to preserve neutral curvature 2Δ (test numerically at ζ→0).
+- Validate on tower/LES: objective metrics -> surface flux RMSE, inversion height error, bias ratio B.
+
+## 5. Jensen & Bulk vs Gradient Ri — practical diagnostics and algorithms
+- Jensen test (quick):
+  1. Compute Ri_g at geometric mean z_g = sqrt(z0*z1).
+  2. Compute bulk Ri_b via formula or integrated Ri_g.
+  3. Bias ratio B = Ri_g(z_g) / Ri_b; B > 1 indicates concave-down bias (apply correction).
+- Estimation best-practices:
+  - Use geometric mean z_g for point-evaluated Ri_g in log-like profiles.
+  - Use z_L (logarithmic mean) when matching ΔU exactly across interval.
+  - Use central difference for interior gradients; use forward/backward for boundaries with geometric mean representative heights.
+  - When full profile available use Simpson/trapezoid on Ri_g(z) to get Ri_b (preferred over bulk formula for curved profiles).
+- Pseudocode (implementation snippet):
+```python
+# inputs: z0,z1,U0,U1,th0,th1,L,phi_m,phi_h
+z_g = sqrt(z0*z1)
+zeta_g = z_g / L
+Ri_g_zg = zeta_g * phi_h(zeta_g) / phi_m(zeta_g)**2
+Ri_b = (g/theta_ref)*(th1-th0)*(z1-z0) / ((U1-U0)**2)
+B = Ri_g_zg / Ri_b
+if B > 1.1:
+    # apply correction (choose l or K path)
+    if prefer_mixing_length:
+        l_star = l * (1.0 / (1 + a_l*(Ri/Ri_c_star)**n))
+    else:
+        K_star = K * exp(-gamma*(Ri/Ri_c_star)**p)
+```
+
+## 6. Estimation and QC tips
+- Smooth noisy gradients before computing Ri (low-pass with short window or small spline) but avoid over-smoothing that removes true inflection.
+- Always compute neutral-curvature-preservation check: numerical 2Δ from modified φ functions vs analytic 2Δ; require relative error < 5%.
+- Report B distribution per timestep to monitor when correction is active.
+
+## 7. Validation checklist (quick)
+- Preserve 2Δ at ζ→0 (unit test).
+- B_reduction: target >40% reduction in median B for Δz in operational range.
+- Flux RMSE and inversion-height error improvements on tower/LES benchmarks.

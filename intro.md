@@ -145,46 +145,43 @@ Caveats
 
 ---
 
-## 5. Open Questions and Areas Needing Work (Slide 18–21)
+## 5. Dynamic Critical Richardson Number & Practical Options (talking points)
+- Motivation: fixed Ri_c (≈0.25) misses hysteresis, intermittent turbulence and inversion-strength dependence — propose dynamic Ri_c* that adapts to local inversion strength, shear, and turbulence memory.
+- Two operational choices when Ri exceeds threshold:
+  1. Modify mixing-length l → l* = l · L_mod(Ri,Ri_c*). Reduces eddy scale directly (preferred for McNider-style slope/terrain work).
+  2. Modify diffusivity K → K* = K · F_mod(Ri,Ri_c*). Simpler multiplier (preferred for Biazar-style air-quality/model-integration).
+- Canonical dynamic Ri_c* prototype (lecture-friendly):
+  - Ri_c* = Ri_c0 + α_inv · min(Γ/Γ_ref,1) + β_mem · TKE_rel, where Γ = lapse/inversion strength, TKE_rel ∈ [0,1].
+- Recommended default actions:
+  - If intermittent (TKE low, strong inversion): reduce l first, then apply K damping.
+  - If operational cost dominant: apply K multiplier (exponential in Ri/Ri_c*).
 
-- Calibration of D (tail strength):
-  - Functional form vs. Δz, Ri, and target amplification A(ζ)? Site dependence vs. universal scaling?
-- Variable L(z):
-  - When is constant-L mapping sufficient (E_omit thresholds) in real nocturnal layers?
-- Ri-only closures:
-  - Pade [1/1] vs. ζ inversion tradeoffs for operational stability and range; blending strategy near poles.
-- Critical Richardson number:
-  - Fixed 0.25 vs. dynamic Rc; reconcile with observed intermittent turbulence at Ri>1.
-- ODE route:
-  - Directly solving reduced ODEs for Ri with lower-boundary curvature constraints—benefits vs. cost?
-- Data coverage:
-  - Extreme stability regimes (polar, over ice) for robust calibration; how to handle sparse segments.
+## 6. Jensen, Bulk Ri vs Gradient Ri — Estimation Techniques (slide bullets)
+- Jensen: for concave-down Ri_g(z), layer average Ri_b < Ri_g(z_g) where z_g = √(z0 z1). Use this to explain coarse-grid underestimation bias.
+- Representative heights:
+  - Use geometric mean z_g for point evaluations of log/power-law profiles.
+  - Use logarithmic mean z_L = (z2−z1)/ln(z2/z1) when matching ΔU exactly.
+- Recommended finite-difference estimators:
+  - Centered gradient (interior): (U_{k+1}-U_{k-1})/(z_{k+1}-z_{k-1}).
+  - First layer: forward difference with geometric/log mean for height.
+  - Bulk Ri_b: trapezoid or Simpson on Ri_g(z) if full profile available.
+- Quick pseudocode (slide-ready):
+```python
+# compute Ri_b and Ri_g at geometric mean
+z_g = sqrt(z0*z1)
+Ri_g_zg = z_g/L * phi_h(z_g/L) / phi_m(z_g/L)**2
+Ri_b = (g/theta_ref)*(theta1-theta0)*(z1-z0) / ((U1-U0)**2)
+B = Ri_g_zg / Ri_b  # Jensen bias >1 indicates underestimation
+```
 
-Discussion prompts (with possible answers)
-- “Should Rc be fixed?” → Likely context-dependent; normalize s=Ri/Rc and let Rc vary with inversion strength.
-- “Why preserve 2Δ?” → Anchors neutral physics; prevents “fixing” the tail by breaking the entry condition.
-- “Q‑SBL vs power-law?” → Q‑SBL is safer near poles; power-law gives analytic leverage—blend pragmatically.
-
----
-
-## 6. Future Directions (Slide 22–24)
-
-Near-term
-- 1D slope-flow notebook (katabatic/anabatic) for rapid testing of closures and Δz effects.
-- LES/tower cross-validation (GABLS, ARM NSA) with shared diagnostics and bias tables.
-- Julia acceleration path for large sensitivity sweeps and ERA5 climatology subsetting.
-
-Medium-term
-- Urban megacity Ri_g mapping (remote sensing blend) → grid-dependence thresholds.
-- Planetary scaling demonstrations (Mars/Titan): reuse curvature logic with different L and thermodynamics.
-
-Tooling and collaboration
-- GitHub-first (issues/PRs/branches); Markdown/LaTeX equations; no Word math.
-- Reproducible notebooks with pinned environments; tagged releases for student projects.
+## 7. Roles — McNider & Biazar (lecture note)
+- McNider: lead on dynamic Ri_c derivation, slope/terrain modifications, mixing-length based interventions and collapse/LLJ studies.
+- Biazar: lead on K-based multiplier design, operational integration (WRF/CMAQ), urban/air-quality validation and remote-sensing assimilation.
+- Joint tasks: tuning Ri_c* function, shared validation on tower/LES cases.
 
 ---
 
-## 7. Live Demo (5–10 min, optional)
+## 8. Live Demo (5–10 min, optional)
 
 - Demo A: ζ(Ri) inversion accuracy (series + Newton) and pole guard behavior.
 - Demo B: Curvature profile vs Δz grids; show reduction with neutral-preserving modifier.
@@ -209,328 +206,69 @@ Time guard
 
 ---
 
-## 8. Takeaways (Slide 25)
-- Preserve neutral curvature (2Δ); correct tails, not the physics at ζ→0.
-- Use geometric mean height \(z_g\) and analytic curvature for consistent first-layer behavior.
-- Diagnostics enable principled Δz choices and adaptive refinement flags.
-- Grid Damping Factor G: satisfies invariance at ζ=0 while targeting curvature-driven bias aloft in first layer.
+## Appendix A — Copilot Q&A: Canonical derivation & drop‑in curvature correction (for slides)
 
-Reading (short list for class)
-- Stull (1988), Högström (1988), Beljaars & Holtslag (1991)
-- England & McNider (1995), Cheng & Brutsaert (2005)
-- Holtslag et al. (2013), Cuxart et al. (2006)
+- Why a correction term appears (short): turbulent eddies sample a finite vertical extent ℓ(z); if Ri(z) has curvature the eddy-averaged stability differs from the point value and the closure must include a second‑order correction proportional to ℓ^2.
 
----
+- Kernel-average result (one slide):
+  - Effective averaged stability: ⟨F(Ri)⟩_W = F(Ri) + (M2/2)[ F'(Ri) Ri'' + F''(Ri) (Ri')^2 ] + O(ℓ^3)
+  - With M2 ≈ α ℓ^2 (α depends on kernel; use α∈[1/12, 1/2]).
 
-# Introduction to Monin–Obukhov Surface-Layer Theory and Richardson Number Curvature (SBL Focus)
+- Drop‑in diffusivity correction (single equation for slides/code):
+  - K_eff(z) = K_0(z) · ⟨F(Ri)⟩_W
+  - ≈ K_0(z) [ F(Ri) + (α ℓ^2 / 2) ( F'(Ri) Ri'' + F''(Ri) (Ri')^2 ) ]
 
-Audience: STEM background (math / physics / engineering) new to atmospheric boundary-layer similarity theory (MOST), with emphasis on the Stable Boundary Layer (SBL).  
-Goal: Build from physical intuition → key definitions → why curvature of the gradient Richardson number matters on coarse vertical grids → motivation for curvature-aware correction.
+- Practical expressions using MOST (one bullet each):
+  - Ri = ζ r(ζ) with r = φ_h / φ_m^2 and ζ = z/L (local-L terms add chain-rule corrections).
+  - Ri' = (1/L) [ r + ζ r' ], Ri'' = (1/L^2) [ 2 r' + ζ r'' ] for locally-constant L.
+  - Mixing length estimate: ℓ ≈ κ z / φ_m(ζ).
 
----
+- Implementation notes (short):
+  1. Evaluate r, r', r'' from chosen φ_m/φ_h (analytically if power-law, or numerically).
+  2. Choose kernel constant α (default 1/12 or 1/2); compute ℓ and M2 = α ℓ^2.
+  3. Compute F, F', F'' (F = φ_h / φ_m^2).
+  4. Compute curvature terms Ri', Ri'' and assemble K_eff via formula above.
+  5. Use K_eff in place of K_0·F for flux computations or as multiplicative correction G = K_eff / (K_0 F).
 
-## 1. Physical Setting: Surface Layer and Boundary Layer Regimes
+- Slide-friendly phrasing for the lecture:
+  - "Eddies average stability; curvature yields a second‑order correction ∝ ℓ^2. Use K_eff = K_0·(F + correction) as a principled, non‑ad hoc fix for coarse Δz."
+  - Provide the one-line drop-in formula and a 3-line pseudocode snippet on the slide.
 
-Atmospheric flow near the ground (first few 10–200 m) exchanges momentum and heat with the surface through turbulent eddies.  
-Two canonical regimes:
+- Demo tip: implement formula with symbolic/automatic-differentiation for r', r'' (SymPy or small finite difference) and show before/after K profiles for Demo B.
 
-- Unstable / convective (USL): surface heating, vigorous mixing.
-- Stable (SBL): surface cooling, turbulence suppressed, strong vertical gradients.
-
-MOST (Monin–Obukhov Similarity Theory) provides dimensionless relationships for mean gradients in the **(constant-flux) surface layer**, typically lowest ~10% of the full boundary layer depth. In practice, SBL model grids can be coarse enough that near-surface curvature in stability metrics is smeared, biasing mixing parameterizations.
-
----
-
-## 2. Fundamental Variables and Fluxes
-
-Let:
-- \(u, v\): horizontal wind components; speed \(U = (u^2+v^2)^{1/2}\).
-- \(\theta\) (or \(\theta_v\)): potential (virtual) temperature.
-- Surface turbulent (Reynolds) fluxes:
-  - Momentum: \(\tau = -\rho \overline{u'w'} = \rho u_*^2\) → defines friction velocity \(u_*\).
-  - Heat: \(H = -\rho c_p \overline{w' \theta'}\) (stable SBL: typically negative at night).
-- Turbulent kinematic heat flux: \(\overline{w'\theta'} = H / (\rho c_p)\).
-
-Von Kármán constant: \(\kappa \approx 0.4\).
-
----
-
-## 3. Obukhov Length \(L\): Definition and Physical Meaning
-
-Canonical (bulk) form:
-\[
-L = -\frac{u_*^3\,\theta_{\text{ref}}}{\kappa g\,\overline{w' \theta'}}.
-\]
-
-Interpretation:
-- Sign:  
-  - Unstable (surface heating): \(\overline{w'\theta'}>0\) ⇒ \(L<0\).  
-  - Stable (surface cooling): \(\overline{w'\theta'}<0\) ⇒ \(L>0\).
-- Magnitude: ratio of mechanical (shear) production to buoyancy (stability) effects; smaller \(|L|\) → stronger buoyancy influence.
-
-### 3.1 Local vs Bulk and Height / Time Variability
-While classical MOST uses a single (layer-constant) \(L\), in real SBLs:
-- Fluxes can vary with height → **local** Obukhov length \(L(z)\).
-- Surface forcing evolves (nighttime cooling, transient clouds) → time-dependent \(L(t)\).
-- For strongly stratified shallow layers, \(L(z)\) variation can matter when mapping curvature from dimensionless height to physical height.
-
-We denote \(\zeta = z / L\) (bulk) or \(\zeta = z / L(z)\) (local). Small \(\zeta\) (near-neutral), larger \(\zeta\) (stronger stratification for stable).
-
----
-
-## 4. Similarity Functions and Dimensionless Gradients
-
-MOST postulates that non-dimensionalized mean gradients depend only on \(\zeta\).  
-Define stability (or “correction”) functions for momentum (m) and heat (h):
-
-\[
-\phi_m(\zeta) = \frac{\kappa z}{u_*}\frac{\partial U}{\partial z},\qquad
-\phi_h(\zeta) = \frac{\kappa z}{\theta_*}\frac{\partial \theta}{\partial z},
-\quad \theta_* = -\frac{\overline{w'\theta'}}{u_*}.
-\]
-
-In neutral conditions (\(\zeta=0\)): \(\phi_m=\phi_h=1\).  
-Stable example family (power-law form with a finite “pole”):
-\[
-\phi_m = (1 - \beta_m \zeta)^{-\alpha_m},\quad
-\phi_h = (1 - \beta_h \zeta)^{-\alpha_h},\quad (1 - \beta_{m,h}\zeta) > 0.
-\]
-
-Near-neutral Taylor expansion (generic smooth \(\phi\)):
-\[
-\phi(\zeta) \approx 1 + a\zeta + b\zeta^2 + \dots
-\]
-with \(a=\alpha\beta\), \(b=\tfrac12\alpha(\alpha+1)\beta^2\) for the power-law example.
-
----
-
-## 5. Richardson Numbers: Gradient vs Bulk
-
-### 5.1 Gradient Richardson Number (local)
-\[
-Ri_g = \frac{(g/\theta)\, \partial \theta / \partial z}{\left(\partial U / \partial z\right)^2}.
-\]
-Using MOST gradients:
-\[
-Ri_g(\zeta) = \zeta\frac{\phi_h}{\phi_m^2} = \zeta F(\zeta),\quad F(\zeta) = \frac{\phi_h}{\phi_m^2}.
-\]
-
-### 5.2 Bulk Richardson Number (layer averaged)
-Across first layer \(z_0\)–\(z_1\):
-\[
-Ri_b = \frac{g}{\theta}\frac{(\theta_1 - \theta_0)(z_1 - z_0)}{(U_1 - U_0)^2}.
-\]
-On coarse vertical grids \(Ri_b\) underestimates local (point) stability when \(Ri_g(\zeta)\) is strongly **concave-down** near the surface (common in SBL), leading to **overmixing**.
-
-### 5.3 Numerical Ri Estimation
-
-**Point gradient (discrete tower):**
-$$
-\partial U/\partial z \approx (U_{k+1} - U_{k-1})/(z_{k+1} - z_{k-1}).
-$$
-
-**Bulk Ri_b via difference:**
-$$
-Ri_b = \frac{g}{\theta}\frac{\Delta\theta\,\Delta z}{(\Delta U)^2}.
-$$
-
-**Bulk Ri_b via integration:**
-$$
-Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz \approx \frac{1}{2}[Ri_g(z_0) + Ri_g(z_1)] \text{ (trapezoid)}.
-$$
-
-**Representative heights:**
-- $z_g = \sqrt{z_0 z_1}$ (geometric mean, midpoint in $\ln z$).
-- $z_L = \Delta z / \ln(z_1/z_0)$ (logarithmic mean, exact for log wind).
-
-Use $z_g$ for point evaluation when $Ri_g$ is concave; use $z_L$ for exact $\Delta U$ matching.
-
----
-
-## 6. Why Curvature of \(Ri_g(\zeta)\) Matters
-
-Near the surface:
-\[
-Ri_g(\zeta) = \zeta + \Delta \zeta^2 + \tfrac12(\Delta^2 + c_1)\zeta^3 + \dots
-\]
-where
-\[
-\Delta = \alpha_h\beta_h - 2\alpha_m\beta_m,\qquad
-c_1 = \alpha_h\beta_h^2 - 2\alpha_m\beta_m^2.
-\]
-
-Second derivative (“curvature”) at neutral limit:
-\[
-\left.\frac{d^2 Ri_g}{d\zeta^2}\right|_{0} = 2\Delta.
-\]
-
-If \(\Delta < 0\) (typical stable sets), \(Ri_g\) bends downward rapidly: averaging over a thick layer lowers the apparent stability ⇒ excessive turbulent diffusion.
-
-Full curvature expression (generic differentiable \(\phi\)):
-\[
-\frac{d^2Ri_g}{d\zeta^2} = F\left[2V_{\log} + \zeta\left(V_{\log}^2 - W_{\log}\right)\right],
-\]
-with
-\[
-V_{\log} = \frac{\phi_h'}{\phi_h} - 2\frac{\phi_m'}{\phi_m},\quad
-W_{\log} = \frac{dV_{\log}}{d\zeta}.
-\]
-
----
-
-## 7. Parameter Transfer Caution (USL → SBL)
-
-Many empirical \((\alpha,\beta)\) fits originate from **unstable** or weakly stable, near-neutral data (USL dominance). Directly applying those to **strong SBL**:
-- Exaggerates curvature (large \(|\Delta|\)).
-- Reduces usable \(\zeta\) range (pole near \(\zeta = 1/\beta\)).
-- Increases sensitivity to vertical resolution.
-
-Recommendation:  
-(1) Fit or adjust coefficients using stable segments (low-level nocturnal data, LES).  
-(2) Consider **quadratic surrogate (Q‑SBL)** forms for \(\zeta\) up to ~0.2–0.3 to avoid pole artifacts.
-
----
-
-## 8. Variable Obukhov Length \(L(z)\) Mapping
-
-If \(L\) varies with height:
-\[
-\zeta(z) = \frac{z}{L(z)},\quad
-\frac{d\zeta}{dz} = \frac{L - z L'}{L^2},\quad
-\frac{d^2\zeta}{dz^2} = -\frac{2L'}{L^2} - \frac{zL''}{L^2} + \frac{2z(L')^2}{L^3}.
-\]
-Map curvature:
-\[
-\frac{d^2 Ri_g}{dz^2} = \left(\frac{d\zeta}{dz}\right)^2 \frac{d^2 Ri_g}{d\zeta^2} + \frac{d^2\zeta}{dz^2}\frac{d Ri_g}{d\zeta},
-\quad
-\frac{d Ri_g}{d\zeta} = F(1 + \zeta V_{\log}).
-\]
-
-Diagnostic omission metric (decide if constant \(L\) shortcut is adequate):
-\[
-E_{\text{omit}} = \left|\frac{(d^2\zeta/dz^2)(dRi_g/d\zeta)}{(d\zeta/dz)^2(d^2Ri_g/d\zeta^2)}\right|.
-\]
-If \(E_{\text{omit}} < 0.05\), use simpler \(\frac{d^2Ri_g}{dz^2} \approx \frac{1}{L^2} \frac{d^2Ri_g}{d\zeta^2}\).
-
----
-
-## 9. Curvature-Aware Correction (Concept)
-
-Problem: Coarse first-layer thickness \(\Delta z\) → \(Ri_b < Ri_g(z_g)\) (with \(z_g = \sqrt{z_0 z_1}\), geometric mean height) → overestimated turbulent mixing coefficients \(K_m,K_h\).
-
-Solution strategy:
-1. Evaluate analytic \(Ri_g\) & curvature at \(z_g\).
-2. Estimate layer bias \(B = Ri_g(z_g)/Ri_b\).
-3. Apply a damping factor to eddy diffusivities:
-   \[
-   K_{m,h}^{*} = K_{m,h} \, G(\Delta z, \Delta),\quad
-   G < 1 \text{ when curvature magnitude and }\Delta z \text{ are large}.
-   \]
-4. Preserve neutral curvature \(2\Delta\) (do not alter near-neutral baseline).
-5. Optionally embed grid spacing in \(\phi\) via multiplicative tail modifier \(f_c(\zeta,\Delta z) = \exp[-D (\zeta/\zeta_r)(\Delta z / \Delta z_r)]\) choosing exponents to keep \(V_{\log}(0)\) unchanged.
-
----
-
-## 10. Practical Workflow (Stable Case)
-
-| Step | Action | Output |
-|------|--------|--------|
-| 1 | Gather tower / LES: \(u,v,\theta,\overline{w'\theta'}, u_*\) | Profiles, flux |
-| 2 | Compute (bulk or local) \(L\) and \(\zeta=z/L\) | \(\zeta\) array |
-| 3 | Fit or choose \(\alpha_{m,h}, \beta_{m,h}\) (or quadratic surrogate) | Parameter set |
-| 4 | Compute \(\Delta, c_1\); record \(2\Delta\) | Neutral curvature |
-| 5 | Evaluate \(Ri_g(\zeta)\), curvature via formula | Reference analytic fields |
-| 6 | Compare with bulk \(Ri_b\) (layer 0–1) → bias \(B\) | Bias metric |
-| 7 | If coarse: apply correction \(G\) or tail modifier | Adjusted \(K_{m,h}\) |
-| 8 | Map to height curvature if \(L(z)\) variable | \(d^2Ri_g/dz^2\) |
-| 9 | Diagnostics: \(B, 2\Delta, E_{\text{omit}},\) inflection (if any) | QC / metadata |
-
----
-
-## 11. Typical Stable Parameter Ranges and Coefficients
-
-Approximate literature near-neutral ranges (site dependent):
-- \(\alpha_{m,h} \approx 0.45\text{–}0.55\), \(\beta_{m,h} \approx 14\text{–}16\).
-Derived (Q‑SBL) coefficients:
-- \(a = \alpha\beta \approx 6.3\text{–}8.8\).
-- \(b = 0.5\alpha(\alpha+1)\beta^2 \approx 64\text{–}110\).
-Neutral curvature coefficient:
-\[
-2\Delta = 2(\alpha_h\beta_h - 2\alpha_m\beta_m)\ \text{(often negative in stable sets)}.
-\]
-
----
-
-## 12. Minimal Numerical Core (Pseudocode)
-
+## Appendix B — Short code pseudocode (for handout)
 ```python
-def phi_power(zeta, alpha, beta):
-    d = 1 - beta*zeta
-    if d <= 1e-8: raise ValueError("ζ beyond domain")
-    return d**(-alpha)
-
-def rig_and_curv(zeta, am,bm,ah,bh):
-    pm = phi_power(zeta, am, bm)
-    ph = phi_power(zeta, ah, bh)
-    F  = ph / (pm*pm)
-    V  = (ah*bh)/(1 - bh*zeta) - 2*(am*bm)/(1 - bm*zeta)
-    W  = (ah*bh*bh)/(1 - bh*zeta)**2 - 2*(am*bm*bm)/(1 - bm*zeta)**2
-    Ri = zeta * F
-    curv = F*(2*V + zeta*(V*V - W))
-    return Ri, curv
-
-# Neutral coefficients
-Delta = ah*bh - 2*am*bm
-c1    = ah*bh*bh - 2*am*bm*bm
+# quick reference pseudocode
+# inputs: z, L (or L(z)), phi_m(zeta), phi_h(zeta), K0(z)
+zeta = z / L
+phi_m = phi_m_func(zeta); phi_h = phi_h_func(zeta)
+r = phi_h / (phi_m**2)
+# r', r'': analytic or small-h central difference in zeta
+r1 = d_dzeta(r, zeta); r2 = d2_dzeta(r, zeta)
+Ri = zeta * r
+Ri_p = (r + zeta * r1)/L
+Ri_pp = (2*r1 + zeta * r2)/(L**2)
+F = r
+F1 = dF_dRi(F, Ri)   # or chain via zeta derivatives
+F2 = d2F_dRi2(F, Ri)
+ell = kappa * z / phi_m
+alpha = 1.0/12.0  # kernel constant
+K_eff = K0 * ( F + 0.5 * alpha * ell**2 * ( F1*Ri_pp + F2*(Ri_p**2) ) )
+# use K_eff in flux calculation
 ```
 
-Variable \(L(z)\) mapping (if required):
-$$
-\frac{d^2 Ri_g}{dz^2} \;\approx\; \frac{1}{L^2}\,\frac{d^2 Ri_g}{d\zeta^2}
-\quad \text{if } E_{\text{omit}}<0.05.
-$$
+## Quick answer: φ‑agnostic curvature corrections (slide / FAQ)
 
----
-
-## 13. Glossary (Condensed)
-
-| Term | Meaning |
-|------|---------|
-| MOST | Monin–Obukhov Similarity Theory |
-| \(L\) | Obukhov length (stability scaling) |
-| \(\zeta=z/L\) | Dimensionless height |
-| \(\phi_{m,h}\) | Dimensionless gradient (momentum / heat) |
-| \(Ri_g\) | Gradient Richardson number (point stability) |
-| \(Ri_b\) | Bulk Richardson number (layer difference) |
-| \(\Delta\) | Neutral curvature half-coefficient (since curvature = \(2\Delta\)) |
-| \(V_{\log}, W_{\log}\) | Log-derivative combination and its derivative |
-| Q‑SBL | Quadratic stable-layer surrogate |
-| \(E_{\text{omit}}\) | Metric for deciding if variable \(L\) effects can be ignored |
-
----
-
-## 14. Core References (Foundational & Stable BL)
-
-1. Monin & Obukhov (1954) – Original similarity framework.  
-2. Businger et al. (1971), Dyer (1974) – Classical empirical functions.  
-3. Högström (1988) – Review / stable fits.  
-4. Beljaars & Holtslag (1991) – Stable extensions / surrogate forms.  
-5. Cheng & Brutsaert (2005) – Monotonic, pole‑free formulations.  
-6. McNider et al. (2012) – Resolution issues in stable boundary layers.
-
----
-
-## 15. Next Step (Optional)
-
-If desired, proceed to:  
-“Coupling curvature-aware adjustment into the implicit vertical diffusion (TDMA / Crank–Nicolson) scheme” — boundary-condition handling and stability impacts.
-
----
-
-## 16. Summary
-
-For stable boundary layers on coarse grids, uncorrected bulk Richardson number underestimates true near-surface stability due to concave-down \(Ri_g(\zeta)\). Analytic curvature (through \(\Delta\) and higher terms) enables bias-aware eddy diffusivity adjustment while preserving neutral physics. Careful parameter selection (SBL-focused), optional quadratic surrogates, and variable-\(L\) diagnostics reduce grid sensitivity and improve physical fidelity of nocturnal cooling and turbulence suppression.
-
-Scalar extension:
-- Generic $q$: $K_q=\kappa z u_*/\phi_q$, $f_q(Ri_g)=1/(\phi_m\phi_q)$, $Sc_t^{(q)}=\phi_q/\phi_m$.
-Near-neutral $f_q\approx 1+a_q Ri_g+(b_q-a_q\Delta+2a_m a_q)Ri_g^2$.
+- Yes — curvature corrections can be applied without knowing the model's internal φ(ζ) form by operating on diagnosed quantities (Ri_g, Ri_b, z_g) and using neutral‑preserving modifiers or simple surrogates.
+- Minimal φ‑agnostic recipe (for slides):
+  1. Diagnose point Ri_g at the geometric mean z_g (or compute Ri_b and Ri_g(z_g)).  
+  2. Compute bias ratio B = Ri_g(z_g)/Ri_b. If B ≲ 1.05 do nothing. If B > threshold (e.g., 1.1), apply correction.
+  3. Apply multiplicative damping to diffusivities: K* = K · G(ζ,Δz) with G from Section 3. Choose q≥2 so G′(0)=0 to preserve 2Δ.
+  4. Optionally apply mixing length reduction: l* = l / (1 + a_l (Ri/Ri_c*)^n) when you cannot modify K directly.
+- Excel / spreadsheet quick formulas (one cell per quantity):
+  - z_g = SQRT(z0*z1)
+  - Ri_g_zg = (z_g / L) * phi_h(z_g/L) / (phi_m(z_g/L)^2)  // if φ unavailable compute Ri_g_zg from local gradients instead
+  - Ri_b = (g/theta_ref)*(theta1 - theta0)*(z1 - z0)/( (U1-U0)^2 )
+  - B = Ri_g_zg / Ri_b
+  - G = EXP( -D * (Δz/Δz_ref)^p * (ζ/ζ_ref)^q )
+  - K_star = K * G
