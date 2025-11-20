@@ -1,0 +1,267 @@
+Delivered-To: davideengland@gmail.com
+Received: by 2002:ab3:6f14:0:b0:2cb:b6a1:b42f with SMTP id j20csp467011ltp;
+        Wed, 19 Nov 2025 12:42:52 -0800 (PST)
+X-Received: by 2002:a05:6a00:2346:b0:7b9:2ddc:599a with SMTP id d2e1a72fcca58-7c3f0765162mr516469b3a.17.1763584971821;
+        Wed, 19 Nov 2025 12:42:51 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1763584971; cv=none;
+        d=google.com; s=arc-20240605;
+        b=D4dOyK73jkVsAI56ZhozHI1t8Y0MnRSoyChMiTrHHZTCerlNeiJ4L0J6QQyfdK/slc
+         buLNgJoaPYFpzTaW8QgauPIhZAGwrfwGe1vRm39eFZCowUtKOtbHHTqVnNWyDWpnu45s
+         W9xTxGrn1pvNqtjbQUQV/9ry7MqmHogU2oJg5q9SdZTaRUADObilF5sfJoQS2iQ3TDBo
+         v/75xP0hgKwx2cYVMpSkPgOPLpZgyrD3rHjBPeab8CAcs+ZoiKA/BkZJEgffCKFm5gKa
+         4u9RifKAjA8F2RXSiMjOBXvTv1mkKiNs9gasF5d8pPTs/5oEG8Pa4ZEm7+ZADqXPwq2d
+         wTcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=OauobSPMpV36ZNTcb5fmrJnzHXcWNtnB7nhi8/M5L1I=;
+        fh=HltUuC0HJVjiUAsuibgwsPfcB/PLeeLs7yPAESyQY1g=;
+        b=QVhrEcTDO5rAhRTxwlNB+ENjgMwQ/xnUu0qETqgLcZwwQZwPrNQeV/Kkd2nwPyYTk8
+         Y4Tqdac9OV2DER8b1NUfTyox5WNrWL3oSJ9bi1S/4jbF7/2MW0947FdGwsLMBq0pzwqF
+         zmsIRV0QmsKZyKFlgFWvKsExjorqZszbRF9kaSHl4ar33AySRjv+Fhs+uDjJjI5nIa7k
+         +RSESJQ5b5E+5xFFTznycy5OgTmn4MlnAYuZtQ963QIRfuW1jc5XKKFwe2ddlCfmialL
+         D2dxZPXWtf4ZagkwMlRBW7jWiCoHdheUyvqMmPHNZW/ckemsY9imwSloy6hETJ+ZWqDc
+         CTYg==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20230601 header.b="gQ/66mtc";
+       spf=pass (google.com: domain of rmcnider@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=rmcnider@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@gmail.com
+Return-Path: <rmcnider@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id d2e1a72fcca58-7c3ed278649sor111510b3a.1.2025.11.19.12.42.51
+        for <davideengland@gmail.com>
+        (Google Transport Security);
+        Wed, 19 Nov 2025 12:42:51 -0800 (PST)
+Received-SPF: pass (google.com: domain of rmcnider@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@gmail.com header.s=20230601 header.b="gQ/66mtc";
+       spf=pass (google.com: domain of rmcnider@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=rmcnider@gmail.com;
+       dmarc=pass (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com;
+       dara=pass header.i=@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763584971; x=1764189771; dara=google.com;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OauobSPMpV36ZNTcb5fmrJnzHXcWNtnB7nhi8/M5L1I=;
+        b=gQ/66mtcVOifRj7HydBmEyeeNUcyCjjVCpOG53OK2kRnUunldZklOVpllyCBND4pir
+         vRw+BVEzqNuyFLL4K9Jc/9PctY2B8qNGt5hL2RcSl3mwcwJt1v53KgLHB2MowvcDWajR
+         NJMtjfdfHgQLowJSfbDqwb64OTpBx8ws5QuE0/xrVbWU/APqsIRqIvh8i9kQFIZokJep
+         io1OibcBpsyBzVmZphMF8jzudDu+whoImpTgfI3g41Md2bfzMuOVLBhjLkJ5uTAWN/9q
+         t/pfoGmpr+B39nIEpN6jdsyl1nwr2WwIjuUO2n42jlAMQzrHcSH2iOiy3Q3P9yaD/tRa
+         45Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763584971; x=1764189771;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OauobSPMpV36ZNTcb5fmrJnzHXcWNtnB7nhi8/M5L1I=;
+        b=SP5QhFlNGqRTuKMwqAXgn7hI/qbXwpfT1EmCQHgZJnoUpK8zrJVVh8Lnf2rmPu3Bg/
+         X8K/wPQf53KMxtKDtKFGP5KeeRqHB+2V8RzEH5S/MNZw+crftgC2A90cVr8ib+xSuUjX
+         8Kj3ytlJ+pv1Y0mIc9mW0IgjL8fDn4rVxWVbruFsP/fZpz2mEpqRQgokb9Hm4RRIr6dT
+         zHTZlNSnOQglAuIKW9Lu5esf9MYXHYSNrKrGi4nnQNlvpVvIXDnr3Eb87VVbGq2DVYOP
+         icZ4fRThp94oMvSvobYKuE/vnnurdjgGlOEMrRAQsHV6Q5Ue2CXflMeTRbzfwJqMVaKv
+         SJvg==
+X-Gm-Message-State: AOJu0YzS+cKHy0gbFWNYE9QnKwaleby9kxFryioRh2ocHzIzlhQJzyfK
+	KRvGHdMAqEEGtPy5Lba578mO2ldtCZQSn3GN8/v8KFYvNSCwAm4QyBd3JeQY/L04froziVi8j5B
+	qeLsTbp970eCC/H/0TMrBykvoLeFDRP1pfA==
+X-Gm-Gg: ASbGncukE8LD+c/QU/qeroZLNf9vpq9PAsRXnZt94O72TmlneCfRUBwNCt23JZ8QXTw
+	wR8k+2Qg14x6mc123zg7WdxS1dRnbDdtPLIHP8Ig9kHY4SmT6ZcpHpnKINd8mjm4zxOrFmgt+4m
+	Qw5LqlleaNrAAPEBfPC5UVb6dWRK8B4H5j2DoBx4/ZD3/m9R/3d5paGQOpiIdBn1jUn5O9mqKSw
+	+gWZX8SIoGwiGjMadLBTVbAajIWaQLNwG3QDGISJt9c49vqSjA97goYT76AUhyiCf/SEw==
+X-Google-Smtp-Source: AGHT+IGxbO37qY2KljMPPBtskpBVOVoseDQgQ4TQU7Dm3ECllDTOnea2VaQHtrDo2sXYpKW/kRQD5RCibyOYn+E5lz8=
+X-Received: by 2002:a17:90b:3ecc:b0:341:124f:4745 with SMTP id
+ 98e67ed59e1d1-34727c4bfc6mr256314a91.6.1763584970787; Wed, 19 Nov 2025
+ 12:42:50 -0800 (PST)
+MIME-Version: 1.0
+References: <11293626-cf27-48c8-953a-5178ff028f51@docs-share.google.com> <autogen-java-dd86efae-5a17-433a-beef-766bda562f4b@google.com>
+In-Reply-To: <autogen-java-dd86efae-5a17-433a-beef-766bda562f4b@google.com>
+From: Richard McNider <rmcnider@gmail.com>
+Date: Wed, 19 Nov 2025 14:42:42 -0600
+X-Gm-Features: AWmQ_bmPFCbLtP-lJwkPAbbwOX_E_GAzzF2LaLs_hxQoea2i5hNwQhyfRxmD4Ag
+Message-ID: <CAOY3NfBuKbjQqAzicgupgQ=oeWARKJ40fteqXBNGo5JgmfWTEA@mail.gmail.com>
+Subject: Re: Item shared with you: "Copy of Curvature_Demo.ipynb"
+To: David England <davideengland@gmail.com>
+Cc: Dick McNider <Dick.McNider@nsstc.uah.edu>, Arastoo Pour Biazar <biazar@nsstc.uah.edu>
+Content-Type: multipart/alternative; boundary="000000000000b70f1d0643f89f18"
+
+--000000000000b70f1d0643f89f18
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Dave, I took a quick look at this and don't know that I understand what it
+does. My immediate need was to make a correction (fc) to the stability
+function (fm) when the finite  difference from of Ri (which is equivalent
+to bulk Ri) gets larger when delz gets bigger. That is we want This means
+as finite difference from gets bigger then fm gets smaller. Our correction
+fc*fm basically gives a longer tailed stability function. That is more
+mixing at larger Ri.
+
+Curvature enters since if Ri is linear there is no need for correction.
+
+I think there is probably a more elegant way to correct for bulk Ri
+increasing with grid spacing. Your approach may do this but don't see it
+yet. May just need to study yours more closely. But if you think it solves
+our problem. Perhaps you can bring the explanation down to us mere mortals.
+
+Dick
+
+On Wed, Nov 19, 2025, 1:36=E2=80=AFPM David England (via Google Drive) <
+drive-shares-dm-noreply@google.com> wrote:
+
+> David England shared an item
+> [image: Header profile photo]
+> David England (davideengland@gmail.com) has invited you to *edit* the
+> following item:
+> Interactive demo where can change parameters and see plots. Hope this
+> helps.
+> Copy of Curvature_Demo.ipynb
+>
+> <https://colab.research.google.com/drive/1aRt6M8pTM6NSu8gApOwwhGVPJfPFbDg=
+y?ts=3D691e1c2e>
+>
+> Open
+> <https://colab.research.google.com/drive/1aRt6M8pTM6NSu8gApOwwhGVPJfPFbDg=
+y?ts=3D691e1c2e>
+> Does this item look suspicious? Block sender
+> <https://drive.google.com/drive/blockuser?blockerEmail=3Drmcnider@gmail.c=
+om&blockeeEmail=3Ddavideengland@gmail.com&usp=3Dsharing_eib>
+>
+> Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+> You have received this email because davideengland@gmail.com shared a
+> file or folder located in Google Drive with you. [image: Google]
+> <https://www.google.com/>
+>
+
+--000000000000b70f1d0643f89f18
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"auto">Dave, I took a quick=C2=A0look at this and don&#39;t know=
+ that I understand what it does. My immediate need was to make a correction=
+ (fc) to the stability function (fm) when the finite=C2=A0 difference from =
+of Ri (which is equivalent to bulk Ri) gets larger when delz gets bigger. T=
+hat is we want This means as finite difference from gets bigger then fm get=
+s smaller. Our correction=C2=A0 fc*fm basically gives a longer tailed stabi=
+lity function. That is more mixing at larger Ri.<div dir=3D"auto"><br></div=
+><div dir=3D"auto">Curvature enters since if Ri is linear there is no need =
+for correction.</div><div dir=3D"auto"><br></div><div dir=3D"auto">I think =
+there is probably a more elegant way to correct for bulk Ri increasing with=
+ grid spacing. Your approach may do this but don&#39;t see it yet. May just=
+ need to study yours more closely. But if you think it solves our=C2=A0prob=
+lem. Perhaps you can bring the explanation down to us mere mortals.=C2=A0</=
+div><div dir=3D"auto"><br></div><div dir=3D"auto">Dick=C2=A0</div></div><br=
+><div class=3D"gmail_quote gmail_quote_container"><div dir=3D"ltr" class=3D=
+"gmail_attr">On Wed, Nov 19, 2025, 1:36=E2=80=AFPM David England (via Googl=
+e Drive) &lt;<a href=3D"mailto:drive-shares-dm-noreply@google.com">drive-sh=
+ares-dm-noreply@google.com</a>&gt; wrote:<br></div><blockquote class=3D"gma=
+il_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-lef=
+t:1ex"><div><table style=3D"border-collapse:collapse;width:100%;background-=
+color:white;text-align:center" role=3D"presentation"><tr><td style=3D"paddi=
+ng:24px 0 16px 0"><table style=3D"border-collapse:collapse;font-family:Robo=
+to,Arial,Helvetica,sans-serif;word-wrap:break-word;word-break:break-word;wi=
+dth:90%;margin:auto;max-width=700px;min-width=280px;text-align:left" role=
+=3D"presentation"><tr><td style=3D"padding:0"><table style=3D"width:100%;bo=
+rder:1px solid #dadce0;border-radius:8px;border-spacing:0;table-layout:fixe=
+d;border-collapse:separate" role=3D"presentation"><tr><td style=3D"padding:=
+4.5%" dir=3D"ltr"><div style=3D"margin-bottom:32px;font-family:Google Sans,=
+Roboto,Arial,Helvetica,sans-serif;font-style:normal;font-size:28px;line-hei=
+ght:36px;color:#3c4043">David England shared an item</div><table style=3D"b=
+order-collapse:collapse;font-family:Roboto,Arial,Helvetica,sans-serif;font-=
+size:16px;line-height:24px;color:#202124;letter-spacing:0.1px;table-layout:=
+fixed;width:100%" role=3D"presentation"><tr><td style=3D"padding:0;vertical=
+-align:top;width:50px"><div><img style=3D"border-radius:50%;display:block" =
+width=3D"50" height=3D"50" src=3D"https://lh3.googleusercontent.com/a/ACg8o=
+cI1CuYF_lshpGOvKlTElaFmwNxdRQ19e_9wqZ-VWN5Ob5PWwhAI=3Ds64" alt=3D"Header pr=
+ofile photo"></div></td><td style=3D"padding:0;vertical-align:top;padding-l=
+eft:12px"><div style=3D"padding-top:12px">David England (<a href=3D"mailto:=
+davideengland@gmail.com" style=3D"color:inherit;text-decoration:none" targe=
+t=3D"_blank" rel=3D"noreferrer">davideengland@gmail.com</a>) has invited yo=
+u to <b>edit</b> the following item:</div><div style=3D"margin-top:24px;col=
+or:#5f6368">Interactive demo where can change parameters and see plots.  Ho=
+pe this helps.</div></td></tr></table><table style=3D"border-spacing:0 4px;=
+table-layout:fixed;width:100%" role=3D"presentation"><tr style=3D"height:28=
+px"></tr><tr><td style=3D"padding:0"><a href=3D"https://colab.research.goog=
+le.com/drive/1aRt6M8pTM6NSu8gApOwwhGVPJfPFbDgy?ts=3D691e1c2e" style=3D"colo=
+r:#3c4043;display:inline-block;max-width:100%;text-decoration:none;vertical=
+-align:top;border:1px solid #dadce0;border-radius:16px;white-space:nowrap" =
+target=3D"_blank" rel=3D"noreferrer"><div style=3D"line-height:18px;overflo=
+w:hidden;text-overflow:ellipsis;padding:6px 12px"><span style=3D"display:in=
+line-block;vertical-align:top;min-width:26px;width:26px"><img src=3D"http:/=
+/drive-thirdparty.googleusercontent.com/32/type/application/vnd.google.cola=
+boratory" width=3D"18" height=3D"18" style=3D"vertical-align:top" role=3D"p=
+resentation"></span><span style=3D"font:500 14px/18px Google Sans,Roboto,Ar=
+ial,Helvetica,sans-serif;display:inline;letter-spacing:0.2px">Copy of Curva=
+ture_Demo.ipynb</span></div></a></td></tr></table><table style=3D"border-co=
+llapse:collapse" role=3D"presentation"><tr style=3D"height:32px"><td></td><=
+/tr></table><div><a href=3D"https://colab.research.google.com/drive/1aRt6M8=
+pTM6NSu8gApOwwhGVPJfPFbDgy?ts=3D691e1c2e" role=3D"link" style=3D"padding:0 =
+24px;font:500 14px/36px Google Sans,Roboto,Arial,Helvetica,sans-serif;borde=
+r:none;border-radius:18px;box-sizing:border-box;display:inline-block;letter=
+-spacing:.25px;min-height:36px;text-align:center;text-decoration:none;backg=
+round-color:#0b57d0;color:#fff" target=3D"_blank" rel=3D"noreferrer">Open</=
+a></div></td></tr></table><table style=3D"border-collapse:collapse;width:10=
+0%" role=3D"presentation"><tr><td style=3D"padding:24px 4.5%"><table style=
+=3D"border-collapse:collapse;width:100%" dir=3D"ltr"><tr><td style=3D"paddi=
+ng:0;font-family:Roboto,Arial,Helvetica,sans-serif;color:#5f6368;width:100%=
+;font-size:12px;line-height:16px;min-height:40px;letter-spacing:.3px"><div>=
+Does this item look suspicious? <a href=3D"https://drive.google.com/drive/b=
+lockuser?blockerEmail=3Drmcnider@gmail.com&amp;blockeeEmail=3Ddavideengland=
+@gmail.com&amp;usp=3Dsharing_eib" style=3D"color:#0b57d0;text-decoration:un=
+derline" target=3D"_blank" rel=3D"noreferrer">Block sender</a></div> <br>Go=
+ogle LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA<br> You h=
+ave received this email because <a href=3D"mailto:davideengland@gmail.com" =
+style=3D"color:inherit;text-decoration:none" target=3D"_blank" rel=3D"noref=
+errer">davideengland@gmail.com</a> shared a file or folder located in Googl=
+e Drive with you.</td><td style=3D"padding:0;padding-left:20px;min-width=96=
+px"><a href=3D"https://www.google.com/" style=3D"text-decoration:none" targ=
+et=3D"_blank" rel=3D"noreferrer"><img src=3D"https://www.gstatic.com/images=
+/branding/googlelogo/2x/googlelogo_grey_tm_color_96x40dp.png" width=3D"96" =
+height=3D"40" alt=3D"Google" style=3D"font-size:16px;font-weight:500;color:=
+#5f6368"></a></td></tr></table></td></tr></table></td></tr></table></td></t=
+r></table></div></blockquote></div>
+
+--000000000000b70f1d0643f89f18--
+Dick —
+
+Thanks for the read and clear summary.  Short answer: implement a multiplicative correction fc to the stability function fm that depends on the observed bulk-vs-point bias B (and optionally on Δz).  When the finite-difference (bulk) Ri grows relative to the point Ri at z_g (B>1), reduce fm so the stability function has a longer tail (more mixing) at large Ri.  If Ri_g is linear (B≈1) fc→1 and no correction is applied.
+
+Minimal pseudocode (drop into the diffusion routine prior to K calculation):
+
+    # compute bulk and point Ri for the layer
+    Ri_b = compute_bulk_Ri(z0,z1,theta,U)
+    z_g = sqrt(z0*z1)
+    Ri_g = compute_point_Ri(z_g, profile)   # use local gradients or analytic estimate
+    B = Ri_g / Ri_b if Ri_b>0 else 1.0
+
+    # baseline correction - simple rational form
+    alpha = 1.0            # tuning parameter (start ~1)
+    fc = 1.0 / (1.0 + alpha * max(0.0, B - 1.0))
+
+    # optional: make correction stronger for coarser layers
+    # Dz_ref = 10.0  # m reference
+    # p = 1.0
+    # fc = exp( -alpha * (B - 1.0) * (Dz / Dz_ref)**p )
+
+    # apply correction to stability function used to compute K
+    fm_corrected = fm * fc
+    K_m = compute_Km(fm_corrected, ...)
+
+Tuning notes
+- Start with alpha=1.0; if correction is too strong reduce alpha (0.3–0.7), if too weak increase (1.5–2.0).
+- Use fc exponential (fc = exp(−alpha*(B−1))) if you prefer strictly positive smooth decay.
+- Preserve neutral behavior by ensuring fc( B≈1 ) ≈ 1 and dfc/dζ|_{0} ≈ 0 (use q≥2 if making ζ-dependent).
+- Log results for a few nights: report B distribution and percent change in K at z_g to pick alpha.
+
+Why this is simple and robust
+- Directly targets the observed bias B you described.
+- No iterative inversion required.
+- If Ri_g is linear with height (no curvature), B≈1 and fc≈1 so no change.
+- Easily implemented and tested on one-night cases (ARM/SHEBA/LES) before operational adoption.
+
+If you want I will:
+- produce a one-file patch that implements fc in your demo notebook and prints B, fc and K change for the synthetic profile, or
+- create a short note with recommended alpha/p values from a few example nights.
+
+— Dave (drafted reply)

@@ -1,0 +1,1 @@
+z_L = (z1-z0)/ln(z1/z0) (log mean) → use when matching ΔU exactly.

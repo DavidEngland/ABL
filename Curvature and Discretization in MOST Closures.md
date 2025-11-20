@@ -320,3 +320,27 @@ Implementation hint
 
 ## 27. Cross-Reference
 For full derivation details of \(d^{2}Ri_g/d\zeta^{2}\) and inversion series see: “Richardson number curvature.md”. This note emphasizes discretization, mapping, and surrogate blending.
+
+## Lowest-layer: surface‑prescribed fluxes vs K‑based fluxes (operational note)
+
+Many models take surface fluxes (momentum/heat) directly from surface parameterizations and do not compute them from K at the first interior level. This difference matters for how the curvature/bias correction is applied:
+
+1. Surface‑prescribed fluxes (common):
+   - The surface stress H_sfc and heat flux H_θ are the control quantities; K at the first model level is not used to compute these fluxes.
+   - Recommendation: reconstruct the shear used in Ri_b with the log-mean z_L so that the ΔU term in the bulk Ri formula is consistent with the log-law assumption used by surface schemes.
+   - Use z_g for diagnostics (Ri_g, curvature) computed from profiles above the surface; do not attempt to alter the surface-prescribed flux directly — instead modify interior K if you need to reduce mixing aloft.
+
+2. K‑based fluxes (diffusion computed from first-level K):
+   - Here K_m,K_h at the lowest layer directly produce the fluxes. Apply the curvature-aware multiplicative modifier G(ζ,Δz) to K where K is used (i.e., in the diffusion update) so neutral curvature (2Δ) is preserved and bias reduced.
+   - When computing the modifier, compute Ri_b with ΔU reconstructed using z_L (if the wind is log-like) and Ri_g at z_g as the point comparator for the bias ratio B.
+
+3. Combined practical algorithm (safe default)
+   - Step A: compute z_g = sqrt(z0*z1) and z_L = (z1-z0)/ln(z1/z0).
+   - Step B: compute Ri_g(z_g) from local gradients (or evaluate φ at z_g).
+   - Step C: compute ΔU using z_L (log-mean) to avoid shear denominator bias; compute Ri_b from Δθ and that ΔU.
+   - Step D: B = Ri_g(z_g)/Ri_b. If B > threshold (e.g., 1.1) then:
+       - If fluxes are K‑based: apply K* = K · G(ζ,Δz) at first interior layer (G designed to preserve 2Δ).
+       - If fluxes are surface‑prescribed: reduce interior K (apply G) to limit vertical intrusion of surface fluxes, but do not change the surface‑prescribed H_sfc directly.
+   - Step E: log diagnostics (B, z_g, z_L) for tuning and QA.
+
+Rationale: using z_L for shear matches ΔU for log-wind assumptions, while z_g remains the geometric representative for curvature and Jensen-based bounds. This preserves consistency between surface schemes and curvature-aware interior corrections.
