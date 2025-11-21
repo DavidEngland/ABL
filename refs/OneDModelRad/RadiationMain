@@ -1,0 +1,227 @@
+Sub Main()
+Application.ScreenUpdating = False
+Application.Calculation = xlCalculationManual
+Application.CalculateBeforeSave = True
+Dim Nlayers As Integer
+
+
+Dim zm(250), theta(250), thetav(250), t(250), tv(250), p(250), PI(250), q(250), e(250), rho(250), Zsounding(20) As Variant
+Dim I, j, k, NL As Integer
+Dim Po
+Rem NL = number of model levels
+NL = 250
+Rem Rd = Gas constant for dry air
+Rd = 287
+Rem Cp= heat capacity for dry air
+Cp = 1004
+Rem Poo is 1000 mb converted tp pasquals = 1.E5Pa
+Poo = 100000#
+Rem Po is initial surface pressure = 1000mb in Pa
+Po = 100000#
+Rem G is gravity
+g = 9.81
+Call Initial_Sounding(Nlayers, Rd)
+
+
+
+
+Rem Initialize Arrays
+For I = 1 To NL
+Rem note reverse arrays do 1 is first level
+j = NL - I + 1
+zm(j) = Cells(I + 2, "A").Value
+theta(j) = Cells(I + 2, "D").Value
+q(j) = Cells(I + 2, "K").Value
+Debug.Print j, zm(j), theta(j), q(j)
+Next I
+zm(0) = 0
+
+Rem compute pressure from temperature profile
+Call Pressure(zm(), theta(), p(), PI(), NL, Poo, Po, g)
+
+
+
+Rem Compute Temperature and Virtual Temperature
+Call Temperature.Temp(theta(), t(), tv(), p(), q(), e(), NL)
+Call Density(t(), p(), rho(), NL)
+Rem calculate radiative fluxes
+Call Radiation.Radiation(t(), p(), q(), e(), zm(), rho(), Po, NL)
+
+Rem put info back into spread sheet
+Cells(j + 1, "O").Value = "Pressure (mb)"
+Cells(j + 1, "P").Value = "Temperature"
+Cells(j + 1, "q").Value = "Virtual Temp"
+Cells(j + 1, "R").Value = "Density"
+
+For I = 1 To NL
+j = NL - I + 1
+Cells(j + 2, "O").Value = p(I) / 100
+Cells(j + 2, "P").Value = t(I)
+Cells(j + 2, "q").Value = tv(I)
+Cells(j + 2, "R").Value = rho(I)
+Cells(j + 2, "V").Value = e(I) / 100
+
+Next I
+
+
+
+
+Application.ScreenUpdating = True
+Application.Calculation = xlCalculationAutomatic
+Application.CalculateBeforeSave = False
+
+End Sub
+Sub Pressure(zm(), theta(), p(), PI(), NL, Poo, Po, g)
+Dim I As Integer
+
+PI(0) = Cp * (Po / Poo) ^ (Rd / Cp)
+
+For I = 1 To NL
+Debug.Print theta(I), Rd, Cp, Po, Poo
+PI(I) = PI(I - 1) + (-g / theta(I)) * (zm(I) - zm(I - 1))
+Next I
+For I = 1 To NL
+p(I) = ((PI(I) / Cp) ^ (Cp / Rd)) * Poo
+Debug.Print I, "PI", "Pressure mb", PI(I), p(I) / 100
+Next I
+
+For I = 1 To NL
+
+
+Next I
+End Sub
+Sub Density(tv(), p(), rho(), NL)
+Dim I As Integer
+For I = 1 To NL
+rho(I) = (p(I) / (Rd * tv(I)))
+Next I
+
+End Sub
+
+Sub Initial_Sounding(Nlayers, Rd)
+Dim I, ntop, ninterp As Integer
+Dim delzinterp, skipdown, Tsrfc As Variant
+Rem Note ntop is index for model top e.g n for 950 if that is model top at 500m
+ntop = 11
+
+Nlayers = 15
+
+Dim Ps(15), Ts(15), TKs(15), qs(15), zs(15), rhos(15), us(15), ucs(15), ues(15)
+Dim pis(250), qis(250), TKIs(250), rhois(250), zis(250), uis(250), ucis(250), Ueis(250), Eis(250)
+Dim fdowntop, tksV, fdown(250), fup(250), fuptop, Fdownsfc As Variant
+Dim j As Integer
+Rem Load Data into arrays
+For I = 1 To 15
+Ps(I) = Cells(I + 2, "X").Value * 100
+Ts(I) = Cells(I + 2, "Y").Value
+TKs(I) = Ts(I) + 273.15
+Cells(I + 2, "AB").Value = TKs(I)
+
+
+
+qs(I) = Cells(I + 2, "Z").Value / 1000
+Rem Compute virtual Temp
+tksV = TKs(I) * (1 + 0.61 * qs(I))
+rhos(I) = Ps(I) / (Rd * TKs(I))
+Cells(I + 2, "AC").Value = rhos(I)
+Next I
+Call Compute_height(Ps(), TKs(), zs(), rhos(), Nlayers, Rd)
+zis(1) = 0#
+delzinterp = 50
+ninterp = (zs(Nlayers) - zs(1)) / delzinterp
+For I = 1 To ninterp
+zis(I + 1) = zis(I) + delzinterp
+Next I
+For I = 1 To ninterp
+Cells(I + 2, "AG").Value = zis(I)
+Debug.Print zis(I)
+Next I
+
+Call Interp_sounding(Ps(), rhos(), TKs(), qs(), zs(), pis(), rhois(), TKIs(), qis(), zis(), Eis(), Nlayers, ninterp)
+
+Rem Compute water vapor path length
+Call Radiation.WVPath(qis(), pis(), zis(), rhois(), uis(), ninterp, pis(1))
+Call Radiation.CO2Path(pis(), zis(), rhois(), ucis(), ninterp, pis(1))
+Call Radiation.uepath(pis(), qis(), zis(), rhois(), Eis(), uis(), Ueis(), pis(1), ninterp)
+For I = 1 To ninterp
+Cells(I + 2, "AL").Value = uis(I)
+Cells(I + 2, "AM").Value = ucis(I)
+Cells(I + 2, "AO").Value = Ueis(I)
+Next I
+Rem Note ntop is index for model top e.g n for 950 if that is model top at 500m
+ntop = 1
+Rem skipdown = 1
+Rem If skipdown = 0 Then
+For ntop = 1 To ninterp
+Call Radiation.Fdownk(TKIs(), uis(), ucis(), Ueis(), ntop, fdowntop, ninterp)
+ fdown(ntop) = fdowntop
+ Cells(ntop + 2, "ap").Value = fdowntop
+ Next ntop
+ Rem Else
+ Fdownsfc = fdown(1)
+ Tsrfc = TKIs(1)
+
+ For ntop = 2 To ninterp
+Call Radiation.FupK(TKIs(), uis(), ucis(), Ueis(), ntop, fuptop, ninterp, Tsrfc)
+ fup(ntop) = fuptop
+ Cells(ntop + 2, "aq").Value = fuptop
+ Next ntop
+ Rem End If
+ End Sub
+
+Sub Compute_height(Ps(), TKs(), zs(), rhos(), Nlayers, Rd)
+zs(1) = 0
+g = 9.8
+Dim I As Integer
+For I = 1 To Nlayers - 1
+zs(I + 1) = zs(I) + (-Log(Ps(I + 1) / Ps(I)) * (Rd * (TKs(I + 1) + TKs(I)) * 0.5) / g)
+Next I
+For I = 1 To Nlayers
+Cells(I + 2, "AA").Value = zs(I)
+Next I
+
+End Sub
+Sub Interp_sounding(Ps(), rhos(), TKs(), qs(), zs(), pis(), rhois(), TKIs(), qis(), zis(), Eis(), Nlayers, ninterp)
+Call Linearinterp(Ps(), zs(), Nlayers, ninterp, zis(), pis())
+Dim I As Integer
+For I = 1 To ninterp
+Cells(I + 2, "AH").Value = pis(I) / 100
+Next I
+Call Linearinterp(TKs(), zs(), Nlayers, ninterp, zis(), TKIs())
+For I = 1 To ninterp
+Cells(I + 2, "AI").Value = TKIs(I)
+Next I
+Call Linearinterp(rhos(), zs(), Nlayers, ninterp, zis(), rhois())
+For I = 1 To ninterp
+Cells(I + 2, "AJ").Value = rhois(I)
+Next I
+Call Linearinterp(qs(), zs(), Nlayers, ninterp, zis(), qis())
+For I = 1 To ninterp
+Cells(I + 2, "AK").Value = qis(I)
+Next I
+For I = 1 To ninterp
+Rem Vapor Pressure e
+Rem note this is  the definition in BG&B
+Eis(I) = (pis(I) * qis(I)) / (pis(1) * (0.622 + qis(I)))
+Cells(I + 2, "AN").Value = Eis(I) / 100
+
+Next I
+
+
+
+
+End Sub
+Sub Linearinterp(Vs(), zs(), Nlayers, ninterp, zis(), Vis())
+Dim zistart As Variant
+Dim I, k As Integer
+k = 1
+Vis(1) = Vs(1)
+For I = 2 To ninterp
+zistart = zs(k)
+Vis(I) = (Vs(k + 1) - Vs(k)) / (zs(k + 1) - zs(k)) * (zis(I + 1) - zistart) + Vs(k)
+If zis(I + 1) >= zs(k + 1) Then k = k + 1
+If k >= Nlayers Then Exit Sub
+
+Next I
+End Sub
+

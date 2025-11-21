@@ -1,0 +1,276 @@
+#  Note:fed3bed7 - This file not intended for hand editing.
+#  Absoft Developer Tools Interface requires use of this makefile.
+#  Use the Generate Makefile command to customize your own makefiles.
+#
+#  Absoft Corporation Compiler Interface Makefile(v4.0.1).
+#
+#
+#  Type 'amake -f "NAIRRADIATION.amk"' in this directory at the DOS prompt
+#  to execute this makefile. Type 'amake -f "NAIRRADIATION.amk" clean' to
+#  remove old *.obj, *.exe, and *.res files.
+#
+#
+#  This file was created by Absoft Developer Tools Interface.
+#  File created on: Mon Aug 10 13:15:11 2009
+#
+#
+
+
+
+#
+#  Variables and flags for the compiler(s) and linker.
+#
+F95COMPILER= f95
+F77COMPILER= f77
+C_COMPILER=  acc
+CPPCOMPILER= acc
+LINKER=      lnk
+
+F9x_FLAGS=   -YEXT_SFX=_ -s -YEXT_NAMES=LCS 
+F77_FLAGS=   -c -f -N15 -s 
+FF95_FLAG=   
+F_DEFINES=   
+C_FLAGS=     
+CPP_FLAGS=   -c++
+C_DEFINES=   
+C_UNDEFS=    
+
+
+
+DFLT_LNK_FLG=-IGNOREDUPS -aliases:UNICODE.ALS 
+USER_LNK_FLG=-warn 
+LNK_FLAGS=   $(DFLT_LNK_FLG) $(USER_LNK_FLG)
+
+BASENAME=    NAIRRADIATION
+#
+#  Name of the executable.
+#
+TARGET=      NAIRRADIATION.exe
+OUTDIR=      .
+OBJDIR=      .\objs
+
+#
+#  Files for this executable.
+#
+F95FILES=    
+MODFILES=    ".\radparams.mod" ".\trmm_window.mod" 
+FFILES=      ".\flraddriv_flcode.f" ".\water_hu2_flcode.f"  \
+            ".\aerosol_data_flcode.f" ".\aerosol_init_flcode.f"  \
+            ".\chou_routines_flcode.f" ".\dkfrwn_0599_flcode.f"  \
+            ".\flrad0100_flcode.f" ".\iaform3_flcode.f"  \
+            ".\misc_subs_flcode.f" ".\RadParams_flcode.f"  \
+            ".\tau_wp_oct96_flcode.f" ".\trmm_wnflt_0599_flcode.f" 
+CFILES=      
+RCFILES=     
+RESFILES=    
+HFILES=      
+OBJS=        
+OTHERFILES=  
+MKFILE=      .\NAIRRADIATION.amk
+
+#
+#  Libraries for this executable.
+#
+USER_LIBS=   
+DFLT_LIBS=   unix.lib vms.lib absRT0.lib kernel32.lib fio.lib fmath.lib comdlg32.lib f90math.lib libac.lib 
+LIBS=        $(USER_LIBS) $(DFLT_LIBS)
+
+
+
+#
+#  Include directories specified for this executable.
+#
+INCS=        
+LPATHS=      
+
+
+
+#
+#  Module flags, files and directories specified for this executable.
+#
+MOD_FLAGS=   
+MOD_INCS=    -p".\radparams.mod" -p".\trmm_window.mod" -p"." 
+
+
+
+#  The following macro(s) and rule(s) are required for a full build
+#
+#  Rules and dependencies for the executable.
+#
+SRCFILES=    $(FFILES) $(F90FILES) $(CFILES) $(HFILES) $(RCFILES) $(RESFILES) $(OTHERFILES)
+RCRSFILES=   $(RESFILES) 
+
+OBJFILES=    $(OBJS) "$(OBJDIR)\flraddriv_flcode.obj"  \
+            "$(OBJDIR)\water_hu2_flcode.obj"  \
+            "$(OBJDIR)\aerosol_data_flcode.obj"  \
+            "$(OBJDIR)\aerosol_init_flcode.obj"  \
+            "$(OBJDIR)\chou_routines_flcode.obj"  \
+            "$(OBJDIR)\dkfrwn_0599_flcode.obj"  \
+            "$(OBJDIR)\flrad0100_flcode.obj"  \
+            "$(OBJDIR)\iaform3_flcode.obj"  \
+            "$(OBJDIR)\misc_subs_flcode.obj"  \
+            "$(OBJDIR)\RadParams_flcode.obj"  \
+            "$(OBJDIR)\tau_wp_oct96_flcode.obj"  \
+            "$(OBJDIR)\trmm_wnflt_0599_flcode.obj" 
+
+#
+#  Optional macros, rules and dependencies included from prebuild file.
+#
+
+
+#
+#  Default dependency for this makefile
+#
+default: "$(OUTDIR)\$(TARGET)"
+
+all: "$(OUTDIR)\$(TARGET)"
+
+
+"$(OUTDIR)\$(TARGET)": "$(OUTDIR)" "$(OBJDIR)" "$(MKFILE)" $(OBJFILES) $(RCRSFILES)\
+	$(USER_LIBS) $(MODFILES)
+	$(LINKER) $(LPATHS) $(OBJFILES) $(LNK_FLAGS) $(RCRSFILES) $(LIBS) \
+		-out:"$(OUTDIR)\$(TARGET)"
+#
+#  Optional commands, macros, rules and dependencies from postbuild file.
+#
+#  To append additional commands to the default target dependency 
+#  begin the first line of the postbuild file with a tab.
+#
+
+
+.rc.res:
+	$(RC) -fo $@ $(RCFLAGS) $<
+
+
+"$(OBJDIR)" :
+	if not exist "$(OBJDIR)\nul" mkdir "$(OBJDIR)"
+
+
+"$(OUTDIR)" :
+
+
+qclean: clean_exe clean_misc clean_plugins
+	erase "$(OBJDIR)\*.mod"
+	erase "$(OBJDIR)\*.res"
+	erase "$(OBJDIR)\*.lib"
+	erase "$(OBJDIR)\*.obj"
+
+cleanProjFiles: clean
+
+clean: clean_f95 clean_f77 clean_acc clean_target
+
+clean_misc:
+	erase "$(OBJDIR)\*.amh"
+	erase "$(OBJDIR)\*.bif"
+	erase "$(OBJDIR)\*.int"
+	erase "$(OUTDIR)\*.amh"
+	erase "$(OUTDIR)\*.bif"
+	erase "$(OUTDIR)\*.int"
+	erase "$(OUTDIR)\*.mds"
+
+clean_f95: clean_f95src clean_f95mods
+
+clean_target: clean_misc clean_plugins clean_rsrc clean_exe
+
+clean_exe:
+	erase "$(OUTDIR)\$(TARGET)"
+
+clean_rsrc:
+
+clean_f95src:
+
+clean_f77:
+	erase "$(OBJDIR)\flraddriv_flcode.obj"
+	erase "$(OBJDIR)\water_hu2_flcode.obj"
+	erase "$(OBJDIR)\aerosol_data_flcode.obj"
+	erase "$(OBJDIR)\aerosol_init_flcode.obj"
+	erase "$(OBJDIR)\chou_routines_flcode.obj"
+	erase "$(OBJDIR)\dkfrwn_0599_flcode.obj"
+	erase "$(OBJDIR)\flrad0100_flcode.obj"
+	erase "$(OBJDIR)\iaform3_flcode.obj"
+	erase "$(OBJDIR)\misc_subs_flcode.obj"
+	erase "$(OBJDIR)\RadParams_flcode.obj"
+	erase "$(OBJDIR)\tau_wp_oct96_flcode.obj"
+	erase "$(OBJDIR)\trmm_wnflt_0599_flcode.obj"
+
+clean_acc:
+
+clean_plugins:
+
+clean_f95mods:
+
+
+FLRADDRIV_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\flraddriv_flcode.obj": ".\flraddriv_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\flraddriv_flcode.obj" $(FLRADDRIV_FLCODE_F_11)  ".\flraddriv_flcode.f"
+
+
+WATER_HU2_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\water_hu2_flcode.obj": ".\water_hu2_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\water_hu2_flcode.obj" $(WATER_HU2_FLCODE_F_11)  ".\water_hu2_flcode.f"
+
+
+AEROSOL_DATA_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\aerosol_data_flcode.obj": ".\aerosol_data_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\aerosol_data_flcode.obj" $(AEROSOL_DATA_FLCODE_F_11)  ".\aerosol_data_flcode.f"
+
+
+AEROSOL_INIT_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\aerosol_init_flcode.obj": ".\aerosol_init_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\aerosol_init_flcode.obj" $(AEROSOL_INIT_FLCODE_F_11)  ".\aerosol_init_flcode.f"
+
+
+CHOU_ROUTINES_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\chou_routines_flcode.obj": ".\chou_routines_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\chou_routines_flcode.obj" $(CHOU_ROUTINES_FLCODE_F_11)  ".\chou_routines_flcode.f"
+
+
+DKFRWN_0599_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\dkfrwn_0599_flcode.obj": ".\dkfrwn_0599_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\dkfrwn_0599_flcode.obj" $(DKFRWN_0599_FLCODE_F_11)  ".\dkfrwn_0599_flcode.f"
+
+
+FLRAD0100_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\flrad0100_flcode.obj": ".\flrad0100_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\flrad0100_flcode.obj" $(FLRAD0100_FLCODE_F_11)  ".\flrad0100_flcode.f"
+
+
+IAFORM3_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\iaform3_flcode.obj": ".\iaform3_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\iaform3_flcode.obj" $(IAFORM3_FLCODE_F_11)  ".\iaform3_flcode.f"
+
+
+MISC_SUBS_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\misc_subs_flcode.obj": ".\misc_subs_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\misc_subs_flcode.obj" $(MISC_SUBS_FLCODE_F_11)  ".\misc_subs_flcode.f"
+
+
+RADPARAMS_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\RadParams_flcode.obj": ".\RadParams_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\RadParams_flcode.obj" $(RADPARAMS_FLCODE_F_11)  ".\RadParams_flcode.f"
+
+
+TAU_WP_OCT96_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\tau_wp_oct96_flcode.obj": ".\tau_wp_oct96_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\tau_wp_oct96_flcode.obj" $(TAU_WP_OCT96_FLCODE_F_11)  ".\tau_wp_oct96_flcode.f"
+
+
+TRMM_WNFLT_0599_FLCODE_F_11 =   $(INCS) $(F77_FLAGS) $(F_DEFINES) 
+"$(OBJDIR)\trmm_wnflt_0599_flcode.obj": ".\trmm_wnflt_0599_flcode.f"
+	$(F77COMPILER) -o "$(OBJDIR)\trmm_wnflt_0599_flcode.obj" $(TRMM_WNFLT_0599_FLCODE_F_11)  ".\trmm_wnflt_0599_flcode.f"
+
+
+
+
+#
+#  Include any scanned dependencies
+#
+include "$(OUTDIR)\mkdep\mkdep_$(BASENAME).amk"
+
+
+#
+#  Define necessary macros for dependency scanning.
+#
+MKDEP=       makedepend
+MKDEP_FLAGS= -quiet "-pre$(OBJDIR)\\" -Y -modInfo -errdel 
+

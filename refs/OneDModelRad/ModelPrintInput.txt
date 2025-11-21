@@ -1,0 +1,10 @@
+Snd File,                       CASESAD991023003.txt
+  Ug=,     12.00,Vg =,      0.00
+ Z0 =,     0.030
+Lat =,    40.000
+   Fluxtype =,   2 , Stability Type =,   1
+      Using Ri Formulation for Stable BL Fluxes...
+    Soil Heat Capacity =,     800.000      ,Soil Conductivity,       0.300
+            Soil Density,    1600.000             ,Slab Depth,       0.050
+      GHGGADD=,      4.0000
+               Radiation on (1) off (0),   1

@@ -1,0 +1,94 @@
+
+!-------------------SET KZ HERE--------------------------------------------------------
+	INTEGER, PARAMETER  :: KZ=100	! NUMBER OF VERTICAL LEVELS 		
+!--------------------------------------------------------------------------------------
+!END USER MODIFICATIONS
+
+	INTEGER 		::	IMO,IDY,IT,I,J,Nstepsavg,Numheatingavg	
+	INTEGER 		::	FIRST,FIRSTflux, TSTEPS, FLUXTYPE, STABFUNC
+	Integer                 ::      FirstCE
+	REAL	   		::	U0 , V0 , T0 , Q0 , Z0, PRESS		
+	REAL			::	TA, TR
+	REAL    		::	ZI,USTAR,VSTAR,TSTAR,QSTAR,UFLUX,VFLUX, XIS, TAERO		
+	REAL    		::	L,LAT,LON,TIME,TIME0,DELT, HO, LH, XIL, LWU, GHF, GHFR		
+	REAL    		::	VONKAR,G,RI,RIC,UG,VG,ETOT
+	REAL    		::	TNEXT, TINC, TTIME, RESETT, RTIME, TSTEP, MTIME		
+	REal                    ::      Tnextflux,Tincflux
+	REAL			::	TGO, AVGTO, tot_rnet, tot_flux, tot_heat, tot_ho, tot_lh, heat_save, TEMP
+	REAL    		:: 	TEMPOUT, TCOUNT, RIHALF
+	REAL                    ::      xisavg,xilavg,hoavg,ghfavg,lwuavg
+	REal                    ::      taeroavg,travg,t0avg,difftime,ghfravg
+	REAL                    ::      LHAVG
+	REAL                    ::      Columnenergy, Columnenergyavg, InitialcolumnE
+	REAL                    ::      Raduptop,Raddntop,radiativeloss,radiativelossavg
+	
+
+	REAL, DIMENSION(KZ)	::	ZM, DELZ, DELZM, KM, KH, UGARR, VGARR
+
+
+	Real, DIMENSION(KZ)	::	U, V, Q, T, Z, P,rhop,Ozone,fthrd,TSAVE, DEN_SAVE
+
+        REAL, DIMENSION(KZ)	::      Radheating,Diffheating,dfrate	 			 		 
+	REAL, ALLOCATABLE, DIMENSION(:) :: TR_MODEL, TG_MODEL, obs_insol, obs_tradt
+
+
+!	KZ IS THE NUMBER OF VERTICAL GRID POINTS		
+!	U = HORIZONTAL VELOCITY  (EAST-WEST)     IN M/SEC		
+!	V = HORIZONTAL VELOCITY  (NORTH-SOUTH)   IN M/SEC		
+!	T = POTENTIAL  TEMPERATURE               IN DEGREES	K	ELVIN
+!	Q = HUMIDITY                             IN KG/KG		
+!	Z  = Z  LEVELS (VERTICAL HEIGHTS)
+!	REAL   		::	U(KZ) , V(KZ) , T(KZ) , Q(KZ) , Z(KZ)		
+!	U0 = HORIZONTAL VELOCITY AT SURFACE  (EAST-WEST)  =	0	
+!	V0 = HORIZONTAL VELOCITY AT SURFACE (NORTH-SOUTH) =	0	
+!	T0    = SURFACE TEMPERATURE              IN DEGREES	K	ELVIN
+!	Q0    = SURFACE HUMIDITY                 IN KG/KG		
+!	Z0 = ROUGHNESS LENGTH                    IN M	
+!	PRESS = SURFACE PRESSURE
+!	TA = AERODYNAMIC TEMPERATURE (T @ ROUGHNESS LENGTH)
+!	TR = RADIATIVE TEMPERATURE
+!	ZM    = ZM LEVELS (VERTICAL HEIGHTS AT MIDPOINTS)		
+!	DELZ  = ARRAY OF DELTA Z'S		
+!	DELZM = ARRAY OF DELTA ZM'S		
+!	REAL   		::	ZM(KZ) , DELZ(KZ) , DELZM(KZ)		
+!	KM    = ARRAY OF SIZE KZ USED FOR U AND V		
+!	(DIFFUSION COFFICIENTS AT	MI	DPOINTS)
+!	I.E., K(i) = K(z(i-1/2))		
+!	KH    = ARRAY OF SIZE KZ USED FOR THETA AND Q		
+!	(DIFFUSION COFFICIENTS AT	MI	DPOINTS)
+!	I.E., K(i) = K(z(i-1/2))		
+!	OTHER VARIABLES:		
+!	ZI    = BOUNDARY LAYER HEIGHT		
+!	USTAR = FRICTION VELOCITY		
+!	VSTAR = FRICTION VELOCITY		
+!	TSTAR = SURFACE FRICTION TEMPERATURE		
+!	QSTAR = SURFACE FRICTION HUMIDITY		
+!	UFLUX = U-COMPONENT OF USTAR		
+!	VFLUX = V-COMPONENT OF USTAR		
+!	L     = MONIN OBUKHOV LENGTH		
+!	LAT   = LATITUDE  (IN DEGREES)		
+!	LON   = LONGITUDE (IN DEGREES)		
+!	IMO   = MONTH		
+!	IDY   = DAY		
+!	TIME  = TIME OF DAY IN SECONDS		
+!	TIME0 = STARTING TIME IN SECONDS	
+!	MTIME = MODEL TIME, STARTING AT 0	
+!	DELT  = DELTA T (TIME INCREMENT IN SECONDS)		
+!	VONKAR= VONKARMAN CONSTANT k		
+!	G     = GRAVITY		
+!	RI    = RICHARDSON NUMBER		
+!	RIC   = CRITICAL RICHARDSON NUMBER		
+!	UG    = GEOSTROPHIC WIND AT SURFACE          (EAST-	WE	ST)   M/SEC
+!	VG    = GEOSTROPHIC WIND AT SURFACE          (NORTH	#NAME?	OUTH) M/SEC
+!	UGARR = VERTICAL ARRAY OF GEOSTROPHIC WINDS  (EAST-	WE	ST)   M/SEC
+!	VGARR = VERTICAL ARRAY OF GEOSTROPHIC WINDS  (NORTH	#NAME?	OUTH) M/SEC
+!			
+!			
+!	FIRST = LOGICAL NAME USED IN STORE SO IT CAN OPEN T	HE	OUTPUT FILE
+!	FOR THE FIRST TIME		
+!	TNEXT = NEXT TIME TO CALL STORE SUBROUTINE		
+!	TINC  = TIME INCREMENT TO STORE THE VARIABLES
+!	TCOUNT = COUNTER FOR TEMPERATURE OUTPUT FILE	
+           
+	   	
+!			

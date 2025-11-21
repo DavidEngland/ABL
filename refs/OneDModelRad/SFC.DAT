@@ -1,0 +1,29 @@
+
+!------LAND SURFACE OPTIONS----------------------------------------------------------------
+	MAVAIL  = 	0.00			! MOISTURE AVAILABILITY		(0.0-1.0)
+	EMISS   = 	1.00			! SURFACE EMISSIVITY		(0.0-1.0)
+	XLAMBDA	= 	0.30			! THERMAL CONDUCTIVITY		(W/m/K)
+	CS	=	800.			! SPECIFIC HEAT CAPACITY	(J/kg/K)
+	RHOS	=	1600.			! DENSITY			(kg/m3)
+	KS	=	XLAMBDA/(CS*RHOS)	! THERMAL DIFFUSIVITY		(m2/s)
+	THM	=       290			! DEEP LAYER TEMPERATURE	(K)
+	ALB	=	0.17			! SURFACE ALBEDO		(0.0-1.0)
+	PRESS	=	96900.		        ! SURFACE PRESSURE (Pa)
+	DelHs   =        .05                    ! Soil Depth (M)
+	GHGADD  =       4.0			! GREEN HOUSE GAS SUPPLEMENT    (W/M**2)
+!------CONSTANTS---------------------------------------------------------------------------
+	QC 	=	0.0			! CLOUD FRACTION
+	SIGMA	=	5.67e-8			! STEFAN-BOLTZMAN CONSTANT
+	OMEGA	=	7.2722e-5		! ANGULAR VELOCITY OF EARTH
+	CP	=	1004.			! HEAT CAPACITY WRT PRESSURE	(J/K/kg)
+	LHV	=	2.5e6			! LATENT HEAT OF VAPORIZATION	(J/kg)
+	SO	=	1376.			! SOLAR CONSTANT		(W/m2)
+	RD	=	287.			! DRY GAS CONSTANT		(J/kgK)
+						! ***MUST MATCH PRESS in BL.DAT***
+	VONKAR	=	0.4			! VONKARMAN CONSTANT
+ 	                                        ! ***MUST MATCH PRESS IN BL.DAT***
+!------MISCELLANEOUS VARIABLES-------------------------------------------------------------
+	PW	=	4.2			! PRECIPITABLE WATER 
+						! ***USED IN XIS CALCULATION***
+
+      

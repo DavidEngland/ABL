@@ -1,0 +1,41 @@
+			
+!-----SURFACE LAYER OPTIONS------------------------------------------------------------------
+	T0 = 292.0			! INITIAL GROUND TEMPERATURE a.k.a. TG 	(K)
+	Z0 = 0.03			! ROUGHNESS LENGTH 			(m)
+	PRESS = 99980.00		! SURFACE PRESSURE			(Pa)
+					! ***MUST MATCH PRESS IN SFC.DAT***
+	FLUXTYPE = 2			! 1 = 	Businger Functions for Day and Night
+					! 2 =   England/McNider Functions for Night, Busing for Day
+
+	STABFUNC = 1			! 1 = Quadratic (McNider)
+					! 2 = Louis
+					! 3 = Beljaars
+!-----BOUNDARY LAYER OPTIONS-----------------------------------------------------------------
+!	ZI    = 1200.0			! INITIAL BOUNDARY LAYER HEIGHT 	(m)
+	UG    = 12.0			! U-COMP GEOSTROPHIC WIND		(m/s)
+	VG    = 0.0			! V-COMP GEOSTROPHIC WIND		(m/s)
+					! ***ONLY NEEDED FOR DAYTIME START***
+!-----LOCATION OPTIONS-----------------------------------------------------------------------
+	LAT   = 40.0			! LATITUDE 				(degrees)
+					! ***REQUIRED FOR INSOLATION CALC.***
+!-----DATE/TIME OPTIONS----------------------------------------------------------------------
+	IMO   = 10			! MONTH 				(1-12)
+	IDY   = 23			! DAY					(0 - 31)
+	TIME  = 1.0*3600.		! UTC START TIME (LOCAL+5 FOR JULY)	(hour*3600.)
+	TIME0 = TIME			! INITIAL SETTING			(seconds)
+	DELT  = 0.05			! TIME STEP or TIME INCREMENT		(seconds)
+	TTIME = 12.1*3600.		! TOTAL TIME, FORECAST LENGTH		(hours*3600.)
+	TNEXT = 0.0			! INITIAL SETTING			(seconds)	
+	TINC  = 3.*3600.0		! OUTPUT FREQUENCY (1.0=one per hour)	(interval*3600.)
+	TEMPOUT = 60./DELT		! OUTPUT FREQ FOR TEMPERATURE 		(seconds)
+					! X/DELT   (DELT/DELT = every time step)  
+	
+	TINCFLUX= 300.                  ! Time increment for flux output
+	TNEXTFLUX= 300		        ! Initial setting
+ 					! ***CANNOT OUTPUT LESS THAN DELT***
+!-----CONSTANTS/LOGICALS---------------------------------------------------------------------
+	VONKAR= 0.40			! VONKARMAN CONSTANT 
+					! ***MUST MATCH PRESS IN SFC.DAT***
+	G     = 9.81			! GRAVITY
+	FIRST = 1			! LOGICAL USED IN SUBROUTINE:STORE TO OPEN OUTPUT FILE
+        FIRSTFlux = 1                   ! LOGICAL USED IN SUBROUTINE:STORE TO OPEN OUTPUT FILE

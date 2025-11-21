@@ -1,0 +1,15 @@
+INTEGER, PARAMETER	:: IRAD  = 0			! 1 to use Observational insolation, 0 to use model insolation.
+INTEGER, PARAMETER	:: ITRAD = 0			! 1 to turn on temperature tendency adjustment, 0 to turn off.
+INTEGER, PARAMETER	:: IALB  = 0			! 1 if Observation data is downward shortwave only, 0 for net shortwave.
+INTEGER, PARAMETER	:: ICB   = 1
+
+REAL			:: ASSIM_ST  = 13.0		! GMT Adjustment application time
+REAL			:: ASSIM_EN  = 15.0		! GMT Adjustment end time (Not used yet 09/25/07)
+REAL			:: ASSIM_INC = 60*60		! Frequency of MA Adjustment (Minutes*Minutes)
+REAL, PARAMETER		:: RECOVER_ST = 2.0		! GMT Time to recover CG
+
+INTEGER			:: ADJ_FLAG			! Flag to use or not use adjusted MA
+
+REAL			:: ADJ_MA, CURRENT_ST, INITIAL_ST, ASSIM_TIME
+
+
