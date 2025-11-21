@@ -355,6 +355,54 @@ Provide case-specific data (z₀, z₁, L, observed Ri_b, K) for tuned fc sugges
 
 ---
 
+## Appendix — Reconciliation: McNider's D vs bias B
+
+Goal: express McNider's ODE amplitude (D_M, as used in some formulations) in terms of our bias diagnostic B = Ri_g(z_g)/Ri_b (or vice versa) so published D values can be compared with our α tuning.
+
+Notation
+- Ri_g ≡ point gradient Richardson at z_g.
+- Ri_b ≡ bulk Richardson for the layer.
+- B ≡ Ri_g / Ri_b (bias ratio), so B − 1 measures fractional underestimation of bulk vs point.
+- We use the diagnostic ODE (our preferred local form):
+  d ln f_c / d ln Δz = − α · (B − 1) · (ζ/ζ_ref)^q.      (1)
+- Suppose McNider used a bulk‑driven form (common in older drafts):
+  d ln f_c / d ln Δz = − D_M · (Ri_b / Ri_ref) · (ζ/ζ_ref)^q.   (2)
+  where Ri_ref is a normalization constant (e.g., 0.25) used in that paper.
+
+Algebraic mapping
+- Equate RHS of (1) and (2) to map parameters for the same correction amplitude:
+  α (B − 1) = D_M · (Ri_b / Ri_ref).
+- Solving for D_M:
+  D_M = α · (B − 1) · (Ri_ref / Ri_b).                       (3)
+- Conversely, solving for α:
+  α = D_M · (Ri_b / Ri_ref) / (B − 1).                        (4)
+
+Interpretation
+- Because Ri_b < Ri_g when Δ<0 (concave‑down), B>1 and Ri_b is smaller than Ri_g. Using Ri_b in the ODE (2) reduces the apparent driver amplitude per unit bias; D_M must therefore be larger (per (3)) than α to produce the same fc response. In plain terms: if one parametrizes correction proportional to Ri_b, one under-weights curvature and must multiply by a larger D_M to match a correction driven by (B−1) or Ri_g.
+- Using (B−1) is dimensionless and directly measures the Jensen bias; it is therefore a more robust amplitude to drive fc than Ri_b itself.
+
+Numeric example
+- Suppose Ri_g = 0.60 and Ri_b = 0.30 → B = 2.0 ⇒ B − 1 = 1.0.
+- Let Ri_ref = 0.25, and choose α = 1.0 (our tuning).
+- Then by (3):
+  D_M = 1.0 · 1.0 · (0.25 / 0.30) ≈ 0.83.
+- If instead someone reports D_M = 1.0 (McNider convention), the equivalent α (from (4)) would be:
+  α = 1.0 · (0.30/0.25) / 1.0 = 1.2.
+
+Practical guidance
+- For reconciling numbers reported in McNider et al.:
+  1. Extract or compute Ri_b and Ri_g for the cases used to estimate D_M.
+  2. Use (4) to compute the equivalent α that our diagnostic uses (or use (3) to go the other way).
+- Recommendation: when publishing or tuning, report both the dimensionless bias driver (B−1) and the normalization used (Ri_ref). This makes D_M values reproducible and directly comparable to α in other studies.
+- Operational note: for noisy Ri_b estimates smooth Ri_b and Ri_g in time (or use ensemble median) before computing B to avoid spurious amplification in the conversion.
+
+Short rationale for preferring B−1 as driver
+- B−1 isolates curvature-induced bias irrespective of absolute Ri magnitude.
+- It is unitless and bounded by physical profile shapes; therefore α tuned on (B−1) transfers more cleanly across cases with different absolute Ri levels.
+- Using Ri_b directly ties correction amplitude to the (biased) bulk value and can mask curvature severity.
+
+---
+
 ## Appendix: Pseudocode (Complete Example)
 
 ```python

@@ -1,0 +1,30 @@
+That's an important notational clarification. When the denominator of a differential is $\mathbf{d(\Delta z - \Delta z_{\rm R})}$, it does **not change the mathematical result** of the derivative compared to $d(\Delta z)$ because $\Delta z_{\rm R}$ is a **constant reference thickness**.
+
+The differential $d(\Delta z - \Delta z_{\rm R})$ is simply a substitution that highlights the derivative is being taken with respect to the **difference from the reference thickness**.
+
+### Mathematical Equivalence
+
+Since $\Delta z_{\rm R}$ is a constant, its differential is zero:
+$$d(\Delta z - \Delta z_{\rm R}) = d(\Delta z) - d(\Delta z_{\rm R}) = d(\Delta z) - 0 = d(\Delta z)$$
+
+Therefore, the notation $\frac{d}{d(\Delta z - \Delta z_{\rm R})}$ is mathematically equivalent to $\frac{d}{d(\Delta z)}$.
+
+### Notational Purpose
+
+The use of $\frac{d}{d(\Delta z - \Delta z_{\rm R})}$ is a common technique in physics and engineering to emphasize that the rate of change is being measured relative to the **reference point** ($\Delta z_{\rm R}$).
+
+In the context of the McNider scheme, it reinforces the boundary condition (Equation 3: $f_c(\Delta z = \Delta z_{\rm ref}) = 1$) and the design goal: the model's behavior is constrained based on its deviation from a fine, reference resolution.
+
+---
+
+### Final Correction to Extracted Equations
+
+This confirmation means the $\LaTeX$ for the derivative terms in Equations 1 and 6 should be updated to reflect this notation, even though the computed derivative remains the same.
+
+1.  **Zero-Derivative Condition (General):**
+    $$\frac{d}{d(\Delta z - \Delta z_{\rm ref})} \left( f_s(Ri) \cdot f_c(Ri, \Delta z) \right) = 0$$
+
+2.  **Full Zero-Derivative Constraint (Corrected):**
+    $$\frac{d}{d(\Delta z - \Delta z_{\rm ref})} \left[ \exp\!\left(-\gamma \frac{\text{Ri}_{\rm b}}{\text{Ri}_{\rm c}}\right) \cdot f_c(\text{Ri}, \Delta z) \right] \Big|_{\Delta z = \Delta z_{\rm ref}} = 0$$
+
+The rest of the extracted equations remain unchanged.

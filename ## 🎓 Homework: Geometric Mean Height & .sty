@@ -1,0 +1,145 @@
+## 🎓 Homework: Geometric Mean Height & Richardson Number Bias (Jensen's Inequality)
+
+**Course:** Boundary-Layer Meteorology / Advanced Atmospheric Physics
+**Level:** Undergraduate and above
+
+-----
+
+### 1\. Problem Statement
+
+Atmospheric models compute a bulk Richardson number across a layer,
+
+$$
+Ri_b = \frac{g}{\theta}\frac{\Delta\theta\,\Delta z}{(\Delta U)^2},
+$$while the local (gradient) Richardson number is
+
+$$Ri\_g(z)=\\frac{(g/\\theta),\\partial\\theta/\\partial z}{(\\partial U/\\partial z)^2}.
+$$Show that when $Ri_g(z)$ is **concave-down** over $[z_0,z_1]$ (typical SBL), the layer average **underestimates** the point value at the geometric-mean height $z_g=\sqrt{z_0 z_1}$:
+
+$$
+Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g(z_g).
+$$
+
+-----
+
+## Part A — Jensen's Inequality & Concavity (Warm-Up)
+
+**A1. Jensen's Inequality for a Concave Function $f$:**
+
+For a strictly concave function $f$ on $[a,b]$, the integral form states:
+
+$$
+\frac{1}{b-a}\int_a^b f(x)\,dx < f\!\left(\frac{1}{b-a}\int_a^b x\,dx\right).
+$$The condition for a twice-differentiable $f$ to be concave is $f''(x)\le 0$ on $[a,b]$.
+
+**A2. Show $\ln z$ is Concave for $z>0$:**
+
+The second derivative is computed as:
+
+$$\\frac{d}{dz}(\\ln z) = \\frac{1}{z} \\quad \\implies \\quad \\frac{d^2}{dz^2}\\ln z = -\\frac{1}{z^2}.
+$$Since $z > 0$, we have $-1/z^2 < 0$. Therefore, $\ln z$ is a strictly **concave** function.
+
+-----
+
+## Part B — Why the Geometric Mean?
+
+**B1. Logarithmic Mean for Log Wind:**
+
+For the log-linear wind profile $U(z)=\frac{u_*}{\kappa}\ln(z/z_0)+C$, the exact layer-averaged gradient $\Delta U/\Delta z$ equals the point gradient $\partial U/\partial z$ evaluated at the **logarithmic mean height**:
+
+$$
+\bar z_{\ln}=\frac{z_1-z_0}{\ln(z_1)-\ln(z_0)}.
+$$**B2. Geometric Mean is Midpoint in Log Space:**
+
+Taking the natural logarithm of the geometric mean $z_g$:
+
+$$\\ln z\_g = \\ln(\\sqrt{z\_0 z\_1}) = \\tfrac12(\\ln z\_0+\\ln z\_1).
+$$This shows that $\ln z_g$ is the arithmetic mean of the log-heights, confirming $z_g$ is the midpoint in logarithmic coordinates.
+
+**B3. Thin Layer Approximation:**
+
+For thin layers ($z_1/z_0\to1$), the logarithmic mean and geometric mean coincide to $O((\ln(z_1/z_0))^2)$. Thus, **$z_g$ is a practical, simplified representative height** for profiles that are logarithmic with height.
+
+-----
+
+## Part C — Concave-Down $Ri_g$ and Bias Proof
+
+**C1. Apply Jensen to Concave $Ri_g(z)$:**
+
+Applying Jensen's inequality (from A1) to the strictly concave function $Ri_g(z)$ yields:
+
+$$
+\frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g\!\left(\frac{1}{\Delta z}\int_{z_0}^{z_1} z\,dz\right).
+$$The integral on the right is the arithmetic mean height, $\bar{z}_a = (z_0+z_1)/2$.
+
+$$Ri\_b \< Ri\_g(\\bar{z}\_a).
+$$This shows that $Ri_b$ underestimates the point value at the **arithmetic mean height**.
+
+**C2. Use Concavity of $\ln z$ to Compare Means:**
+
+Using the discrete form of Jensen's inequality on the concave function $f(z) = \ln z$:
+
+$$
+\ln z_g = \tfrac12(\ln z_0+\ln z_1) \le \ln\!\left(\tfrac{z_0+z_1}{2}\right) = \ln \bar{z}_a.
+$$Since $\ln(z)$ is monotonically increasing, this implies the **geometric mean is less than the arithmetic mean**: $z_g \le \bar{z}_a$.
+
+In the typical SBL, $Ri_g$ decreases with height (i.e., $Ri_g'(z) < 0$). Since $z_g < \bar{z}_a$, we must have:
+
+$$Ri\_g(z\_g) \> Ri\_g(\\bar{z}\_a).
+$$Combining this with the result from C1 ($Ri_b < Ri_g(\bar{z}_a)$) gives the final inequality:
+
+$$
+Ri_b < Ri_g(\bar{z}_a) < Ri_g(z_g).
+$$Therefore, $Ri_b$ underestimates $Ri_g$ at the geometric mean height.
+
+**C3. Alternative: Change Variable $s=\ln z$:**
+
+If the transformed Richardson number, $\tilde{Ri}(s)=Ri_g(e^s)$, is concave in $s=\ln z$, we apply Jensen's inequality on the $s$-interval $[\ln z_0, \ln z_1]$:
+
+$$\\frac{1}{\\ln(z\_1/z\_0)}\\int\_{\\ln z\_0}^{\\ln z\_1}\\tilde Ri(s),ds \< \\tilde Ri\!\\left(\\tfrac{\\ln z\_0+\\ln z\_1}{2}\\right)=Ri\_g(z\_g).
+$$The term on the left is the **logarithmically weighted average** of $Ri_g$. For thin layers, this log-weighted average approximates the arithmetic layer average, yielding the desired result: $Ri_b \lesssim Ri_g(z_g)$.
+
+-----
+
+## Part D — Numerical Verification (Analytic Quadratic Example) 🔢
+
+Example parameters: $z_0=10$ m, $z_1=100$ m, $c_1=0.01$, $c_2=-0.0001$.
+$Ri_g(z)=c_1 z + c_2 z^2$.
+
+| Variable | Formula | Value |
+| :--- | :--- | :--- |
+| **$z_g$** | $\sqrt{z_0 z_1}$ | $31.62$ m |
+| **$Ri_g(z_g)$** | $c_1 z_g + c_2 z_g^2$ | $0.2162$ |
+| **$Ri_b$** | $\frac{1}{\Delta z}[\dots]$ (analytic integral) | $0.1800$ |
+
+**Conclusion:** $Ri_b (0.1800) < Ri_g(z_g) (0.2162)$, confirming the bias.
+
+```python
+# Short Python snippet to reproduce:
+import math
+z0, z1 = 10.0, 100.0
+c1, c2 = 0.01, -0.0001
+zg = math.sqrt(z0*z1)
+Rig_zg = c1*zg + c2*zg*zg
+Dz = z1 - z0
+# Analytic integral Ri_b
+Rb = (0.5*c1*(z1*z1 - z0*z0) + (c2/3.0)*(z1**3 - z0**3))/Dz
+print(f"Ri_g(z_g) = {Rig_zg:.4f}")
+print(f"Ri_b = {Rb:.4f}")
+```
+
+-----
+
+## Part E — Interpretation and Practical Correction 💡
+
+**E1. Why Underestimation Leads to Overmixing:**
+
+Numerical models use stability functions $f(Ri)$ to compute eddy diffusivities ($K_m, K_h$), where $K$ decreases as $Ri$ increases. Since the computed $\mathbf{Ri_b}$ **underestimates** the true local stability $Ri_g(z_g)$, the model calculates $K_m$ and $K_h$ values that are **too large**. This leads to excessive vertical transport of momentum and heat, known as **overmixing**.
+
+**E2. Arithmetic Mean Height Bias:**
+
+Using the arithmetic mean height $\bar{z}_a = (z_0+z_1)/2$ **worsens the bias**. Since $z_g < \bar{z}_a$ and $Ri_g$ decreases with height in the SBL, we have $Ri_g(\bar{z}_a) < Ri_g(z_g)$. Using $Ri_g(\bar{z}_a)$ provides an even lower estimate of stability than $Ri_g(z_g)$, thereby exacerbating the overmixing problem.
+
+**E3. Practical Correction (No Grid Change):**
+
+The most practical correction is to use the **geometric mean height $z_g$** as the representative height for calculating the gradients (or stability functions) that ultimately determine the eddy diffusivities in the layer. This implicitly compensates for the integral bias, ensuring $K$ is based on the more accurate $Ri_g(z_g)$ instead of the biased $Ri_b$.
