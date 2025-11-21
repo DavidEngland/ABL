@@ -7,6 +7,9 @@ MODULE FC_CORRECTION
 !-------------------------------------------------------------------------------
 IMPLICIT NONE
 
+! New: control diagnostics from driver/notebook (default: .FALSE.)
+LOGICAL, SAVE, PUBLIC :: DIAG_ENABLE = .FALSE.
+
 ! Default tuning parameters (adjust after validation)
 REAL, PARAMETER :: ALPHA_DEFAULT = 1.0      ! Correction strength
 REAL, PARAMETER :: P_DEFAULT     = 1.0      ! Dz scaling exponent
@@ -17,6 +20,12 @@ REAL, PARAMETER :: FC_MIN        = 0.2      ! Floor to prevent over-damping
 REAL, PARAMETER :: B_THRESH      = 1.05     ! Bias threshold for triggering correction
 
 CONTAINS
+
+! New public setter to control diagnostics from external driver/notebook
+SUBROUTINE SET_DIAGNOSTICS(flag)
+    LOGICAL, INTENT(IN) :: flag
+    DIAG_ENABLE = flag
+END SUBROUTINE SET_DIAGNOSTICS
 
 !-------------------------------------------------------------------------------
 SUBROUTINE COMPUTE_BIAS_RATIO(Z0, Z1, T0, T1, U0, U1, V0, V1, L, G, B, Z_G)
@@ -98,7 +107,6 @@ SUBROUTINE GET_PHI_M(ZETA, PHI_M)
     END IF
 END SUBROUTINE GET_PHI_M
 
-!-------------------------------------------------------------------------------
 SUBROUTINE GET_PHI_H(ZETA, PHI_H)
 !-------------------------------------------------------------------------------
 ! Placeholder for heat stability function phi_h(zeta)
@@ -187,11 +195,18 @@ SUBROUTINE APPLY_FC_TO_PROFILE(Z, KM, KH, L, T, U, V, KZ, G, FIRST_CALL)
     INTEGER :: I
     REAL :: Z0, Z1, T0, T1, U0, U1, V0, V1, DELTA_Z
     REAL :: B, Z_G, FC, ZETA, KM_OLD, KH_OLD
+    INTEGER :: ios
     
     ! Open diagnostic file on first call
-    IF (FIRST_CALL) THEN
-        OPEN(UNIT=99, FILE='FC_DIAGNOSTICS.dat', STATUS='REPLACE')
-        WRITE(99,'(A)') 'LEVEL  Z_G(m)  B      FC     KM_OLD  KM_NEW  KH_OLD  KH_NEW'
+    IF (FIRST_CALL .AND. DIAG_ENABLE) THEN
+        OPEN(UNIT=99, FILE='FC_DIAGNOSTICS.dat', STATUS='REPLACE', ACTION='WRITE', IOSTAT=ios)
+        IF (ios /= 0) THEN
+            DIAG_ENABLE = .FALSE.   ! disable if file cannot be opened
+        ELSE
+            WRITE(99,'(A)') 'LEVEL  Z_G(m)  B      FC     KM_OLD  KM_NEW  KH_OLD  KH_NEW'
+        END IF
+        FIRST_CALL = .FALSE.
+    ELSE
         FIRST_CALL = .FALSE.
     END IF
     
@@ -217,7 +232,7 @@ SUBROUTINE APPLY_FC_TO_PROFILE(Z, KM, KH, L, T, U, V, KZ, G, FIRST_CALL)
             ZETA = 0.0
         END IF
         
-        ! Compute correction factor fc
+        ! Compute correction factor FC
         CALL COMPUTE_FC(B, ZETA, DELTA_Z, FC)
         
         ! Store old values for diagnostics
@@ -228,12 +243,17 @@ SUBROUTINE APPLY_FC_TO_PROFILE(Z, KM, KH, L, T, U, V, KZ, G, FIRST_CALL)
         KM(I) = KM(I) * FC
         KH(I) = KH(I) * FC
         
-        ! Write diagnostics every 10 levels (adjust as needed)
-        IF (MOD(I, 10) .EQ. 0) THEN
+        ! Write diagnostics only if enabled
+        IF (DIAG_ENABLE .AND. MOD(I,10) .EQ. 0) THEN
             WRITE(99,'(I5,7F8.3)') I, Z_G, B, FC, KM_OLD, KM(I), KH_OLD, KH(I)
         END IF
     END DO
 
+    ! Close diagnostics unit if enabled (caller can request closing by SET_DIAGNOSTICS(.FALSE.))
+    IF (DIAG_ENABLE) THEN
+        CLOSE(UNIT=99, IOSTAT=ios)
+        ! keep DIAG_ENABLE as set by caller; do not auto-reopen next call
+    END IF
 END SUBROUTINE APPLY_FC_TO_PROFILE
 
 END MODULE FC_CORRECTION

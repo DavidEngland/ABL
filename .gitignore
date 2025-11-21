@@ -318,6 +318,7 @@ tramp
 *.tgz
 *.rar
 *.7z
+*.gz
 
 # Large CSVs (uncomment if needed)
 # *.csv
@@ -347,6 +348,10 @@ tramp
 # ========================================
 *.mod
 *.smod
+*.o
+*.a
+*.so
+*.lib
 
 # ========================================
 # Temporary / Cache

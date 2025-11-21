@@ -1,6 +1,6 @@
 **To:** Richard T. McNider <richard.mcnider@uah.edu>, Arastoo P. Biazar <arastoo.biazar@uah.edu>  
-**From:** David E. England <david.england@uah.edu>  
-**Date:** January 2025  
+
+**Date:** Before Thanksgiving 2025
 **Subject:** Grid Correction Framework — Curvature-Aware Dynamic D and Parameter Mapping
 
 ---
