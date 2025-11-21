@@ -1,68 +1,53 @@
-# Equations from Pub2 Document titled "Stability Functions based upon Shear Functions" 1995 BLM
+# Key Equations (MOST & Ri Curvature)
 
-Authors:  "Me and Dick McNider"
+Gradient Richardson (MOST):
+Ri_g(\zeta)=\zeta\,\frac{\phi_h(\zeta)}{\phi_m(\zeta)^2}=\zeta F(\zeta),\quad F=\phi_h/\phi_m^2.
 
-Just equations, which will have is, will be a
+Near-neutral expansions (φ_x=1+a_x ζ + b_x ζ² + …):
+Ri_g=\zeta+\Delta\zeta^2+\tfrac12(\Delta^2+c_1)\zeta^3+O(\zeta^4),
+Δ=a_h-2a_m,\ c_1=b_h-2b_m.
 
-#) equation number sometimes, which might have an a or b
+Inversion:
+\zeta=Ri_g - Δ Ri_g^2 + (1.5Δ^2 - 0.5 c_1)Ri_g^3 + O(Ri_g^4).
 
-It has come to light that may be more errors than know.
-Have all the Text, but equations were not done in TeX,
-most will have to be created.
+Curvature (log-derivative form):
+V_log=(\phi_h'/\phi_h) - 2(\phi_m'/\phi_m),\ W_log=V_log',
+d²Ri_g/d\zeta² = F [ 2 V_log + \zeta (V_log² - W_log) ].
+Neutral curvature: (d²Ri_g/d\zeta²)|₀ = 2Δ.
 
-Might be followed by some text with an update.
-Will somehow need a database.  Thinking currently that equations need to be indexed and cross-referenced for accuracy and ease of use.  Somehow equations are inserted much like BibTeX and *.bib files somehow.
+Turbulent Prandtl:
+Pr_t=\phi_h/\phi_m≈1+(a_h-a_m)\zeta ⇒ Pr_t(Ri_g)≈1+(a_h-a_m)Ri_g - (a_h-a_m)Δ Ri_g².
 
-## MOST
+Bias ratio (Jensen concave-down):
+B=Ri_g(z_g)/Ri_b,\ z_g=√(z_0 z_1),\ Ri_b<Ri_g(z_g) if Δ<0.
 
-1a) $$K_m = l_m^2 s / \phi_m^2,$$
-1b) $$K_h = l_h^2 s / \phi_h^2,$$
+Log-mean height (shear match):
+z_L=(z_1 - z_0)/ln(z_1/z_0),\ z_g ≤ z_L ≤ z_a=(z_0+z_1)/2.
 
-E1–E7: Core MOST scales and diffusivities.
-E8–E10: Ri_g linkage.
-E11–E15: Stability families.
-E16–E19: Grid & curvature corrections.
-E20–E23: Tail damping, dynamic Ric*, final Km, Kh, defaults.
-E24–E25: Generic scalar similarity and MOST diffusivity.
-E26: Ri-based scalar stability function f_q(Ri_g)=1/(φ_m φ_q).
-E27: Turbulent Schmidt number Sc_t^{(q)}=φ_q/φ_m.
-E28: Near-neutral series for f_q(Ri_g).
-E29: Effective diffusivity with reaction/deposition modifier χ_q.
+Generic damping (neutral-preserving):
+G(\zeta,Δz)=exp[-D (Δz/Δz_ref)^p (ζ/ζ_ref)^q ], q≥2 ⇒ G(0)=1,G'_ζ(0)=0.
 
-E-Pr1: Turbulent Prandtl number
-$$Pr_t=\frac{K_m}{K_h}=\frac{\phi_h}{\phi_m}.$$
+Power-law φ (stable):
+φ_x=(1-β_x ζ)^(-α_x), domain ζ<1/β_x.
 
-E-Ri1: Gradient Richardson (MOST)
-$$Ri_g(\zeta)=\zeta\frac{\phi_h(\zeta)}{\phi_m(\zeta)^2}=\zeta F(\zeta).$$
+Variable-L mapping (constant L shortcut):
+d²Ri_g/dz² ≈ (1/L²) d²Ri_g/d\zeta² if |(d²ζ/dz²)(dRi_g/d\zeta)| ≪ |(d\zeta/dz)²(d²Ri_g/d\zeta²)|.
 
-E-Ri2: Near-neutral expansion
-$$Ri_g=\zeta+\Delta\zeta^2+\tfrac12(\Delta^2+c_1)\zeta^3+O(\zeta^4),\quad \Delta=a_h-2a_m,\ c_1=b_h-2b_m.$$
+Critical Ri (dynamic concept):
+Ri_c^* = Ri_c [1 + α_B (Ri_b/Ri_c -1) + α_Γ (Γ/Γ_ref -1)].
 
-E-Ri3: ζ inversion (series)
-$$\zeta=Ri_g - \Delta Ri_g^2 + \Big(\tfrac32\Delta^2-\tfrac12 c_1\Big)Ri_g^3+O(Ri_g^4).$$
+Mixing length:
+l_m = κ z / φ_m,\ K_m = l_m² S f_m(Ri_g), f_m=1/φ_m(ζ(Ri_g))².
 
-E-K1: Exchange coefficients (MOST)
-$$K_m=\frac{\kappa z u_*}{\phi_m},\quad K_h=\frac{\kappa z u_*}{\phi_h}.$$
+Scalar closure:
+f_q(Ri_g)=1/[φ_m(ζ(Ri_g)) φ_q(ζ(Ri_g))], K_q = l_m² S f_q.
 
-E-f1: Ri-based closure mappings
-$$f_m(Ri_g)=\frac{1}{\phi_m(\zeta(Ri_g))^2},\quad f_h(Ri_g)=\frac{1}{\phi_m(\zeta(Ri_g))\phi_h(\zeta(Ri_g))}.$$
+Neutral invariants to preserve in corrections:
+1. 2Δ (curvature)
+2. (a_h - a_m) (Pr_t slope)
+3. Signs of Δ, c_1.
 
-E-Curv1: Curvature
-$$\frac{d^2Ri_g}{d\zeta^2}=F\big[2V_{\log}+\zeta(V_{\log}^2-W_{\log})\big],\quad F=\frac{\phi_h}{\phi_m^2}.$$
-
-E-Curv2: Neutral curvature invariant
-$$\left.\frac{d^2Ri_g}{d\zeta^2}\right|_0=2\Delta.$$
-
-E-Bias1: Bulk vs point bias ratio
-$$B=\frac{Ri_g(z_g)}{Ri_b},\quad z_g=\sqrt{z_0 z_1},\quad B>1\text{ if }\Delta<0.$$
-
-E-G1: Grid damping (neutral-preserving)
-$$G(\zeta,\Delta z)=\exp\left[-D\left(\frac{\Delta z}{\Delta z_r}\right)^p\left(\frac{\zeta}{\zeta_r}\right)^q\right],\ p\ge1,q\ge2.$$
-
-E-Rc1: Dynamic critical Richardson
-$$Ri_c^*=Ri_c\left[1+\alpha_B\left(\frac{Ri_{\text{bulk}}}{Ri_c}-1\right)+\alpha_\Gamma\left(\frac{\Gamma}{\Gamma_{\text{ref}}}-1\right)\right].$$
-
-E-Pr2: Pr_t near-neutral in Ri
-$$Pr_t(Ri_g)\approx 1+(a_h-a_m)Ri_g - (a_h-a_m)\Delta Ri_g^2+O(Ri_g^3).$$
+Tuning ranges (literature norms):
+a_m ≈ 4–5, a_h ≈ 7–8 (BD stable); Δ ≈ -1 to -2; Ri_c ≈ 0.2–0.25; Pr_t neutral ≈ 0.9–1.0.
 
 

@@ -68,11 +68,11 @@ A physically sound correction must:
 ### 2.2 Multiplicative Damping
 Apply correction to diffusivities:
 $$
-K_m^* = K_m \cdot fc(B, \Delta z, \zeta), \quad K_h^* = K_h \cdot fc.
+K_m^* = K_m \cdot f_c(B, \Delta z, \zeta), \quad K_h^* = K_h \cdot f_c.
 $$
 Alternatively, apply to stability function:
 $$
-f_m^* = f_m \cdot fc \quad \text{(before computing K)}.
+f_m^* = f_m \cdot f_c \quad \text{(before computing K)}.
 $$
 
 **Why multiplicative?**
@@ -87,7 +87,7 @@ $$
 
 ### 3.1 Exponential (Recommended)
 $$
-fc = \exp\left[ -\alpha \cdot (B-1) \cdot \left(\frac{\Delta z}{\Delta z_{\text{ref}}}\right)^p \cdot \left(\frac{\zeta}{\zeta_{\text{ref}}}\right)^q \right].
+f_c = \exp\left[ -\alpha \cdot (B-1) \cdot \left(\frac{\Delta z}{\Delta z_{\text{ref}}}\right)^p \cdot \left(\frac{\zeta}{\zeta_{\text{ref}}}\right)^q \right].
 $$
 
 **Parameters:**
@@ -105,7 +105,7 @@ $$
 
 ### 3.2 Rational (Alternative)
 $$
-fc = \frac{1}{1 + \alpha \cdot \max(0, B-1) \cdot \left(\frac{\Delta z}{\Delta z_{\text{ref}}}\right)^p \cdot \left(\frac{\zeta}{\zeta_{\text{ref}}}\right)^q}.
+f_c = \frac{1}{1 + \alpha \cdot \max(0, B-1) \cdot \left(\frac{\Delta z}{\Delta z_{\text{ref}}}\right)^p \cdot \left(\frac{\zeta}{\zeta_{\text{ref}}}\right)^q}.
 $$
 
 **Properties:**
@@ -118,7 +118,7 @@ $$
 ### 3.3 Safety Limits
 Apply hard floor to prevent over-damping:
 $$
-fc_{\text{final}} = \max(fc, fc_{\text{min}}), \quad fc_{\text{min}} \ge 0.2.
+fc_{\text{final}} = \max(f_c, fc_{\text{min}}), \quad fc_{\text{min}} \ge 0.2.
 $$
 
 ---
@@ -166,7 +166,7 @@ Guard against division by zero: if Ri_b ≤ ε (small threshold, e.g., 10⁻⁶)
 ### Step 5: Decision and Correction
 ```
 if B ≤ B_threshold:  # typically 1.05
-    fc = 1.0  # no correction
+    f_c = 1.0  # no correction
 else:
     # Compute ζ = z_g / L
     ζ = z_g / L
@@ -178,7 +178,7 @@ end
 
 ### Step 6: Apply Correction
 $$
-K_m^* = K_m \cdot fc, \quad K_h^* = K_h \cdot fc.
+K_m^* = K_m \cdot f_c, \quad K_h^* = K_h \cdot f_c.
 $$
 Use K*_m, K*_h in vertical diffusion update.
 
@@ -320,16 +320,16 @@ where f_s is a reference stability function. This enforces that the **product** 
 
 Taking logarithmic derivative:
 $$
-\frac{d \ln fc}{d \ln \Delta z} = -\alpha (B-1) \left(\frac{\zeta}{\zeta_{\text{ref}}}\right)^q,
+\frac{d \ln f_c}{d \ln \Delta z} = -\alpha (B-1) \left(\frac{\zeta}{\zeta_{\text{ref}}}\right)^q,
 $$
 which integrates to:
 $$
-fc(\Delta z, \zeta) = \left(\frac{\Delta z}{\Delta z_{\text{ref}}}\right)^{-\alpha (B-1)(\zeta/\zeta_{\text{ref}})^q}.
+f_c(\Delta z, \zeta) = \left(\frac{\Delta z}{\Delta z_{\text{ref}}}\right)^{-\alpha (B-1)(\zeta/\zeta_{\text{ref}})^q}.
 $$
 
 For small exponents, this approximates:
 $$
-fc \approx \exp\left[-\alpha (B-1) \ln\left(\frac{\Delta z}{\Delta z_{\text{ref}}}\right) \left(\frac{\zeta}{\zeta_{\text{ref}}}\right)^q\right],
+f_c \approx \exp\left[-\alpha (B-1) \ln\left(\frac{\Delta z}{\Delta z_{\text{ref}}}\right) \left(\frac{\zeta}{\zeta_{\text{ref}}}\right)^q\right],
 $$
 which is equivalent to the exponential form with p=1 and logarithmic Δz scaling. The power-law form:
 $$
@@ -350,7 +350,7 @@ is a **practical generalization** allowing non-logarithmic Δz dependence (p≠1
 **Implementation examples:**
 - notebooks/Curvature_Demo.ipynb (Python, fully worked).
 
-**Contact:** David E. England  
+**Contact:** David E. England
 Provide case-specific data (z₀, z₁, L, observed Ri_b, K) for tuned fc suggestions.
 
 ---
