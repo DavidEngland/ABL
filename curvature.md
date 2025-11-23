@@ -5,13 +5,24 @@
 ## 1. Definitions
 Let
 $$
-\phi_m(\zeta)=(1-\beta_m\zeta)^{-\alpha_m},\qquad
-\phi_h(\zeta)=(1-\beta_h\zeta)^{-\alpha_h},\qquad \zeta=\frac{z}{L},
+\phi_m(\zeta)=\begin{cases}
+(1-\beta_m\zeta)^{-\alpha_m}, & \zeta<0 \text{ (unstable)}\\
+1 + a_m\zeta, & \zeta\ge 0 \text{ (stable)}
+\end{cases}
 $$
-with domains $1-\beta_{m,h}\zeta>0$. Define
+$$
+\phi_h(\zeta)=\begin{cases}
+(1-\beta_h\zeta)^{-\alpha_h}, & \zeta<0 \text{ (unstable)}\\
+1 + a_h\zeta, & \zeta\ge 0 \text{ (stable)}
+\end{cases}
+$$
+
+with domains: unstable requires $1-\beta_{m,h}\zeta>0$; stable is valid for all $\zeta\ge0$ (linear growth).
+
+Define
 $$
 Ri_g(\zeta)=\zeta\,\frac{\phi_h(\zeta)}{\phi_m(\zeta)^2}=\zeta F(\zeta),\quad
-F=(1-\beta_h\zeta)^{-\alpha_h}(1-\beta_m\zeta)^{2\alpha_m}.
+F=\frac{\phi_h}{\phi_m^2}.
 $$
 
 ## 2. Logarithmic Structure
@@ -38,9 +49,34 @@ $$
 (This matches and subsumes earlier expanded forms.)
 
 ## 4. Neutral Expansions
+
+**For stable branch ($\zeta > 0$, linear φ):**
+
 Coefficients:
 $$
-\Delta = \alpha_h\beta_h-2\alpha_m\beta_m,\quad c_1=\alpha_h\beta_h^2-2\alpha_m\beta_m^2.
+\Delta = a_h - 2a_m,\quad c_1 = 0 \text{ (linear φ has no } \zeta^2 \text{ term)}.
+$$
+
+Series:
+$$
+Ri_g=\zeta + \Delta \zeta^2 + \tfrac12\Delta^2\zeta^3 + O(\zeta^4);
+$$
+
+Curvature:
+$$
+\partial_{\zeta}^2 Ri_g=2\Delta + 3\Delta^2\zeta + O(\zeta^2).
+$$
+
+**Typical SBL values (Businger et al. 1971 stable):**
+- $a_m = 4.7$, $a_h = 7.8$ (note: these are **not** $\alpha\beta$ products)
+- $\Delta = 7.8 - 2(4.7) = -1.6$
+- Neutral curvature: $2\Delta = -3.2$ (concave-down)
+
+**For unstable branch ($\zeta < 0$, power-law φ):**
+
+Coefficients:
+$$
+\Delta = \alpha_h\beta_h - 2\alpha_m\beta_m,\quad c_1=\alpha_h\beta_h^2 - 2\alpha_m\beta_m^2.
 $$
 Series:
 $$

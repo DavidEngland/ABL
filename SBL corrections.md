@@ -72,28 +72,62 @@ $$
 For linear-stable φ_m = 1 + a_m ζ, φ_h = \mathrm{Pr} + a_h ζ: Δ = a_h/\mathrm{Pr} − 2a_m.
 
 ### 2.4 Near-Neutral Series
+
+**For stable conditions (ζ > 0), use linear φ:**
 $$
-Ri_g(\zeta) = \zeta + \Delta\zeta^2 + \tfrac{1}{2}(\Delta^2 + c_1)\zeta^3 + O(\zeta^4),
+\phi_m = 1 + a_m\zeta,\quad \phi_h = 1 + a_h\zeta
 $$
+
 $$
-\boxed{c_1 = \Big.\frac{d^2\ln\phi_h}{d\zeta^2}\Big|_{0} - 2\Big.\frac{d^2\ln\phi_m}{d\zeta^2}\Big|_{0}}
+Ri_g(\zeta) = \zeta + \Delta\zeta^2 + \tfrac{1}{2}\Delta^2\zeta^3 + O(\zeta^4),
 $$
+
+where for **linear stable φ:**
+$$
+\boxed{\Delta = a_h - 2a_m}
+$$
+
+**Note:** The parameter $c_1 = 0$ for linear φ (no second-order coefficient).
+
 Inversion:
 $$
-\zeta(Ri) = Ri - \Delta Ri^2 + \left(\tfrac{3}{2}\Delta^2 - \tfrac{1}{2}c_1\right)Ri^3 + O(Ri^4).
+\zeta(Ri) = Ri - \Delta Ri^2 + \tfrac{3}{2}\Delta^2 Ri^3 + O(Ri^4).
 $$
+
+**Common SBL Parameter Sets:**
+
+| Source | $a_m$ | $a_h$ | $\Delta$ | $2\Delta$ |
+|--------|-------|-------|----------|-----------|
+| Businger et al. (1971) stable | 4.7 | 7.8 | −1.6 | −3.2 |
+| Högström (1988) | 4.8 | 7.8 | −1.8 | −3.6 |
+| Beljaars-Holtslag (1991) | 5.0 | 5.0 | −5.0 | −10.0 |
+
+All show $\Delta < 0$ → concave-down → systematic underestimation of stability in bulk averaging.
 
 ---
 
 ## 3. Standard Stable Formulations and Their Limitations
 
 ### 3.1 Power-Law (Businger–Dyer) — Unstable Only (ζ < 0; do not use for SBL)
-// Retain for context but mark as inapplicable to ζ>0
+
+**WARNING:** The following form is **only valid for unstable conditions** (ζ < 0):
 $$
 \phi_m = (1 - \beta_m\zeta)^{-\alpha_m},\qquad
 \phi_h = (1 - \beta_h\zeta)^{-\alpha_h},\qquad \zeta < 0.
 $$
-**Not applicable to SBL (ζ > 0). Using this in stable regimes is a misapplication and leads to incorrect curvature and poles.**
+
+**For this unstable power-law:**
+$$
+\Delta_{\text{unstable}} = \alpha_h\beta_h - 2\alpha_m\beta_m
+$$
+
+**Example (Businger et al. 1971 unstable):**
+- $\alpha_m = 1/4$, $\beta_m = 16$ → $\alpha_m\beta_m = 4$
+- $\alpha_h = 1/2$, $\beta_h = 16$ → $\alpha_h\beta_h = 8$
+- $\Delta_{\text{unstable}} = 8 - 8 = 0$ (neutral curvature in unstable limit)
+
+**DO NOT USE THIS FORM FOR ζ > 0.** It produces unphysical poles and violates stable-layer observations.
+
 **Limitations (for unstable regime context only):**
 - Finite-height pole at ζ = 1/β → requires hard cutoff or guard.
 - Curvature blows up near pole → numerical instability.
@@ -555,7 +589,7 @@ $$
 3. **Deposition Velocity Corrections:**
    - Reassess v_d(z₀) under corrected K_h:
      $$
-     v_d^* = \frac{1}{r_a + r_b + r_c}, \quad r_a^* = \int_{z_0}^{
+     v_d^* = \frac{1}{r_a + r_b + r_c}, \quad r_a^* = \int_{z_0}^{z_1} K_h^* \frac{\partial\theta}{\partial z}\,dz
      $$
    - Impact on dry deposition fluxes for O₃, NO₂, SO₂.
 
@@ -771,14 +805,14 @@ Calibration guidance
 z_g = sqrt(z0*z1)
 zeta_g = z_g / L
 Ri_g_zg = zeta_g * phi_h(zeta_g) / phi_m(zeta_g)**2
-Ri_b = (g/theta_ref)*(th1-th0)*(z1-z0) / ((U1-U0)**2)
+Ri_b = (g/theta_ref)*(th1-th0)*(z1-z0) / ((U1-U0)**2 + (V1-V0)**2)
 B = Ri_g_zg / Ri_b
 if B > 1.1:
     # apply correction (choose l or K path)
     if prefer_mixing_length:
-        l_star = l * (1.0 / (1 + a_l*(Ri/Ri_c_star)**n))
+        l_star = l * (1.0 / (1 + a_l*(Ri/Ri_c*)^n))
     else:
-        K_star = K * exp(-gamma*(Ri/Ri_c_star)**p)
+        K_star = K * exp(-gamma*(Ri/Ri_c*)^p)
 ```
 
 ## 6. Estimation and QC tips

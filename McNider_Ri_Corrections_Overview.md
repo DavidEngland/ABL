@@ -11,21 +11,32 @@ Coarse vertical grids systematically underestimate local stability in the stable
 ## 1. Physical Origin of the Bias
 
 ### 1.1 Curvature in MOST
-Monin–Obukhov similarity gives:
+
+**Stable Boundary Layer (ζ > 0):**
+
+Monin–Obukhov similarity for **stable conditions** uses linear growth:
 $$
-Ri_g(\zeta) = \zeta \frac{\phi_h(\zeta)}{\phi_m(\zeta)^2}, \quad \zeta = z/L.
+\phi_m(\zeta) = 1 + a_m\zeta,\quad \phi_h(\zeta) = 1 + a_h\zeta,\quad \zeta > 0
 $$
 
-Near-neutral Taylor expansion (for smooth φ):
+This gives:
 $$
-Ri_g(\zeta) = \zeta + \Delta \zeta^2 + O(\zeta^3), \quad \Delta = a_h - 2a_m,
-$$
-where $a_{m,h}$ are the linear near-neutral slopes of $\phi_{m,h}$. The **neutral curvature** is:
-$$
-\left.\frac{d^2 Ri_g}{d\zeta^2}\right|_0 = 2\Delta.
+Ri_g(\zeta) = \zeta \frac{\phi_h}{\phi_m^2} = \zeta \frac{1 + a_h\zeta}{(1 + a_m\zeta)^2}
 $$
 
-**Typical SBL:** Businger–Dyer (BD) coefficients give $a_m \approx 4.7$, $a_h \approx 7.8$ → $\Delta \approx -1.6$ → **concave-down** profile (d²Ri_g/dz² < 0).
+Near-neutral Taylor expansion:
+$$
+Ri_g(\zeta) = \zeta + \Delta \zeta^2 + O(\zeta^3), \quad \Delta = a_h - 2a_m
+$$
+
+The **neutral curvature** is:
+$$
+\left.\frac{d^2 Ri_g}{d\zeta^2}\right|_0 = 2\Delta = 2(a_h - 2a_m)
+$$
+
+**Typical SBL:** Businger et al. (1971) stable coefficients give $a_m = 4.7$, $a_h = 7.8$ → $\Delta = -1.6$ → **concave-down** profile.
+
+**WARNING:** Do **not** confuse this with the unstable power-law form $(1-\beta\zeta)^{-\alpha}$ which is only valid for $\zeta < 0$.
 
 ### 1.2 Jensen's Inequality and Grid Bias
 For a concave-down function over layer [z₀, z₁]:
