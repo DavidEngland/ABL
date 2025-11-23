@@ -79,4 +79,4 @@ Let's use a typical value $\mathbf{\beta=1.0}$ and evaluate $B(\zeta)$ to see th
 
 **Conclusion:** As $\zeta$ increases from 0.5 to 2.0, the bias ratio $B(\zeta)$ nearly doubles, from **1.21 to 1.92**. This massive increase in $B-1$ forces a strong negative exponent in the correction factor $f_c$, significantly reducing the modeled eddy diffusivity ($K$) to prevent spurious mixing in the SBL.
 
-The provided video may contain valuable context on the complexity of atmospheric modeling. [Understanding the Complexities of Atmospheric Modeling](https://www.google.com/search?q=https://www.youtube.com/watch%3Fv%3DsO7u_440Jic).
+The provided video may contain valuable context on the complexity of atmospheric modeling. [Understanding the Complexities of Atmospheric Modeling](https://www.google.com/search?q=https://www.youtube.com/watch?v=hUe3sh_XRqo).
