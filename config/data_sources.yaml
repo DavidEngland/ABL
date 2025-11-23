@@ -1,0 +1,9 @@
+arm:
+  base_url: "https://arm-data.example/api"    # replace with actual ARM API
+  token: null                                 # set in environment or secure vault
+fluxnet:
+  local_dir: "data/fluxnet"                   # expected local download location
+noaa:
+  base_url: "https://www.ncei.noaa.gov/access" # placeholder
+  token: null
+local_fallback: data/raw

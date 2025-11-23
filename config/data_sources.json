@@ -1,0 +1,14 @@
+{
+  "arm": {
+    "base_url": "https://arm-data.example/api",
+    "token": null
+  },
+  "fluxnet": {
+    "local_dir": "data/fluxnet"
+  },
+  "noaa": {
+    "base_url": "https://www.ncei.noaa.gov/access",
+    "token": null
+  },
+  "local_fallback": "data/raw"
+}
