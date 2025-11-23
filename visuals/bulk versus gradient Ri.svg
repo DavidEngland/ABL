@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="720" height="420" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .axis { stroke: #333; stroke-width: 2; }
+    .label { fill: #333; font-size: 14px; font-family: Arial, sans-serif; }
+    .title { fill: #111; font-size: 18px; font-family: Arial, sans-serif; font-weight: bold; }
+    .curve-true { stroke: #1f77b4; stroke-width: 3; fill: none; }
+    .avg-layer { stroke: #ff7f0e; stroke-width: 3; fill: none; stroke-dasharray: 6 4; }
+    .point { fill: #1f77b4; }
+    .point-avg { fill: #ff7f0e; }
+    .brace { stroke: #999; stroke-width: 2; fill: none; }
+  </style>
+
+  <!-- Title -->
+  <text class="title" x="20" y="30">Layer averaging bias: Ri_b underestimates Ri_g in SBL</text>
+
+  <!-- Axes -->
+  <line class="axis" x1="100" y1="360" x2="660" y2="360"/>
+  <line class="axis" x1="100" y1="360" x2="100" y2="60"/>
+  <text class="label" x="360" y="390">Height z</text>
+  <text class="label" x="60" y="60">Ri</text>
+
+  <!-- True SBL profile (concave-down) -->
+  <path class="curve-true" d="M100,340 C240,280 360,240 480,220 C560,210 620,208 660,208"/>
+
+  <!-- Layer bounds -->
+  <line x1="100" y1="300" x2="660" y2="300" stroke="#bbb" stroke-dasharray="4 4"/>
+  <line x1="100" y1="220" x2="660" y2="220" stroke="#bbb" stroke-dasharray="4 4"/>
+  <text class="label" x="660" y="305" text-anchor="end">z₀</text>
+  <text class="label" x="660" y="225" text-anchor="end">z₁</text>
+
+  <!-- Geometric mean height marker -->
+  <line x1="100" y1="260" x2="660" y2="260" stroke="#999" stroke-dasharray="2 6"/>
+  <text class="label" x="660" y="265" text-anchor="end">z_g = √(z₀ z₁)</text>
+
+  <!-- Average (bulk) Ri_b line between layer bounds -->
+  <line class="avg-layer" x1="100" y1="260" x2="660" y2="260"/>
+  <circle class="point-avg" cx="600" cy="260" r="4"/>
+  <text class="label" x="610" y="255">Ri_b</text>
+
+  <!-- True Ri_g at z_g -->
+  <circle class="point" cx="600" cy="235" r="4"/>
+  <text class="label" x="610" y="235">Ri_g(z_g)</text>
+
+  <!-- Brace showing bias -->
+  <path class="brace" d="M600,235 C590,240 590,255 600,260"/>
+  <text class="label" x="560" y="250" text-anchor="end">Bias: Ri_b &lt; Ri_g</text>
+</svg>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="720" height="420" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .title { fill: #111; font-size: 18px; font-family: Arial, sans-serif; font-weight: bold; }
+    .axis { stroke: #333; stroke-width: 2; }
+    .label { fill: #333; font-size: 14px; font-family: Arial, sans-serif; }
+    .obs { stroke: #000; stroke-width: 2; fill: none; }
+    .unc { stroke: #d62728; stroke-width: 3; fill: none; }
+    .cor { stroke: #1f77b4; stroke-width: 3; fill: none; }
+    .rmse { fill: #666; font-size: 13px; }
+  </style>
+
+  <text class="title" x="20" y="30">Tower validation: obs vs uncorrected vs corrected</text>
+  <line class="axis" x1="80" y1="360" x2="640" y2="360"/>
+  <line class="axis" x1="80" y1="360" x2="80" y2="80"/>
+  <text class="label" x="340" y="385">Time</text>
+  <text class="label" x="40" y="80">Metric</text>
+
+  <!-- Placeholder polylines -->
+  <polyline class="obs" points="80,300 140,290 200,280 260,275 320,270 380,268 440,270 500,275 560,280 620,290"/>
+  <polyline class="unc" points="80,320 140,315 200,310 260,308 320,306 380,305 440,306 500,310 560,315 620,318"/>
+  <polyline class="cor" points="80,305 140,295 200,285 260,280 320,278 380,277 440,279 500,282 560,286 620,292"/>
+
+  <!-- Legend -->
+  <rect x="420" y="90" width="220" height="90" fill="#f8f8f8" stroke="#ccc"/>
+  <line class="obs" x1="430" y1="110" x2="470" y2="110"/>
+  <text class="label" x="480" y="114">Observations</text>
+  <line class="unc" x1="430" y1="135" x2="470" y2="135"/>
+  <text class="label" x="480" y="139">Model (uncorrected)</text>
+  <line class="cor" x1="430" y1="160" x2="470" y2="160"/>
+  <text class="label" x="480" y="164">Model (corrected)</text>
+
+  <!-- RMSE placeholders -->
+  <text class="rmse" x="100" y="100">RMSE uncorrected: 0.45</text>
+  <text class="rmse" x="100" y="120">RMSE corrected: 0.26</text>
+</svg>

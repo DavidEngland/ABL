@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="720" height="360" viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .title { fill: #111; font-size: 18px; font-family: Arial, sans-serif; font-weight: bold; }
+    .axis { stroke: #333; stroke-width: 2; }
+    .label { fill: #333; font-size: 14px; font-family: Arial, sans-serif; }
+    .up { stroke: #2ca02c; stroke-width: 3; fill: none; }
+    .down { stroke: #1f77b4; stroke-width: 3; fill: none; }
+    .zero { stroke: #999; stroke-width: 3; fill: none; stroke-dasharray: 6 4; }
+  </style>
+
+  <text class="title" x="20" y="30">Δ fingerprint of stability functions</text>
+  <line class="axis" x1="80" y1="300" x2="640" y2="300"/>
+  <line class="axis" x1="80" y1="300" x2="80" y2="60"/>
+  <text class="label" x="340" y="325">ζ</text>
+  <text class="label" x="40" y="60">Curvature</text>
+
+  <path class="zero" d="M80,280 C200,275 320,270 440,265 C560,260 600,255 640,250"/>
+  <text class="label" x="520" y="255">Δ = 0</text>
+
+  <path class="up" d="M80,290 C200,300 320,305 440,310 C560,312 600,314 640,315"/>
+  <text class="label" x="520" y="315">Δ &gt; 0 (concave-up)</text>
+
+  <path class="down" d="M80,290 C200,270 320,250 440,235 C560,225 600,220 640,218"/>
+  <text class="label" x="500" y="230">Δ &lt; 0 (concave-down, SBL)</text>
+</svg>

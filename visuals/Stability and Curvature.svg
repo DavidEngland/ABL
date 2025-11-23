@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="720" height="420" viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .axis { stroke: #333; stroke-width: 2; }
+    .grid { stroke: #ddd; stroke-width: 1; }
+    .label { fill: #333; font-size: 14px; font-family: Arial, sans-serif; }
+    .title { fill: #111; font-size: 18px; font-family: Arial, sans-serif; font-weight: bold; }
+    .curve-sbl { stroke: #1f77b4; stroke-width: 3; fill: none; }
+    .curve-usl { stroke: #d62728; stroke-width: 3; fill: none; stroke-dasharray: 8 4; }
+    .neutral { stroke: #2ca02c; stroke-width: 2; fill: none; stroke-dasharray: 4 6; }
+    .legend { font-size: 13px; }
+  </style>
+
+  <!-- Title -->
+  <text class="title" x="20" y="30">Curvature fingerprints: SBL vs BD USL (Ri_g vs ζ)</text>
+
+  <!-- Axes -->
+  <line class="axis" x1="60" y1="360" x2="680" y2="360"/>
+  <line class="axis" x1="60" y1="360" x2="60" y2="60"/>
+  <text class="label" x="340" y="390">ζ (z/L)</text>
+  <text class="label" x="20" y="60">Ri_g</text>
+
+  <!-- Grid lines -->
+  <g>
+    <line class="grid" x1="60" y1="300" x2="680" y2="300"/>
+    <line class="grid" x1="60" y1="240" x2="680" y2="240"/>
+    <line class="grid" x1="60" y1="180" x2="680" y2="180"/>
+    <line class="grid" x1="60" y1="120" x2="680" y2="120"/>
+    <line class="grid" x1="140" y1="360" x2="140" y2="60"/>
+    <line class="grid" x1="220" y1="360" x2="220" y2="60"/>
+    <line class="grid" x1="300" y1="360" x2="300" y2="60"/>
+    <line class="grid" x1="380" y1="360" x2="380" y2="60"/>
+    <line class="grid" x1="460" y1="360" x2="460" y2="60"/>
+    <line class="grid" x1="540" y1="360" x2="540" y2="60"/>
+    <line class="grid" x1="620" y1="360" x2="620" y2="60"/>
+  </g>
+
+  <!-- Neutral reference line -->
+  <path class="neutral" d="M60,340 C180,320 300,300 420,280 C520,260 600,240 680,220"/>
+  <text class="legend" x="500" y="245" fill="#2ca02c">Neutral reference</text>
+
+  <!-- SBL concave-down curve (Δ < 0) -->
+  <path class="curve-sbl" d="M60,340 C200,300 320,270 420,250 C520,235 600,230 680,228"/>
+  <text class="legend" x="420" y="255" fill="#1f77b4">SBL (Δ &lt; 0, concave-down)</text>
+
+  <!-- BD USL curve (unstable; Δ ≳ 0) -->
+  <path class="curve-usl" d="M60,340 C160,335 260,330 360,324 C480,316 580,300 680,280"/>
+  <text class="legend" x="450" y="285" fill="#d62728">BD USL (unstable; Δ ≳ 0)</text>
+
+  <!-- Annotation -->
+  <text class="label" x="80" y="80">SBL curvature is analyzed here; BD USL is shown only as contrast.</text>
+</svg>

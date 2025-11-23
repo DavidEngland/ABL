@@ -1,0 +1,129 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{metropolis}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{amsmath}
+\title{MOST, Stable Boundary Layer, and Curvature-aware Corrections}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{frame}{Motivation}
+  \begin{itemize}
+    \item \textbf{Problem:} Coarse vertical grids misclassify stability, yielding warm biases and pollutant errors.
+    \item \textbf{Goal:} Resolution-aware correction that preserves neutral physics and reduces bias.
+    \item \textbf{Scope:} Curvature analysis for the \textbf{stable boundary layer (SBL)}, not BD USL parameters.
+  \end{itemize}
+  \note{
+    Set the stage: stability misclassification near the surface has outsized impacts.
+    Emphasize that our curvature discussion is SBL-specific. BD USL applies to unstable daytime turbulence and is used only for contrast.
+  }
+\end{frame}
+
+\begin{frame}{MOST essentials}
+  \begin{itemize}
+    \item \textbf{Key variable:} \(\zeta = z/L\) (dimensionless height).
+    \item \textbf{Functions:} \(\phi_m(\zeta), \phi_h(\zeta)\) govern shear/heat transfer.
+    \item \textbf{Related measures:} \(Ri_g\), stability via shear and buoyancy.
+  \end{itemize}
+  \note{
+    Keep intuition: near-surface turbulence collapses to \(\zeta\).
+    We'll link \(\phi_m, \phi_h\) to curvature via a compact fingerprint \(\Delta\).
+  }
+\end{frame}
+
+\begin{frame}{Curvature fingerprints: SBL vs BD USL}
+  \begin{center}
+    \includesvg[width=0.9\linewidth]{curvature_sbl_usl.svg}
+  \end{center}
+  \begin{itemize}
+    \item \textbf{SBL:} Concave-down Ri\(_g\) vs \(\zeta\) (negative curvature; \(\Delta < 0\)).
+    \item \textbf{BD USL:} Unstable branch often nearer neutral/concave-up; different parameter regime.
+    \item \textbf{Clarification:} Our correction targets SBL curvature only.
+  \end{itemize}
+  \note{
+    Point at the blue curve: SBL concave-down behavior.
+    Red dashed is BD USL—showing contrast but not used for parameterization here.
+  }
+\end{frame}
+
+\begin{frame}{Neutral curvature invariant}
+  \begin{itemize}
+    \item \textbf{Fingerprint:} \(\Delta = \alpha_h \beta_h - 2\,\alpha_m \beta_m\).
+    \item \textbf{Interpretation:} Sign of \(\Delta\) sets concavity of stability curves.
+    \item \textbf{SBL fits:} Typically yield \(\Delta < 0\) (concave-down).
+  \end{itemize}
+  \note{
+    You can motivate \(\Delta\) as a compact way to preserve neutral behavior while correcting curvature effects.
+    No need to deep-derive; focus on physical meaning.
+  }
+\end{frame}
+
+\begin{frame}{Layer averaging bias in SBL}
+  \begin{center}
+    \includesvg[width=0.9\linewidth]{grid_bias.svg}
+  \end{center}
+  \begin{itemize}
+    \item \textbf{Issue:} Averaging across a concave-down profile yields \(Ri_b < Ri_g(z_g)\).
+    \item \textbf{Geometric mean height:} \(z_g = \sqrt{z_0 z_1}\) is the natural evaluation point.
+    \item \textbf{Impact:} Systematic underestimation of stability on coarse grids.
+  \end{itemize}
+  \note{
+    Invoke Jensen’s inequality informally: concave-down -> average below the curve.
+    Emphasize evaluating at \(z_g\) rather than linear midpoints.
+  }
+\end{frame}
+
+\begin{frame}{Correction strategy}
+  \begin{itemize}
+    \item \textbf{Preserve:} Neutral behavior and the curvature fingerprint \(2\Delta\).
+    \item \textbf{Adjust:} Bulk Ri\(_b\) toward the true Ri\(_g(z_g)\) with grid-aware damping.
+    \item \textbf{Converge:} Correction vanishes as \(\Delta z \to 0\).
+  \end{itemize}
+  \note{
+    Core principle: don’t break neutrality; correct only the curvature-induced bias.
+    Stress resolution-awareness and graceful convergence.
+  }
+\end{frame}
+
+\begin{frame}{Validation scaffold}
+  \begin{center}
+    \includesvg[width=0.9\linewidth]{validation_layout.svg}
+  \end{center}
+  \begin{itemize}
+    \item \textbf{Comparison:} Observations vs model (uncorrected) vs corrected.
+    \item \textbf{Metrics:} RMSE reduction indicative of improved stability depiction.
+    \item \textbf{Cases:} Apply across diverse SBL nights to test robustness.
+  \end{itemize}
+  \note{
+    Replace placeholders with your tower/time-series data.
+    Narrate RMSE changes and qualitative fit improvements (phase, amplitude).
+  }
+\end{frame}
+
+\begin{frame}{Limitations and open questions}
+  \begin{itemize}
+    \item \textbf{Transferability:} Parameter portability across terrains and urban canopies.
+    \item \textbf{Inflections:} Handling mixed regimes and nocturnal jets.
+    \item \textbf{L(z):} Height-varying Obukhov length effects.
+  \end{itemize}
+  \note{
+    Keep it candid: where the approach might struggle.
+    Invite collaboration on canopy and complex terrain extensions.
+  }
+\end{frame}
+
+\begin{frame}{Takeaways}
+  \begin{itemize}
+    \item \textbf{Curvature matters:} It sets departures from neutrality.
+    \item \textbf{Evaluate smartly:} Use \(z_g\) and preserve \(2\Delta\).
+    \item \textbf{Correct gently:} Grid-aware adjustments reduce biases without breaking physics.
+  \end{itemize}
+  \note{
+    Summarize and reiterate SBL-only applicability. BD USL parameters are not the source of the curvature used in this correction.
+  }
+\end{frame}
+
+\end{document}
