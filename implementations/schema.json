@@ -1,0 +1,71 @@
+{
+  "title": "SBL_Observation_Schema",
+  "type": "object",
+  "properties": {
+
+    "MetaData": {
+      "description": "Static site and campaign information.",
+      "type": "object",
+      "properties": {
+        "SiteID": {"type": "string"},
+        "CampaignName": {"type": "string", "enum": ["MOSAiC", "SHEBA", "ARM_SGP", "BLLAST", "FLUXNET-Urban", "GABLS", "MUST"]},
+        "Latitude": {"type": "number"},
+        "Longitude": {"type": "number"},
+        "RoughnessLength_Z0": {"type": "number", "description": "Meters"},
+        "ReferenceThickness_DZref": {"type": "number", "default": 10.0},
+        "TemporalResolution_min": {"type": "number", "description": "Observation averaging period (e.g., 10 or 30 mins)."}
+      },
+      "required": ["SiteID", "CampaignName", "Latitude"]
+    },
+
+    "Layers": {
+      "description": "Array of vertical layers for a single time step.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ObservationID": {"type": "string"},
+          "TimestampUTC": {"type": "string", "format": "date-time"},
+          "LayerIndex": {"type": "integer"},
+          "LowerHeight_Z0": {"type": "number"},
+          "UpperHeight_Z1": {"type": "number"},
+          "LayerThickness_Dz": {"type": "number"},
+          "GeometricMeanHeight_Zg": {"type": "number"},
+
+          "Temperature_K_Z0": {"type": "number"},
+          "Temperature_K_Z1": {"type": "number"},
+          "WindSpeed_ms_Z0": {"type": "number"},
+          "WindSpeed_ms_Z1": {"type": "number"},
+          "U_Star_FrictionVel": {"type": "number", "description": "u* (m/s)"},
+          "ObukhovLength_L": {"type": "number", "description": "L (meters)"}
+        },
+        "required": ["ObservationID", "TimestampUTC", "LayerIndex", "LowerHeight_Z0", "UpperHeight_Z1"]
+      }
+    },
+
+    "Diagnostics": {
+      "description": "Calculated and measured diagnostics for parameter fitting.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "DiagnosisID": {"type": "string"},
+          "ObservationID": {"type": "string"},
+          "HeatFlux_Obs": {"type": "number", "description": "Measured H (W/m^2)"},
+          "MomentumFlux_Obs": {"type": "number", "description": "Measured tau (N/m^2)"},
+          "Ri_Bulk_Rib": {"type": "number"},
+          "Ri_Point_Rig": {"type": "number", "description": "Ri_g calculated at Zg"},
+          "BiasRatio_B": {"type": "number"},
+          "Zeta_NondimHeight": {"type": "number", "description": "zeta = Zg / L"},
+
+          "K_Momentum_Modeled": {"type": "number", "description": "K_m from the underlying closure model"},
+          "K_Momentum_Observed": {"type": "number", "description": "K_m derived from observed fluxes (for fitting)"},
+
+          "Ri_Collapse_Threshold": {"type": "number", "description": "Ri_b value where K_obs drops near zero (for fitting gamma)"}
+        },
+        "required": ["DiagnosisID", "ObservationID", "Ri_Bulk_Rib", "BiasRatio_B"]
+      }
+    }
+  },
+  "required": ["MetaData", "Layers", "Diagnostics"]
+}
