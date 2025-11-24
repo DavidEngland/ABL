@@ -1,0 +1,652 @@
+%
+% Master Bibliography for ABL Curvature Research
+% Organized by theme with abstracts and reading status annotations
+% Last updated: January 2025
+%
+% Theme Tags (use for searching):
+% - [MOST] Monin-Obukhov Similarity Theory
+% - [SBL] Stable Boundary Layer
+% - [ARCTIC] Arctic/Polar Applications
+% - [CURV] Curvature/Richardson Number
+% - [GRID] Grid Sensitivity/Resolution
+% - [PARAM] Parameterization/Closure Schemes
+% - [VALID] Validation/Observations
+% - [AMPLIF] Arctic Amplification/Climate
+%
+% Reading Status (in `note` field):
+% - [READ] Fully read and notes taken
+% - [SKIM] Skimmed, understand main results
+% - [CITED] Cited but not read in detail
+% - [NEED] Need to acquire/read
+%
+
+%========================================
+% FOUNDATIONAL MOST THEORY
+%========================================
+
+@article{MoninObukhov1954,
+  author    = {Monin, A. S. and Obukhov, A. M.},
+  title     = {Basic Laws of Turbulent Mixing in the Ground Layer of the Atmosphere},
+  journal   = {Trudy Geofiz. Inst. AN SSSR},
+  volume    = {151},
+  pages     = {163--187},
+  year      = {1954},
+  language  = {Russian},
+  keywords  = {MOST, foundational},
+  note      = {[READ] Original MOST paper; establishes similarity scaling and universal functions. English translation in Boundary-Layer Meteorol. 24, 3--21 (1982).},
+  annote    = {Introduces dimensionless height zeta=z/L and postulates that dimensionless gradients phi_m, phi_h are universal functions of zeta alone. Obukhov length L defined via surface fluxes. Foundation for all subsequent stability function work.}
+}
+
+@article{BusingerEtAl1971,
+  author    = {Businger, J. A. and Wyngaard, J. C. and Izumi, Y. and Bradley, E. F.},
+  title     = {Flux-Profile Relationships in the Atmospheric Surface Layer},
+  journal   = {Journal of the Atmospheric Sciences},
+  volume    = {28},
+  number    = {2},
+  pages     = {181--189},
+  year      = {1971},
+  doi       = {10.1175/1520-0469(1971)028<0181:FPRITA>2.0.CO;2},
+  keywords  = {MOST, PARAM, foundational},
+  note      = {[READ] Kansas experiment; defines power-law phi functions. Used kappa=0.35 (later revised to 0.40).},
+  annote    = {Empirical determination of stability functions from Kansas wheat-field experiment. Power-law forms phi_m=(1-beta_m*zeta)^(-alpha_m) for unstable, linear phi_m=1+a_m*zeta for stable. Standard reference for MOST parameters. Note: alpha_m*beta_m=4.0, alpha_h*beta_h=8.0 in unstable; a_m=4.7, a_h=7.8 in stable (at kappa=0.35). Implies neutral curvature Delta=-1.6 for stable using corrected kappa=0.40.}
+}
+
+@article{Paulson1970,
+  author    = {Paulson, C. A.},
+  title     = {The Mathematical Representation of Wind Speed and Temperature Profiles in the Unstable Atmospheric Surface Layer},
+  journal   = {Journal of Applied Meteorology},
+  volume    = {9},
+  number    = {6},
+  pages     = {857--861},
+  year      = {1970},
+  doi       = {10.1175/1520-0450(1970)009<0857:TMROWS>2.0.CO;2},
+  keywords  = {MOST, PARAM},
+  note      = {[READ] Integrated phi functions to psi forms for flux-gradient computation.},
+  annote    = {Provides analytic integration of Businger-Dyer power-law functions yielding closed-form expressions for wind and temperature profiles. Enables direct computation of bulk transfer coefficients without iteration. Forms basis for operational surface layer schemes.}
+}
+
+@article{Dyer1974,
+  author    = {Dyer, A. J.},
+  title     = {A Review of Flux-Profile Relationships},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {7},
+  number    = {3},
+  pages     = {363--372},
+  year      = {1974},
+  doi       = {10.1007/BF00240838},
+  keywords  = {MOST, review},
+  note      = {[READ] Comprehensive early review; discusses von Karman constant controversy and parameter consistency.},
+  annote    = {Critical review of MOST observational datasets and parameter estimation techniques. Identifies key issues: kappa value debate, heat/momentum roughness difference (kB^-1), stability function form selection. Recommends standardized reporting of experimental conditions. Still cited for methodological guidance.}
+}
+
+@article{Hogstrom1988,
+  author    = {H{\"o}gstr{\"o}m, U.},
+  title     = {Non-Dimensional Wind and Temperature Profiles in the Atmospheric Surface Layer: A Re-Evaluation},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {42},
+  number    = {1--2},
+  pages     = {55--78},
+  year      = {1988},
+  doi       = {10.1007/BF00119875},
+  keywords  = {MOST, PARAM, VALID},
+  note      = {[READ] Swedish dataset; advocates kappa=0.40, Pr_t closer to 1.0 in SBL.},
+  annote    = {High-quality Uppsala tower data reanalysis. Finds kappa=0.40 (not 0.35) and turbulent Prandtl number Pr_t=1.0 +/- 0.1 in stable conditions (not 0.74). Implies modified neutral curvature Delta=-1.8. Emphasizes need for consistent kappa across stability regimes. Forms basis for modern "Hogstrom parameters".}
+}
+
+%========================================
+% STABLE BOUNDARY LAYER DYNAMICS
+%========================================
+
+@article{Mahrt1998BLM,
+  author    = {Mahrt, L.},
+  title     = {Stratified Atmospheric Boundary Layers},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {90},
+  number    = {3},
+  pages     = {375--396},
+  year      = {1998},
+  doi       = {10.1023/A:1001765727956},
+  keywords  = {SBL, intermittency},
+  note      = {[READ] Regime classification: weakly vs very stable; intermittency challenges to MOST.},
+  annote    = {Introduces conceptual split between weakly stable (turbulent, MOST-applicable) and very stable (intermittent/wave-like, non-stationary) regimes. Shows that classical MOST breaks down for Ri>0.2-0.25 or z/Lambda>1 where Lambda=u_star/N. Motivates need for regime-dependent or hybrid closures. Basis for later "regime transition" work (van de Wiel et al.).}
+}
+
+@article{Mahrt2014ARFM,
+  author    = {Mahrt, L.},
+  title     = {Stably Stratified Atmospheric Boundary Layers},
+  journal   = {Annual Review of Fluid Mechanics},
+  volume    = {46},
+  pages     = {23--45},
+  year      = {2014},
+  doi       = {10.1146/annurev-fluid-010313-141354},
+  keywords  = {SBL, review},
+  note      = {[READ] Comprehensive modern review; emphasizes non-stationarity, heterogeneity, weak turbulence.},
+  annote    = {State-of-the-art SBL review circa 2014. Key themes: (1) intermittent turbulence and regime transitions, (2) horizontal heterogeneity (drainage flows, urban), (3) submeso motions, (4) limitations of steady-state MOST. Identifies grid sensitivity and closure form as persistent model biases. Calls for observational campaigns targeting very stable conditions.}
+}
+
+@article{BeljaarsHoltslag1991JAMC,
+  author    = {Beljaars, A. C. M. and Holtslag, A. A. M.},
+  title     = {Flux Parameterization Over Land Surfaces for Atmospheric Models},
+  journal   = {Journal of Applied Meteorology},
+  volume    = {30},
+  number    = {3},
+  pages     = {327--341},
+  year      = {1991},
+  doi       = {10.1175/1520-0450(1991)030<0327:FPOLSF>2.0.CO;2},
+  keywords  = {SBL, PARAM, operational},
+  note      = {[READ] Beljaars-Holtslag (BH91) stable functions; operational standard in ECMWF IFS.},
+  annote    = {Proposes smooth, pole-free stable functions: phi_m=1+a*z+b*z*(1+c*z)^(1/3), phi_h=1+d*z+e*z^2. Avoids hard cutoff at finite z/L. Calibrated on Cabauw tower data. Widely adopted in NWP (ECMWF, NCEP). However, implies very strong negative curvature Delta~-5.0, contributing to overmixing on coarse grids. Later work (Gryanik 2020) refines for polar conditions.}
+}
+
+@article{ChengBrutsaert2005BLM,
+  author    = {Cheng, Y. and Brutsaert, W.},
+  title     = {Flux-Profile Relationships for Wind Speed and Temperature in the Stable Atmospheric Boundary Layer},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {114},
+  number    = {3},
+  pages     = {519--538},
+  year      = {2005},
+  doi       = {10.1007/s10546-004-1425-4},
+  keywords  = {SBL, PARAM, VALID},
+  note      = {[SKIM] Alternative local scaling; questions universal MOST forms in very stable regime.},
+  annote    = {Tests local scaling hypothesis (Nieuwstadt) vs classical MOST using multiple tower datasets. Finds local scaling (using local gradient Richardson Ri_g instead of z/L) collapses data better for Ri>0.2. However, requires iterative solution for Ri_g, limiting operational use. Supports hybrid MOST/Ri closures explored in this project.}
+}
+
+@article{GrachevEtAl2007BLM,
+  author    = {Grachev, A. A. and Andreas, E. L. and Fairall, C. W. and Guest, P. S. and Persson, P. O. G.},
+  title     = {On the Turbulent Prandtl Number in the Stable Atmospheric Boundary Layer},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {125},
+  number    = {2},
+  pages     = {329--341},
+  year      = {2007},
+  doi       = {10.1007/s10546-007-9192-7},
+  keywords  = {SBL, ARCTIC, VALID, SHEBA},
+  note      = {[READ] SHEBA data shows Pr_t close to 1.0 across stability range; refutes older 0.74 value.},
+  annote    = {High-quality SHEBA ice-camp observations confirm turbulent Prandtl Pr_t=K_m/K_h remains near 1.0 even in strongly stable conditions (Ri up to 0.5). Contradicts Businger71 (Pr_t=0.74) and supports Hogstrom88. Implies heat and momentum transfer respond similarly to stability, simplifying closure forms. Critical for Arctic model validation.}
+}
+
+@article{GryanikEtAl2020JAS,
+  author    = {Gryanik, V. M. and L{\"u}pkes, C. and Grachev, A. and Sidorenko, D.},
+  title     = {New Modified and Extended Stability Functions for the Stable Boundary Layer Based on {SHEBA} and Parametrizations of Bulk Transfer Coefficients for Climate Models},
+  journal   = {Journal of the Atmospheric Sciences},
+  volume    = {77},
+  number    = {8},
+  pages     = {2687--2716},
+  year      = {2020},
+  doi       = {10.1175/JAS-D-18-0341.1},
+  keywords  = {SBL, ARCTIC, PARAM, SHEBA},
+  note      = {[READ] SHEBA-calibrated stable functions; smoother than BH91, better Arctic performance.},
+  annote    = {Comprehensive refit of stable phi functions using full SHEBA dataset. Proposes modified forms with reduced curvature (Delta~-2.5 vs BH91 -5.0) and smooth Ri_c~0.5 asymptote. Includes bulk transfer coefficient formulations C_D, C_H. Shows improved Arctic climate model performance (reduced warm bias). Recommended replacement for BH91 in polar applications. Our curvature framework aligns with their motivation.}
+}
+
+%========================================
+% RICHARDSON NUMBER & CURVATURE
+%========================================
+
+@article{EnglandMcNider1995BLM,
+  author    = {England, D. E. and McNider, R. T.},
+  title     = {Stability Functions Based upon Shear Functions},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {74},
+  number    = {1--2},
+  pages     = {113--130},
+  year      = {1995},
+  doi       = {10.1007/BF00715711},
+  keywords  = {CURV, PARAM, foundational},
+  note      = {[READ] Our foundational paper; derives f(Ri) from phi(zeta), introduces neutral curvature Delta.},
+  annote    = {Derives Richardson number stability functions f_m(Ri), f_h(Ri) analytically from MOST phi functions via series inversion zeta(Ri). Introduces neutral curvature invariant Delta=alpha_h*beta_h - 2*alpha_m*beta_m governing quadratic Ri term. Shows cubic inversion for zeta(Ri) enables fast, iteration-free closures. Proves Pr_t=1 in SBL implies quadratic (not linear) f(Ri). Basis for current curvature-aware correction framework.}
+}
+
+@article{LiKatulBouZeid2012PoF,
+  author    = {Li, D. and Katul, G. G. and Bou-Zeid, E.},
+  title     = {Mean Velocity and Temperature Profiles in a Sheared Diabatic Turbulent Boundary Layer},
+  journal   = {Physics of Fluids},
+  volume    = {24},
+  number    = {10},
+  pages     = {105105},
+  year      = {2012},
+  doi       = {10.1063/1.4758476},
+  keywords  = {MOST, SBL, theory},
+  note      = {[SKIM] Extended MOST to finite Reynolds number; analytic profile solutions.},
+  annote    = {Theoretical extension of MOST incorporating finite Reynolds number effects via matched asymptotic expansions. Provides closed-form solutions for mean profiles in diabatic conditions. Shows MOST emerges as leading-order limit; next-order corrections scale with z/delta. Useful for LES validation and understanding MOST breakdown aloft. Complex math; main takeaway is rigorous foundation for MOST applicability range.}
+}
+
+%========================================
+% GRID SENSITIVITY & RESOLUTION IMPACTS
+%========================================
+
+@article{HoltslagEtAl2013BAMS,
+  author    = {Holtslag, A. A. M. and Svensson, G. and Baas, P. and Basu, S. and Beare, B. and others},
+  title     = {Stable Atmospheric Boundary Layers and Diurnal Cycles: Challenges for Weather and Climate Models},
+  journal   = {Bulletin of the American Meteorological Society},
+  volume    = {94},
+  number    = {11},
+  pages     = {1691--1706},
+  year      = {2013},
+  doi       = {10.1175/BAMS-D-11-00187.1},
+  keywords  = {SBL, GRID, review, model-bias},
+  note      = {[READ] Landmark review; identifies vertical resolution as key SBL model deficiency.},
+  annote    = {Comprehensive assessment of SBL representation in NWP and climate models. Documents persistent biases: warm surface temperatures, shallow inversions, excessive mixing. Attributes errors to (1) coarse vertical grids (first layer >50 m), (2) inappropriate stability functions (Ri_c too low), (3) neglect of intermittency. Calls for grid-aware parameterizations—direct motivation for our curvature correction work. Highly cited (>500); essential reference.}
+}
+
+@article{CuxartEtAl2006BLM,
+  author    = {Cuxart, J. and {and 18 coauthors}},
+  title     = {Single-Column Model Intercomparison for a Stably Stratified Atmospheric Boundary Layer},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {118},
+  number    = {2},
+  pages     = {273--303},
+  year      = {2006},
+  doi       = {10.1007/s10546-005-3780-1},
+  keywords  = {SBL, VALID, GABLS, intercomparison},
+  note      = {[READ] GABLS1 case definition; LES benchmark for stable BL model validation.},
+  annote    = {First GEWEX Atmospheric Boundary Layer Study (GABLS) intercomparison. Prescribes idealized stable case: flat terrain, geostrophic wind, prescribed cooling. 11 SCMs + 8 LES codes. Key findings: SCMs underestimate inversion strength, overestimate mixing depth. LES converges at delta_z~6.25 m; SCMs fail even at 25 m. Standard validation case for our grid-correction tests. Data publicly available.}
+}
+
+@article{BosveldEtAl2014BLM,
+  author    = {Bosveld, F. C. and Baas, P. and Steeneveld, G. J. and Holtslag, A. A. M. and Angevine, W. M. and others},
+  title     = {The Third {GABLS} Intercomparison Case for Evaluation Studies of Boundary-Layer Models. {Part B}: Results and Process Understanding},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {152},
+  number    = {2},
+  pages     = {157--187},
+  year      = {2014},
+  doi       = {10.1007/s10546-014-9919-1},
+  keywords  = {SBL, VALID, GABLS, intercomparison},
+  note      = {[SKIM] GABLS3 diurnal cycle case; more realistic than GABLS1 (Cabauw site).},
+  annote    = {GABLS3 uses real Cabauw case (diurnal cycle over grassland). More complex than GABLS1: surface heterogeneity, advection, time-varying forcing. SCM spread larger; no single "best" scheme. Key result: models with grid-aware or higher-order closures perform better. Reinforces need for resolution-aware physics. Less cited than GABLS1 but closer to operational realism.}
+}
+
+@article{Byrkjedal2008CD,
+  author    = {Byrkjedal, {\O}. and Esau, I. and Kvamst{\o}, N. G.},
+  title     = {Sensitivity of Simulated Wintertime Arctic Atmosphere to Vertical Resolution in the {ARPEGE/IFS} Model},
+  journal   = {Climate Dynamics},
+  volume    = {30},
+  number    = {7--8},
+  pages     = {687--701},
+  year      = {2008},
+  doi       = {10.1007/s00382-007-0316-z},
+  keywords  = {ARCTIC, GRID, SBL, model-bias},
+  note      = {[READ] Demonstrates severe Arctic warm bias from coarse grids; 2-3 K improvement with refinement.},
+  annote    = {ARPEGE/IFS experiments with 30 vs 60 vertical levels over Arctic winter. Finds 2-3 K surface temperature bias reduction with finer resolution, especially near-surface layers. Attributes improvement to better inversion representation (resolved curvature). However, diminishing returns beyond 60 levels—suggests grid refinement alone insufficient without physics changes. Motivates our curvature-aware parameterization as grid-agnostic fix.}
+}
+
+%========================================
+% ARCTIC AMPLIFICATION & CLIMATE FEEDBACKS
+%========================================
+
+@article{PithanMauritsen2014NatGeo,
+  author    = {Pithan, F. and Mauritsen, T.},
+  title     = {Arctic Amplification Dominated by Temperature Feedbacks in Contemporary Climate Models},
+  journal   = {Nature Geoscience},
+  volume    = {7},
+  number    = {3},
+  pages     = {181--184},
+  year      = {2014},
+  doi       = {10.1038/ngeo2071},
+  keywords  = {ARCTIC, AMPLIF, climate, feedbacks},
+  note      = {[READ] Quantifies Arctic amplification feedback budget; surface albedo only ~1/3 of total.},
+  annote    = {Decomposes Arctic amplification (2x global warming) into feedback components using CMIP5 ensemble. Key finding: surface albedo contributes only ~35%; dominant factors are lapse-rate feedback (~45%), Planck feedback, cloud/water vapor. Lapse-rate feedback linked to stable BL structure—strong inversions trap warming near surface. Implies SBL mixing biases directly affect amplification magnitude. High-impact paper (>1000 citations); critical for linking our BL work to climate relevance.}
+}
+
+@article{Screen2012GRL,
+  author    = {Screen, J. A. and Deser, C. and Simmonds, I.},
+  title     = {Local and Remote Controls on Observed Arctic Warming},
+  journal   = {Geophysical Research Letters},
+  volume    = {39},
+  number    = {10},
+  pages     = {L10709},
+  year      = {2012},
+  doi       = {10.1029/2012GL051598},
+  keywords  = {ARCTIC, AMPLIF, observations},
+  note      = {[SKIM] Observational attribution; local feedbacks dominate winter, remote in summer.},
+  annote    = {Uses reanalysis + observations to attribute Arctic warming trends. Finds winter warming dominated by local feedbacks (sea ice loss, surface heat flux, BL inversion changes); summer warming has larger remote (advection) component. Confirms importance of wintertime SBL processes. Supports focus on nocturnal/polar stable layers in model improvement efforts.}
+}
+
+@article{Bintanja2012CD,
+  author    = {Bintanja, R. and van der Linden, E. C. and Hazeleger, W.},
+  title     = {Boundary Layer Stability and Arctic Climate Change: A Feedback Study Using {EC-Earth}},
+  journal   = {Climate Dynamics},
+  volume    = {39},
+  number    = {11},
+  pages     = {2659--2673},
+  year      = {2012},
+  doi       = {10.1007/s00382-011-1272-1},
+  keywords  = {ARCTIC, AMPLIF, SBL, feedback},
+  note      = {[READ] Links SBL mixing biases to Arctic amplification via lapse-rate feedback loop.},
+  annote    = {EC-Earth GCM experiments isolating BL stability feedback. Shows excessive SBL mixing → reduced inversion strength → weaker lapse-rate feedback → underestimated amplification. Estimates ~20% of inter-model amplification spread attributable to BL parameterization differences. Proposes improved stability functions but lacks grid-awareness. Direct precursor to our curvature correction motivation—closing this feedback loop.}
+}
+
+@article{DavyEsau2014ERL,
+  author    = {Davy, R. and Esau, I.},
+  title     = {Global Climate Models' Bias in Surface Temperature Trends and Variability},
+  journal   = {Environmental Research Letters},
+  volume    = {9},
+  number    = {11},
+  pages     = {114024},
+  year      = {2014},
+  doi       = {10.1088/1748-9326/9/11/114024},
+  keywords  = {ARCTIC, AMPLIF, GRID, model-bias},
+  note      = {[READ] Documents 2-3 K Arctic warm bias in CMIP5 winter; correlates with coarse grids.},
+  annote    = {Comprehensive CMIP5 evaluation over Arctic. Finds pervasive 2-3 K winter warm bias in near-surface temperature, strongest over sea ice. Bias correlates with vertical resolution (coarser grids → larger bias) and stability function choice (BH91-type worse than linear). Explicitly calls for grid-aware SBL physics—validates our project premise. Data-rich; useful for validation targets.}
+}
+
+@article{DavyOutten2020JCLI,
+  author    = {Davy, R. and Outten, S.},
+  title     = {The Arctic Surface Climate in {CMIP6}: Status and Developments Since {CMIP5}},
+  journal   = {Journal of Climate},
+  volume    = {33},
+  number    = {18},
+  pages     = {8047--8068},
+  year      = {2020},
+  doi       = {10.1175/JCLI-D-19-0990.1},
+  keywords  = {ARCTIC, AMPLIF, CMIP6, model-bias},
+  note      = {[SKIM] CMIP6 Arctic biases persist; limited improvement over CMIP5 despite higher resolution.},
+  annote    = {Follow-up to Davy2014 using CMIP6 ensemble. Key finding: winter warm bias remains ~2 K; amplification spread not reduced despite finer grids in many models. Suggests physics (not just resolution) is limiting factor. Some CMIP6 models now use modified stable functions (ECMWF IFS updates) but inconsistently. Reinforces need for systematic curvature-aware framework across modeling centers.}
+}
+
+%========================================
+% OBSERVATIONAL DATASETS & FIELD CAMPAIGNS
+%========================================
+
+@article{TjernstromEtAl2005BLM,
+  author    = {Tjernstr{\"o}m, M. and {\.Z}agar, M. and Svensson, G. and Cassano, J. J. and Pfeifer, S. and others},
+  title     = {Modelling the Arctic Boundary Layer: An Evaluation of Six {ARCMIP} Regional-Scale Models With Data From the {SHEBA} Project},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {117},
+  number    = {2},
+  pages     = {337--381},
+  year      = {2005},
+  doi       = {10.1007/s10546-004-7954-z},
+  keywords  = {ARCTIC, VALID, SHEBA, intercomparison},
+  note      = {[READ] SHEBA model intercomparison; highlights systematic biases in Arctic SBL representation.},
+  annote    = {ARCMIP project: 6 regional models vs SHEBA ice-camp observations (Oct 1997-Oct 1998). All models overestimate SBL mixing, underestimate inversion strength. Bias largest in winter (>3 K warm bias). Attributes errors to stability functions (most use BH91 or variants) and coarse grids. Provides high-quality observational target for Arctic validation. SHEBA data essential for our parameter calibration.}
+}
+
+@misc{SHEBA_data,
+  author       = {{SHEBA Project}},
+  title        = {Surface Heat Budget of the Arctic Ocean: Data Archive},
+  year         = {1997--1998},
+  howpublished = {\url{https://www.eol.ucar.edu/field_projects/sheba}},
+  keywords     = {ARCTIC, VALID, data},
+  note         = {[NEED] Acquire full flux tower dataset for validation; prioritize Oct-Mar stable periods.},
+  annote       = {Year-long drift station on sea ice (75N, 165W). Comprehensive BL measurements: 3D winds, temperature, humidity (10 levels up to 20 m), plus mast to 2 m. Surface fluxes (eddy covariance + bulk). Radiation budget. Our validation needs: hourly profiles for Ri_g computation, stability function fitting, curvature diagnostics. Contact: NCAR EOL data archive.}
+}
+
+@misc{ARM_NSA_data,
+  author       = {{ARM Climate Research Facility}},
+  title        = {{ARM} North Slope of Alaska ({NSA}) Site: Barrow/Utqia\.{g}vik},
+  year         = {1998--present},
+  howpublished = {\url{https://www.arm.gov/capabilities/observatories/nsa}},
+  keywords     = {ARCTIC, VALID, data},
+  note         = {[NEED] Request 2015-2020 stable night cases; coordinate with McNider NSF proposal.},
+  annote       = {Permanent Arctic site (71.3N, 156.6W). Long time series ideal for climatology. Instrumentation: 60m tower (winds 10/40/60m, T 2/10/40/60m), surface met, radiation, CEIL ceilometer (cloud base), MFRSR (aerosol), MWR microwave radiometer (temperature profiler to 3 km). Our needs: winter stable nights with clear CEIL + MWR inversion profiles for Ri_g validation and curvature-bias quantification vs grid spacing.}
+}
+
+@misc{CASES99_data,
+  author       = {{CASES-99 Project}},
+  title        = {Cooperative Atmosphere-Surface Exchange Study 1999: Data Archive},
+  year         = {1999},
+  howpublished = {\url{https://www.eol.ucar.edu/field_projects/cases-99}},
+  keywords     = {SBL, VALID, data, intermittency},
+  note         = {[CITED] Classic SBL intermittency case; may use for dynamic Ri_c* validation.},
+  annote       = {Oct 1999 Kansas campaign focused on nocturnal BL. High-frequency tower array (55m main + 5 10m towers) capturing spatial variability and intermittent turbulence. Multiple LLJ events. Standard benchmark for SBL regime transitions. Our use: test dynamic Ri_c* algorithm on intermittent nights (IOP9 classic case). Secondary priority after SHEBA/ARM.}
+}
+
+%========================================
+% OPERATIONAL PARAMETERIZATION SCHEMES
+%========================================
+
+@article{Louis1979BLM,
+  author    = {Louis, J. F.},
+  title     = {A Parametric Model of Vertical Eddy Fluxes in the Atmosphere},
+  journal   = {Boundary-Layer Meteorology},
+  volume    = {17},
+  number    = {2},
+  pages     = {187--202},
+  year      = {1979},
+  doi       = {10.1007/BF00117978},
+  keywords  = {PARAM, operational, Ri-based},
+  note      = {[READ] Louis scheme; simple Ri-based closure, widely used but known biases.},
+  annote    = {Early operational Ri-based closure: K=l^2*S*f(Ri) with algebraic f(Ri)=(1+b*Ri)^(-n). Simple, fast, no iteration. Used in many early NWP models. However: (1) fixed critical Ri_c=0.2 too low, (2) no curvature awareness, (3) overmixes in strong stability. Superseded by MOST-based schemes (BH91, etc.) but still in some regional models. Useful baseline for comparison; our curvature framework generalizes this approach.}
+}
+
+@article{MellorYamada1982RG,
+  author    = {Mellor, G. L. and Yamada, T.},
+  title     = {Development of a Turbulence Closure Model for Geophysical Fluid Problems},
+  journal   = {Reviews of Geophysics},
+  volume    = {20},
+  number    = {4},
+  pages     = {851--875},
+  year      = {1982},
+  doi       = {10.1029/RG020i004p00851},
+  keywords  = {PARAM, TKE-based, review},
+  note      = {[SKIM] Mellor-Yamada TKE closure; widely used but computationally expensive.},
+  annote    = {Hierarchy of turbulence closures (Levels 2, 2.5, 3, 4) based on TKE budget. Level 2.5 (prognostic TKE + diagnostic length scale) operationally popular. Advantages: physical TKE transport, self-consistent stability dependence. Disadvantages: added PDE, sensitive to length-scale formulation, still has grid-dependence issues. Our curvature correction orthogonal—could be applied to M-Y mixing length or stability functions. Many NWP models use M-Y variants (NCEP, Navy).}
+}
+
+@techreport{Janjic2001NCEP,
+  author      = {Janjic, Z. I.},
+  title       = {Nonsingular Implementation of the {Mellor-Yamada Level 2.5} Scheme in the {NCEP} Meso Model},
+  institution = {NOAA/NWS/NCEP Office Note 437},
+  year        = {2001},
+  keywords    = {PARAM, operational, TKE-based},
+  note        = {[CITED] NCEP operational implementation; regularizations to avoid singularities.},
+  annote      = {Details NCEP adaptations of M-Y 2.5: master length scale formulation, minimum TKE floor (avoid div-by-zero), blending with surface layer. Emphasizes need for numerical stability in operational context. Relevant for our implementation: similar regularization techniques may be needed for curvature diagnostics (guard against small denominators, L->infinity cases). Not primary reference but useful for robustness checks.}
+}
+
+@article{Pleim2007JAMC,
+  author    = {Pleim, J. E.},
+  title     = {A Combined Local and Nonlocal Closure Model for the Atmospheric Boundary Layer. {Part I}: Model Description and Testing},
+  journal   = {Journal of Applied Meteorology and Climatology},
+  volume    = {46},
+  number    = {9},
+  pages     = {1383--1395},
+  year      = {2007},
+  doi       = {10.1175/JAM2539.1},
+  keywords  = {PARAM, operational, hybrid-closure},
+  note      = {[SKIM] ACM2 scheme (WRF, CMAQ); blends local + nonlocal for convective/stable.},
+  annote    = {Asymmetric Convective Model version 2 (ACM2): combines local eddy-diffusivity (stable/neutral) with nonlocal convective transport (unstable). Used in EPA CMAQ air quality model and WRF-Chem. For stable: reverts to local K with modified stability functions. Relevant for our air quality application (Biazar focus). Could integrate curvature correction into ACM2 stable branch. Check EPA tech support docs for current parameter settings.}
+}
+
+%========================================
+% THEORETICAL & ADVANCED TOPICS
+%========================================
+
+@article{VanDeWiel2012JAS,
+  author    = {van de Wiel, B. J. H. and {and 10 coauthors}},
+  title     = {The Minimum Wind Speed for Sustainable Turbulence in the Nocturnal Boundary Layer},
+  journal   = {Journal of the Atmospheric Sciences},
+  volume    = {69},
+  number    = {11},
+  pages     = {3097--3115},
+  year      = {2012},
+  doi       = {10.1175/JAS-D-12-064.1},
+  keywords  = {SBL, theory, regime-transition},
+  note      = {[READ] Regime transition theory; minimum wind for turbulence sustainability.},
+  annote    = {Conceptual model for SBL regime transition (weakly stable ↔ very stable). Shows critical wind speed U_crit ~4-6 m/s below which turbulence cannot sustain against radiative cooling → collapse to very stable/intermittent. Formalism based on heat budget balance. Relevant for dynamic Ri_c*: transition occurs when Ri approaches critical value that depends on cooling rate and shear. Could inform our dynamic threshold formulation. Elegant theory; widely cited in SBL community.}
+}
+
+@article{VanDeWiel2017JAS,
+  author    = {van de Wiel, B. J. H. and Vignon, E. and Baas, P. and van Hooijdonk, I. G. S. and van der Linden, S. J. A. and van Hooft, J. A. and Genthon, C.},
+  title     = {Regime Transition in Near-Surface Temperature Inversions: A Conceptual Model},
+  journal   = {Journal of the Atmospheric Sciences},
+  volume    = {74},
+  number    = {4},
+  pages     = {1057--1073},
+  year      = {2017},
+  doi       = {10.1175/JAS-D-16-0180.1},
+  keywords  = {SBL, theory, regime-transition, Antarctica},
+  note      = {[SKIM] Extensions to Antarctic; hysteresis in regime transitions.},
+  annote    = {Extends VanDeWiel2012 to Antarctic plateau (Dome C). Documents hysteresis: transition thresholds differ for collapse vs recovery. Shows memory effects (TKE history) matter. Antarctic cases reach higher stability (Ri>1) than mid-latitude. Supports our dynamic Ri_c* with memory term. Provides Antarctic validation target. Check supplementary material for Dome C tower data availability.}
+}
+
+@article{KosovicCurry2000JAS,
+  author    = {Kosovi{\'c}, B. and Curry, J. A.},
+  title     = {A Large Eddy Simulation Study of a Quasi-Steady, Stably Stratified Atmospheric Boundary Layer},
+  journal   = {Journal of the Atmospheric Sciences},
+  volume    = {57},
+  number    = {8},
+  pages     = {1052--1068},
+  year      = {2000},
+  doi       = {10.1175/1520-0469(2000)057<1052:ALESSO>2.0.CO;2},
+  keywords  = {SBL, LES, theory},
+  note      = {[CITED] Early LES of quasi-steady SBL; documents Ri profiles and turbulence structure.},
+  annote    = {High-resolution LES (1.25 m vertical near surface) of idealized stable BL. Shows Ri_g profile curvature consistent with MOST near surface but deviations aloft. Documents mixing-length scale behavior. Useful for conceptual understanding and LES inter-comparison baseline. Older code (not public) but methodology standard. Check if newer GABLS LES supersedes.}
+}
+
+%========================================
+% BOOKS & COMPREHENSIVE REFERENCES
+%========================================
+
+@book{Garratt1992Book,
+  author    = {Garratt, J. R.},
+  title     = {The Atmospheric Boundary Layer},
+  publisher = {Cambridge University Press},
+  year      = {1992},
+  pages     = {316},
+  isbn      = {9780521358312},
+  keywords  = {textbook, MOST, SBL, review},
+  note      = {[READ] Standard ABL textbook; comprehensive MOST treatment, pre-modern SBL advances.},
+  annote    = {Classic graduate textbook. Chapters 3-4 cover MOST thoroughly (derivation, empirical fits, applications). Chapter 6 on stable BL (pre-intermittency era). Still best pedagogical introduction to MOST framework. Limitation: published 1992, predates modern SBL regime understanding (Mahrt 1998+) and high-res observations (SHEBA, CASES-99). Use for fundamentals; supplement with Holtslag2013 review for current state.}
+}
+
+@book{Stull1988Book,
+  author    = {Stull, R. B.},
+  title     = {An Introduction to Boundary Layer Meteorology},
+  publisher = {Kluwer Academic},
+  year      = {1988},
+  address   = {Dordrecht},
+  pages     = {666},
+  isbn      = {9789027727684},
+  keywords  = {textbook, ABL, convection-focused},
+  note      = {[READ] Standard reference; stronger on convective BL than stable.},
+  annote    = {Comprehensive ABL textbook, slightly older than Garratt. Excellent on mixed-layer convection (Ch 4-5), entrainment, clear-air turbulence. Stable BL (Ch 9) less detailed—reflects knowledge at time. MOST coverage (Ch 4) solid but condensed. Strength: physical intuition, dimensional analysis pedagogy. Use for convective applications; less central for our SBL focus. Many exercises—good for teaching.}
+}
+
+@book{KaimalFinnigan1994Book,
+  author    = {Kaimal, J. C. and Finnigan, J. J.},
+  title     = {Atmospheric Boundary Layer Flows: Their Structure and Measurement},
+  publisher = {Oxford University Press},
+  year      = {1994},
+  pages     = {289},
+  isbn      = {9780195062397},
+  keywords  = {textbook, measurements, turbulence-focused},
+  note      = {[SKIM] Emphasis on observational techniques and turbulence statistics.},
+  annote    = {Advanced text focused on turbulence measurements and spectral analysis. Ch 2-3 on surface layer and MOST very detailed (includes power spectra, cospectra). Ch 6 on stable BL includes discussion of intermittency precursors. Less pedagogical than Stull/Garratt but richer on observational methodology. Useful for understanding tower data processing, eddy covariance, flux footprints. Reference for instrumentation decisions if we deploy own sensors.}
+}
+
+%========================================
+% PAPERS TO ACQUIRE / READ
+%========================================
+
+@article{Acevedo2001JAS,
+  author    = {Acevedo, O. C. and Fitzjarrald, D. R.},
+  title     = {The Early Evening Surface Layer Transition: Temporal and Spatial Variability},
+  journal   = {Journal of the Atmospheric Sciences},
+  volume    = {58},
+  pages     = {2650--2667},
+  year      = {2001},
+  doi       = {10.1175/1520-0469(2001)058<2650:TEESLT>2.0.CO;2},
+  keywords  = {SBL, intermittency, observations},
+  note      = {[NEED] Cited by Mahrt; describes evening transition variability.}
+}
+
+@article{Acevedo2021QJRMS,
+  author    = {Acevedo, O. C. and {and 5 coauthors}},
+  title     = {External Controls on the Transition Between Stable Boundary-Layer Turbulence Regimes},
+  journal   = {Quarterly Journal of the Royal Meteorological Society},
+  volume    = {147},
+  number    = {737},
+  pages     = {2335--2351},
+  year      = {2021},
+  doi       = {10.1002/qj.4027},
+  keywords  = {SBL, regime-transition, observations},
+  note      = {[NEED] Recent work on regime controls; may inform dynamic Ri_c*.}
+}
+
+@article{Audouin2021JAMES,
+  author    = {Audouin, O. and {and 3 coauthors}},
+  title     = {Modeling the {GABLS4} Strongly-Stable Boundary Layer With a {GCM} Turbulence Parameterization: Parametric Sensitivity or Intrinsic Limits?},
+  journal   = {Journal of Advances in Modeling Earth Systems},
+  volume    = {13},
+  number    = {3},
+  pages     = {e2020MS002269},
+  year      = {2021},
+  doi       = {10.1029/2020MS002269},
+  keywords  = {SBL, GABLS, model-bias, sensitivity},
+  note      = {[NEED] GABLS4 recent intercomparison; check for grid-dependence analysis.}
+}
+
+@article{FernandoWeil2010BAMS,
+  author    = {Fernando, H. J. S. and Weil, J. C.},
+  title     = {Whither the Stable Boundary Layer? {A} Shift in the Research Agenda},
+  journal   = {Bulletin of the American Meteorological Society},
+  volume    = {91},
+  number    = {11},
+  pages     = {1475--1484},
+  year      = {2010},
+  doi       = {10.1175/2010BAMS2770.1},
+  keywords  = {SBL, review, research-priorities},
+  note      = {[NEED] Community perspective on SBL challenges circa 2010; may cite for motivation.}
+}
+
+@article{Pithan2016JAMES,
+  author    = {Pithan, F. and {and 12 coauthors}},
+  title     = {Select Strengths and Biases of Models in Representing the Arctic Winter Boundary Layer Over Sea Ice: The {Larcform 1} Single Column Model Intercomparison},
+  journal   = {Journal of Advances in Modeling Earth Systems},
+  volume    = {8},
+  number    = {3},
+  pages     = {1345--1357},
+  year      = {2016},
+  doi       = {10.1002/2016MS000630},
+  keywords  = {ARCTIC, SBL, intercomparison, model-bias},
+  note      = {[NEED] Arctic SCM intercomparison; follow-up to SHEBA validation.}
+}
+
+@article{Vignon2017aJGR,
+  author    = {Vignon, E. and {and 11 coauthors}},
+  title     = {Antarctic Boundary Layer Parametrization in a General Circulation Model: {1-D} Simulations Facing Summer Observations at {Dome C}},
+  journal   = {Journal of Geophysical Research: Atmospheres},
+  volume    = {122},
+  number    = {13},
+  pages     = {6818--6843},
+  year      = {2017},
+  doi       = {10.1002/2016JD025556},
+  keywords  = {ARCTIC, Antarctica, SBL, model-bias},
+  note      = {[NEED] Dome C validation; extreme stability test case.}
+}
+
+@article{Vignon2017bQJRMS,
+  author    = {Vignon, E. and {and 10 coauthors}},
+  title     = {Stable Boundary-Layer Regimes at {Dome C}, {Antarctica}: Observation and Analysis},
+  journal   = {Quarterly Journal of the Royal Meteorological Society},
+  volume    = {143},
+  number    = {704},
+  pages     = {1241--1253},
+  year      = {2017},
+  doi       = {10.1002/qj.2998},
+  keywords  = {ARCTIC, Antarctica, SBL, observations},
+  note      = {[NEED] Dome C tower data; companion to Vignon2017a.}
+}
+
+%========================================
+% ADDITIONAL ENTRIES (from grid.bib, not yet annotated)
+%========================================
+
+% [Continue with remaining entries from grid.bib, adding annotations systematically]
+% Priority: papers directly cited in manuscripts > background references > exploratory
+
+% Placeholder for bulk import - to be processed in next iteration:
+% Basu1999, Beljaars2020PC, Beljaars2012ECMWF, Bindoff2014IPCC, Blackadar1979,
+% Boe2009, Businger1973, Cai2007, Cassano2001, Davy2020, Derbyshire1999,
+% Duynkerke1991, EsauByrkjedal2007, GraversenWang2009, Hall2004, HollandBitz2003,
+% HoltslagBoville1993, Holtslag2006, KanthaClayson1994, Lorenz1963, Mahrt1989,
+% Mahrt1996, ManabeStouffer1994, ManabeWetherald1975, McNiderPielke1981,
+% McNider2012, ReVelle1993, Rugenstein2013, Savijarvi2009, Shindell2007,
+% ShirBornstein1977, Steeneveld2008a, Steeneveld2006, Sukoriansky2005,
+% Tastula2015, Taylor2013, VanDeWiel2002b, ViterboBeljaars1995, Viterbo1999,
+% Walters2007, ZilitinkevichEsau2003
+
+% END OF FILE - CONTINUE ANNOTATION IN NEXT SESSION

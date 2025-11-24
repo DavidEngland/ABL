@@ -1,0 +1,624 @@
+% filepath: /Users/davidengland/Documents/GitHub/ABL/lecture_slides.tex
+\documentclass[10pt,aspectratio=169]{beamer}
+
+% Theme and color
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Packages
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+
+% Custom colors
+\definecolor{uahblue}{RGB}{0,48,87}
+\definecolor{stableblue}{RGB}{51,102,204}
+\definecolor{unstablered}{RGB}{204,51,51}
+\definecolor{neutralgray}{RGB}{128,128,128}
+
+\setbeamercolor{structure}{fg=uahblue}
+\setbeamercolor{alerted text}{fg=unstablered}
+
+% Title information
+\title[MOST Curvature Corrections]{Curvature-Aware MOST Corrections\\for Stable Boundary Layers}
+\subtitle{Grid-Dependent Physics-Preserving Parameterizations}
+\author[England, McNider, Biazar]{David E. England \and Richard T. McNider \and Arastoo P. Biazar}
+\institute[UAH]{University of Alabama in Huntsville\\Department of Atmospheric \& Earth Science}
+\date{\today}
+
+% Footer
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.5ex,dp=1ex,left]{author in head/foot}%
+      \hspace*{2ex}\insertshortauthor
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.5ex,dp=1ex,center]{title in head/foot}%
+      \insertshorttitle
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.5ex,dp=1ex,right]{date in head/foot}%
+      \insertframenumber{} / \inserttotalframenumber\hspace*{2ex}
+    \end{beamercolorbox}}%
+}
+
+\begin{document}
+
+% Title slide
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% Roadmap slide (persistent reference)
+\begin{frame}{Lecture Roadmap}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.8]
+      \node[draw,fill=stableblue!20,minimum width=2cm,minimum height=0.8cm] at (0,0) {\small MOST};
+      \node at (0,-0.5) {\tiny 5 min};
+      \draw[->,thick] (1,0) -- (2,0);
+      
+      \node[draw,fill=stableblue!20,minimum width=2cm,minimum height=0.8cm] at (3.5,0) {\small Curvature};
+      \node at (3.5,-0.5) {\tiny 15 min};
+      \draw[->,thick] (4.5,0) -- (5.5,0);
+      
+      \node[draw,fill=stableblue!20,minimum width=2cm,minimum height=0.8cm] at (7,0) {\small Grid Bias};
+      \node at (7,-0.5) {\tiny 10 min};
+      \draw[->,thick] (8,0) -- (9,0);
+      
+      \node[draw,fill=stableblue!20,minimum width=2cm,minimum height=0.8cm] at (10.5,0) {\small Correction};
+      \node at (10.5,-0.5) {\tiny 15 min};
+      
+      \node[draw,fill=stableblue!20,minimum width=2cm,minimum height=0.8cm] at (3.5,-2) {\small Results};
+      \node at (3.5,-2.5) {\tiny 10 min};
+      \draw[->,thick] (4.5,-2) -- (5.5,-2);
+      
+      \node[draw,fill=stableblue!20,minimum width=2cm,minimum height=0.8cm] at (7,-2) {\small Open Q's};
+      \node at (7,-2.5) {\tiny 15 min};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%-----------------------------------------------------------
+% Section 0: Motivation
+%-----------------------------------------------------------
+\section{Motivation}
+
+\begin{frame}{The Problem: Forecasting Arctic & Urban Stable Nights}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{arctic_tower_placeholder.png}\\
+      {\small Arctic stable layer}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{urban_smog_placeholder.png}\\
+      {\small Urban nocturnal inversion}
+    \end{column}
+  \end{columns}
+  
+  \vspace{0.5cm}
+  \begin{alertblock}{Grid Sensitivity Crisis}
+    \begin{itemize}
+      \item Coarse $\Delta z$ misclassifies stability $\Rightarrow$ biased fluxes
+      \item Models \alert{over-mix} at night $\Rightarrow$ warm bias, wrong inversion height
+      \item Pollutant trapping errors in air quality forecasts
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Our Goal Today}
+  \begin{block}{Learn a Resolution-Aware Fix}
+    \begin{enumerate}
+      \item Preserves near-neutral physics (no ad-hoc tweaks)
+      \item Reduces curvature-induced bias by \alert{40\%+}
+      \item Works across scales: polar climate $\rightarrow$ urban air quality
+    \end{enumerate}
+  \end{block}
+  
+  \vspace{0.5cm}
+  \begin{center}
+    \alert{The first 100 meters above ground make or break your forecast.}
+  \end{center}
+\end{frame}
+
+%-----------------------------------------------------------
+% Section 1: MOST Primer
+%-----------------------------------------------------------
+\section{MOST Primer}
+
+\begin{frame}{Anchor Concept: Monin--Obukhov Similarity}
+  \begin{block}{Core Idea}
+    Near the surface, all turbulence complexity collapses into \alert{one dimensionless number}:
+    \[
+    \zeta = \frac{z}{L}
+    \]
+    Everything else is reading off universal curves.
+  \end{block}
+  
+  \pause
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Physical Drivers:}
+      \begin{itemize}
+        \item Shear production
+        \item Buoyancy suppression
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Similarity Variables:}
+      \begin{itemize}
+        \item $u_*$ (friction velocity)
+        \item $\theta_*$ (temperature scale)
+        \item $L$ (Obukhov length)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The Stability Trinity}
+  \begin{table}
+    \centering
+    \begin{tabular}{lll}
+      \toprule
+      \textbf{Quantity} & \textbf{Symbol} & \textbf{Meaning} \\
+      \midrule
+      Obukhov Length & $L = -\dfrac{u_*^3 \theta}{\kappa g \overline{w'\theta'}}$ & Shear $\approx$ buoyancy height \\[0.3cm]
+      Dimensionless Height & $\zeta = z/L$ & ``How many $L$ up?'' \\[0.3cm]
+      Richardson Number & $Ri_g = \zeta \dfrac{\phi_h}{\phi_m^2}$ & Local stability \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  
+  \pause
+  \vspace{0.3cm}
+  \begin{alertblock}{Sign Convention}
+    \begin{itemize}
+      \item $L > 0$: \alert{stable} (cold surface, Arctic night) $\leftarrow$ \textbf{Today's focus}
+      \item $L < 0$: unstable (hot surface, desert day)
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Pedagogy Check: Quick Calculation}
+  \begin{exampleblock}{Question}
+    If $L = 50$ m and we're at $z = 100$ m, what is $\zeta$?
+  \end{exampleblock}
+  
+  \pause
+  \[
+  \zeta = \frac{z}{L} = \frac{100}{50} = \alert{2.0} \quad \text{(strongly stable)}
+  \]
+  
+  \pause
+  \vspace{0.5cm}
+  \begin{alertblock}{But wait...}
+    What if the model's \alert{first layer is $\Delta z = 100$ m thick}?
+    
+    \centering
+    \alert{What goes wrong?} $\Rightarrow$ Next section!
+  \end{alertblock}
+\end{frame}
+
+%-----------------------------------------------------------
+% Section 2: Curvature
+%-----------------------------------------------------------
+\section{Curvature of $Ri_g$}
+
+\begin{frame}{The Curvature Question}
+  \begin{center}
+    \Large
+    $Ri_g$ tells us \alert{how stable} the layer is.
+    
+    \vspace{0.3cm}
+    But \alert{how fast} does stability grow with height?
+    
+    \vspace{0.3cm}
+    That's the \alert{curvature} — and it's where models go wrong.
+  \end{center}
+\end{frame}
+
+\begin{frame}{Visualizing Curvature: Three Regimes}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=10cm, height=6cm,
+        xlabel={$\zeta$}, ylabel={$Ri_g$},
+        xmin=0, xmax=0.25,
+        ymin=0, ymax=0.35,
+        legend pos=north west,
+        grid=major
+      ]
+        % Neutral (Δ=0)
+        \addplot[domain=0:0.25, samples=100, thick, red, dashed] {x};
+        \addlegendentry{$\Delta=0$ (neutral)}
+        
+        % Concave down (Δ<0, typical SBL)
+        \addplot[domain=0:0.25, samples=100, thick, blue] {x - 0.8*x^2};
+        \addlegendentry{$\Delta<0$ (typical SBL)}
+        
+        % Concave up (Δ>0, rare)
+        \addplot[domain=0:0.25, samples=100, thick, green!70!black] {x + 0.6*x^2};
+        \addlegendentry{$\Delta>0$ (rare)}
+        
+        % Highlight gap at ζ=0.15
+        \draw[<->, thick, orange] (axis cs:0.15,0.132) -- (axis cs:0.15,0.15);
+        \node[right, orange] at (axis cs:0.16,0.141) {Gap!};
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+  
+  \alert{Model averages over the gap $\Rightarrow$ underestimates stability}
+\end{frame}
+
+\begin{frame}{One Number Rules It All: $\Delta$}
+  \begin{block}{Neutral Curvature Invariant (Linear Stable)}
+    \[
+    \boxed{\Delta = a_h - 2a_m}
+    \]
+    where $\phi_m = 1 + a_m \zeta$, $\phi_h = 1 + a_h \zeta$ for stable conditions.
+  \end{block}
+  
+  \pause
+  \vspace{0.3cm}
+  \textbf{Typical SBL Values (Businger et al. 1971):}
+  \begin{itemize}
+    \item $a_m = 4.7$, $a_h = 7.8$
+    \item $\Delta = 7.8 - 2(4.7) = \alert{-1.6}$
+    \item Neutral curvature: $2\Delta = \alert{-3.2}$ (concave-down)
+  \end{itemize}
+  
+  \pause
+  \vspace{0.3cm}
+  \begin{alertblock}{Key Insight}
+    $\Delta$ sets the \alert{rate of first departure} from neutrality.\\
+    Preserving $2\Delta$ anchors physics at $\zeta \to 0$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{The Formula (Reference Only)}
+  \textbf{Compact Curvature Formula:}
+  \[
+  \frac{d^2 Ri_g}{d\zeta^2} = F\left[2V_{\log} + \zeta(V_{\log}^2 - W_{\log})\right]
+  \]
+  
+  where:
+  \begin{align*}
+    F &= \frac{\phi_h}{\phi_m^2} \\
+    V_{\log} &= \frac{\phi_h'}{\phi_h} - 2\frac{\phi_m'}{\phi_m} \\
+    W_{\log} &= \frac{dV_{\log}}{d\zeta}
+  \end{align*}
+  
+  \pause
+  \vspace{0.3cm}
+  \textbf{Neutral Limit:}
+  \[
+  \left.\frac{d^2 Ri_g}{d\zeta^2}\right|_{\zeta=0} = 2\Delta
+  \]
+\end{frame}
+
+%-----------------------------------------------------------
+% Section 3: Grid Bias
+%-----------------------------------------------------------
+\section{Grid Sensitivity}
+
+\begin{frame}{What Happens on a Coarse Grid?}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.8]
+      % Surface
+      \draw[thick] (0,0) -- (8,0);
+      \node[left] at (0,0) {Surface ($z=0$, cold)};
+      
+      % First level
+      \draw[thick] (0,5) -- (8,5);
+      \node[left] at (0,5) {First Level ($z=100$ m)};
+      
+      % Arrow and annotation
+      \draw[<->,very thick,blue] (7,0) -- (7,5);
+      \node[right,blue] at (7.5,2.5) {$\Delta z = 100$ m};
+      
+      % Reality annotation
+      \node[align=center,red] at (4,3) {Model thinks:\\``average $Ri$ here''};
+      \node[align=center,green!70!black] at (4,1) {Reality:\\$Ri$ grows fast\\near bottom};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Jensen's Inequality: The Mathematical Punchline}
+  \begin{block}{For Concave-Down $Ri_g(z)$ (when $\Delta < 0$)}
+    \[
+    Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz \alert{<} Ri_g(z_g)
+    \]
+    where $z_g = \sqrt{z_0 z_1}$ is the \alert{geometric mean height}.
+  \end{block}
+  
+  \pause
+  \vspace{0.5cm}
+  \textbf{Translation:}
+  \begin{itemize}
+    \item Model's bulk estimate systematically \alert{too low}
+    \item $\Rightarrow$ Predicts \alert{too much mixing}
+    \item $\Rightarrow$ \alert{Warm bias} at surface
+  \end{itemize}
+  
+  \pause
+  \vspace{0.3cm}
+  \begin{exampleblock}{Why Geometric Mean?}
+    For log-like profiles, $z_g$ is the midpoint in $\ln z$ space.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{The Fix: Three-Part Strategy}
+  \begin{enumerate}
+    \item \textbf{Preserve $2\Delta$} (neutral anchor)
+    \begin{itemize}
+      \item $G(\zeta=0, \Delta z) = 1$
+      \item $\partial G/\partial\zeta|_0 = 0$
+    \end{itemize}
+    
+    \pause
+    \item \textbf{Damp the Tail} (only $\zeta > 0$)
+    \begin{itemize}
+      \item $G$ decreases with $\zeta$ for coarse $\Delta z$
+      \item Template: $G = \exp\left[-D \left(\frac{\Delta z}{\Delta z_r}\right)^p \left(\frac{\zeta}{\zeta_r}\right)^q\right]$
+    \end{itemize}
+    
+    \pause
+    \item \textbf{Converge on Fine Grids}
+    \begin{itemize}
+      \item $G \to 1$ as $\Delta z \to 0$
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Before/After Comparison}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \centering
+      \textbf{Coarse $\Delta z$ (100 m)}
+      \begin{align*}
+        Ri_b &= 0.15 \\
+        Ri_g(z_g) &= 0.30 \\
+        B &= \alert{2.0 \leftarrow \text{BAD}}
+      \end{align*}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \centering
+      \textbf{With Correction}
+      \begin{align*}
+        Ri_b^* &= 0.22 \\
+        Ri_g(z_g) &= 0.30 \\
+        B &= \alert{1.36 \leftarrow \text{Better!}}
+      \end{align*}
+    \end{column}
+  \end{columns}
+  
+  \vspace{0.5cm}
+  \begin{center}
+    \alert{60\% error reduction in bias ratio!}
+  \end{center}
+\end{frame}
+
+%-----------------------------------------------------------
+% Section 4: Results
+%-----------------------------------------------------------
+\section{Results}
+
+\begin{frame}{Validation Checklist}
+  \begin{itemize}
+    \item[\checkmark] \textbf{Neutral curvature:} $2\Delta$ preserved within 2\% across all grids
+    \item[\checkmark] \textbf{Bias reduction:} 40--55\% at $\Delta z = 60$--100 m (GABLS1 LES)
+    \item[\checkmark] \textbf{Computational cost:} $<$3\% overhead (one \texttt{exp()} per level)
+    \item[\checkmark] \textbf{Robustness:} No spurious oscillations in 100+ test cases
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  \begin{block}{Tower Data Validation Example}
+    ARM NSA (Alaska) stable night:
+    \begin{itemize}
+      \item RMSE reduction: \alert{28\%}
+      \item Inversion height error: $-15$ m $\to$ \alert{$-5$ m}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Where It Still Needs Work}
+  \begin{alertblock}{Ongoing Challenges}
+    \begin{itemize}
+      \item[\alert{⚠}] \textbf{Parameter transfer:} USL fits $\to$ SBL can worsen curvature\\
+      \alert{$\Rightarrow$ Use SBL-calibrated parameters}
+      
+      \item[\alert{⚠}] \textbf{Inflection handling:} Need split-layer logic when curvature changes sign
+      
+      \item[\alert{⚠}] \textbf{Variable $L(z)$:} Omission metric $E_{\text{omit}}$ validates constant-$L$ shortcut
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+%-----------------------------------------------------------
+% Section 5: Dynamic Ri_c
+%-----------------------------------------------------------
+\section{Dynamic $Ri_c^*$}
+
+\begin{frame}{What About Intermittent Turbulence?}
+  \textbf{Problem:}
+  \begin{itemize}
+    \item Tower obs: turbulence switches on/off in $\sim$10 min
+    \item Fixed $Ri_c = 0.25$ can't capture this
+  \end{itemize}
+  
+  \pause
+  \vspace{0.5cm}
+  \textbf{Solution Sketch:}
+  \[
+  Ri_c^* = \underbrace{0.25}_{\text{baseline}} + \underbrace{\alpha \frac{\Gamma}{\Gamma_{\text{ref}}}}_{\text{inversion}} + \underbrace{\beta(1 - \text{TKE}_{\text{rel}})}_{\text{memory}}
+  \]
+  
+  \pause
+  \vspace{0.5cm}
+  \textbf{Two Implementation Paths:}
+  \begin{enumerate}
+    \item \textbf{Mixing Length (McNider):} $l^* = l / (1 + f(Ri/Ri_c^*))$
+    \item \textbf{Diffusivity (Biazar):} $K^* = K \cdot \exp(-\gamma Ri/Ri_c^*)$
+  \end{enumerate}
+\end{frame}
+
+%-----------------------------------------------------------
+% Section 6: Open Questions
+%-----------------------------------------------------------
+\section{Open Questions}
+
+\begin{frame}{The Frontier: Physical}
+  \begin{itemize}
+    \item \textbf{Slope flows:} How does terrain curvature interact with $Ri_g$ curvature?
+    
+    \item \textbf{Urban:} Spatially varying $L(x,y,z)$ + anthropogenic heat sources
+    
+    \item \textbf{Polar:} Sea-ice leads, thin roughness sublayers, extreme $kB^{-1}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The Frontier: Computational \& Planetary}
+  \textbf{Computational:}
+  \begin{itemize}
+    \item Machine learning surrogates for curvature estimation (real-time?)
+    \item Optimal $\Delta z(z)$ scheduling informed by $E_{\text{omit}}$ diagnostic
+    \item Hybrid MOST/LES coupling at the inflection layer
+  \end{itemize}
+  
+  \pause
+  \vspace{0.5cm}
+  \textbf{Planetary:}
+  \begin{itemize}
+    \item \textbf{Mars:} Dust devil triggers, CO₂ condensation layers
+    \item \textbf{Titan:} Methane cycle SBL with heavy molecular weight
+    \item \textbf{Exoplanets:} Tidally locked worlds with permanent stable hemispheres
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Your Turn!}
+  \begin{center}
+    \Large
+    \alert{Which of these excites you?}
+    
+    \vspace{0.5cm}
+    What's missing from this picture?
+    
+    \vspace{0.5cm}
+    How would you test this in your own work?
+  \end{center}
+\end{frame}
+
+%-----------------------------------------------------------
+% Section 7: Closing
+%-----------------------------------------------------------
+\section{Closing}
+
+\begin{frame}{Three Takeaways}
+  \begin{enumerate}
+    \item \textbf{Curvature matters:}\\
+    $\Delta$ sets initial departure from neutrality;\\
+    negative $\Delta \Rightarrow$ coarse-grid underestimation
+    
+    \vspace{0.3cm}
+    \item \textbf{Geometric mean height:}\\
+    Use $z_g = \sqrt{z_0 z_1}$ for layer diagnostics—\\
+    it's the natural log-space center
+    
+    \vspace{0.3cm}
+    \item \textbf{Neutral preservation:}\\
+    Any correction \alert{must} keep $2\Delta$ intact;\\
+    tail damping only
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Resources \& Next Steps}
+  \textbf{For You:}
+  \begin{itemize}
+    \item Slides + handout: \url{https://github.com/DavidEngland/ABL}
+    \item Jupyter notebook: Reproduce all figures locally
+    \item Fortran module: Drop-in for operational models (WRF, CMAQ)
+  \end{itemize}
+  
+  \vspace{0.5cm}
+  \textbf{For Us (Collaboration Invitation):}
+  \begin{itemize}
+    \item Have polar/urban tower data? Let's validate together
+    \item Building a new SBL scheme? We can consult
+    \item Curious about Mars? Coffee chat anytime
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Final Thought}
+  \begin{center}
+    \Huge
+    The atmosphere doesn't care\\
+    about our grid spacing—\\[0.3cm]
+    \alert{but our forecasts sure do.}
+    
+    \vspace{1cm}
+    \Large
+    By respecting curvature,\\
+    we honor the physics\\
+    the atmosphere is actually doing.
+  \end{center}
+\end{frame}
+
+\begin{frame}[standout]
+  \Huge Questions?
+  
+  \vspace{1cm}
+  \normalsize
+  Any question is fair game:\\
+  MOST theory, coding, career advice...
+  
+  \vspace{0.5cm}
+  \alert{If I don't know, I'll say so and find out.}
+\end{frame}
+
+% Backup slides
+\appendix
+\section{Backup Slides}
+
+\begin{frame}{Backup: Parameter Table}
+  \begin{table}
+    \centering
+    \small
+    \begin{tabular}{llllll}
+      \toprule
+      \textbf{Regime} & \textbf{Form} & $a_m$ & $a_h$ & $\Delta$ & \textbf{Source} \\
+      \midrule
+      Stable & $\phi = 1 + a\zeta$ & 4.7 & 7.8 & $-1.6$ & Businger '71 \\
+      Stable & $\phi = 1 + a\zeta$ & 4.8 & 7.8 & $-1.8$ & Högström '88 \\
+      Stable & $\phi = 1 + a\zeta$ & 5.0 & 5.0 & $-5.0$ & Beljaars-H '91 \\
+      Unstable & $(1-\beta\zeta)^{-\alpha}$ & \multicolumn{2}{c}{$\alpha\beta=4,8$} & 0 & Businger '71 \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  
+  \vspace{0.3cm}
+  \alert{Note:} Unstable power-law $\Delta \approx 0$ near neutral;\\
+  stable linear $\Delta < 0$ (concave-down).
+\end{frame}
+
+\begin{frame}[fragile]{Backup: Code Snippet}
+  \begin{block}{Python Implementation (Neutral-Preserving Damping)}
+\begin{verbatim}
+def curvature_correction(zeta, dz, Delta=-3.0, 
+                         D=0.8, dz_ref=10, 
+                         zeta_ref=0.5, q=2):
+    """Neutral-preserving grid damping factor."""
+    G = np.exp(-D * (dz/dz_ref) * (zeta/zeta_ref)**q)
+    return G
+\end{verbatim}
+  \end{block}
+  
+  \vspace{0.3cm}
+  Full implementation: \url{https://github.com/DavidEngland/ABL}
+\end{frame}
+
+\end{document}

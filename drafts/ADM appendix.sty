@@ -1,0 +1,124 @@
+\appendix
+\section{Application of the Adomian Decomposition Method to SBL Closure Equations}
+
+This appendix provides a rigorous description of the Adomian Decomposition Method (ADM) as applied to nonlinear first-order and TKE-based turbulence closures. The goal is to obtain analytic or semi-analytic expressions for the TKE and related eddy diffusivities that are consistent with the curvature correction developed in the main text. The exposition follows the formalism introduced by \cite{adomian1983} and subsequently refined by \cite{biazar} and co-authors.
+
+\subsection{General Nonlinear Structure of SBL Closure Equations}
+
+In most atmospheric models, the quantities determining the eddy diffusivities—such as turbulent kinetic energy $\epsilon$, mixing length $\ell$, and stability functions $f_m, f_h$—satisfy one of the following forms:
+
+\begin{enumerate}
+    \item \textbf{Algebraic first-order closure}
+    $$ K_m = \ell^2\,|\partial_z U|\,f_m(\text{Ri}_g), \qquad K_h = \ell^2\,|\partial_z U|\,f_h(\text{Ri}_g), $$
+    with $\ell$ itself typically a nonlinear function of height, stability, and roughness length.
+
+    \item \textbf{Prognostic TKE-type closure}
+    A representative 1-D TKE equation is:
+    $$ \frac{\partial \epsilon}{\partial t}
+    = \underbrace{\mathcal{L}(\epsilon)}_{\text{linear}}
+    + \underbrace{\mathcal{N}(\epsilon)}_{\text{nonlinear}}
+    + G(z), $$
+    where
+    \begin{itemize}
+        \item $\mathcal{L}$ includes dissipation and diffusion,
+        \item $\mathcal{N}$ includes nonlinear shear production, buoyancy destruction, or stability damping,
+        \item $G(z)$ is forcing from surface fluxes or internal gravity waves.
+    \end{itemize}
+\end{enumerate}
+
+In the stationary, vertically local, and SBL-typical limit ($\partial \epsilon / \partial t \approx 0$ and ignoring diffusion), this reduces to a nonlinear algebraic ODE of the form:
+$$ \mathcal{L}(\epsilon) + \mathcal{N}(\epsilon) = G(z). \label{eq:A1} \tag{A.1} $$
+Because $K_m$ and $K_h$ depend on $\epsilon$, solving (\ref{eq:A1}) directly determines $\text{Ri}_g$, $\text{Ri}_b$, and ultimately the curvature ratio $B = \text{Ri}_g/\text{Ri}_b$ required for the grid-correction. ADM provides an analytically controlled way of solving (\ref{eq:A1}) without iteration.
+
+\subsection{ADM Framework}
+
+Let the governing equation be written abstractly as:
+$$ \mathcal{L}(y) + \mathcal{N}(y) = g, \label{eq:A2} \tag{A.2} $$
+where $\mathcal{L}$ is an invertible linear operator and $\mathcal{N}$ is a nonlinear operator.
+ADM proceeds by:
+\begin{enumerate}
+    \item Splitting the solution into an infinite series:
+    $$ y = \sum_{n=0}^{\infty} y_n, \label{eq:A3} \tag{A.3} $$
+    \item Decomposing the nonlinear term into Adomian polynomials:
+    $$ \mathcal{N}(y) = \sum_{n=0}^{\infty} A_n, \label{eq:A4} \tag{A.4} $$
+    where each $A_n$ depends on the partial sums $y_0, \ldots, y_n$.
+    \item Applying the inverse operator $\mathcal{L}^{-1}$ term-by-term.
+\end{enumerate}
+
+This gives the recursive system:
+\begin{align}
+y_0 &= \mathcal{L}^{-1}(g) + \text{Initial/Boundary Conditions}, \nonumber \\
+y_{n+1} &= -\mathcal{L}^{-1}(A_n),\qquad n\ge 0. \label{eq:A5} \tag{A.5}
+\end{align}
+
+\subsection{Constructing the Adomian Polynomials}
+
+For a scalar nonlinearity $\mathcal{N}(y) = F(y)$ with $F$ smooth, the Adomian polynomials are defined by:
+$$ A_n = \frac{1}{n!}
+\left[
+\frac{d^n}{d\lambda^n} F\!\left(\sum_{k=0}^{\infty} y_k \lambda^k\right)
+\right]_{\lambda=0}. \label{eq:A6} \tag{A.6} $$
+
+Examples relevant to SBL physics include:
+\begin{enumerate}
+    \item \textbf{Quadratic nonlinearity (Shear Production)}: $F(y) = c_1 y^2$
+    $$ A_0 = c_1 y_0^2,\quad
+    A_1 = 2c_1 y_0 y_1,\quad
+    A_2 = c_1(2y_0 y_2 + y_1^2),\ldots $$
+    \item \textbf{Fractional Power (Stable Damping)}: $F(y) = -c_2 y^{3/2}$
+    $$ A_0 = -c_2 y_0^{3/2},\quad
+    A_1 = -\frac{3}{2} c_2 y_0^{1/2} y_1,\;\ldots $$
+    \item \textbf{MOST-type Nonlinear Stability Functions}: $F(y)= -c_3 y / (1 + b y)$
+    $$ A_0 = -\frac{c_3 y_0}{1+b y_0}, \qquad
+    A_1 = -c_3 y_1 \!\left(\frac{1}{1+by_0}\right)^2,\;\ldots $$
+\end{enumerate}
+These cases cover essentially all nonlinearities appearing in common first-order and TKE SBL closures.
+
+\subsection{Worked Example: ADM Solution of a Standard TKE Model}
+
+Consider the widely used stationary 1D TKE balance:
+$$ 0 = P - \epsilon + \frac{\partial}{\partial z}\left(K_\epsilon \frac{\partial \epsilon}{\partial z}\right), \label{eq:A7} \tag{A.7} $$
+with shear production $P = c_1 \epsilon^{1/2} S^2$ ($S = |\partial_z U|$) and dissipation $\epsilon = c_2 \epsilon^{3/2} / \ell$.
+
+Assume \textbf{local equilibrium} (no diffusion), a good approximation in SBL regimes:
+$$ c_1 S^2 \epsilon^{1/2} = c_2 \frac{\epsilon^{3/2}}{\ell}. \label{eq:A8} \tag{A.8} $$
+
+Let the variable be $y=\epsilon^{1/2}$. The equation is homogeneous and algebraic:
+$$ c_2 \frac{1}{\ell} y^3 - c_1 S^2 y = 0. \label{eq:A9} \tag{A.9} $$
+The ADM recursion applied to this homogeneous equation simplifies, showing the initial term $y_0$ contains the exact solution. If $\mathcal{L}$ is defined such that $\mathcal{L}^{-1}$ is trivial (i.e., we are solving for the algebraic root directly), the ADM polynomials quickly identify the solution.
+
+Constructing the first few polynomials for $F(y) = \frac{c_2}{\ell} y^3 - c_1 S^2 y$:
+$$ A_0 = F(y_0) = \frac{c_2}{\ell} y_0^3 - c_1 S^2 y_0. $$
+Setting $A_n=0$ for all $n$ forces $y_0$ to satisfy the original equation:
+$$ \frac{c_2}{\ell} y_0^3 - c_1 S^2 y_0 = 0 \implies y_0^2 = \frac{c_1 S^2 \ell}{c_2}. $$
+
+Thus $\text{ADM}$ reproduces exactly the classical equilibrium TKE solution, $\epsilon \approx y^2$:
+$$ \mathbf{\epsilon \approx \frac{c_1 S^2 \ell}{c_2}.} \label{eq:A11} \tag{A.11} $$
+This result is achieved without iterative solvers or fixed-point methods, demonstrating the analytical control offered by $\text{ADM}$.
+
+\subsection{Embedding ADM into the Curvature-Correction Framework}
+
+ADM determines the self-consistent base diffusivities $K_m$ and $K_h$ (via $\epsilon$), from which:
+\begin{itemize}
+    \item $\text{Ri}_g$ (gradient Richardson number),
+    \item $\text{Ri}_b$ (bulk Richardson number), and
+    \item the curvature ratio $B = \text{Ri}_g/\text{Ri}_b$
+\end{itemize}
+can be computed analytically or semi-analytically.
+
+This is crucial for the McNider correction because $f_c$ depends explicitly on $B$. Using $\text{ADM}$ ensures that $B$:
+\begin{enumerate}
+    \item is computed from a closure-consistent solution,
+    \item remains stable in strongly stratified conditions,
+    \item avoids numerical artifacts from iterative solvers, and
+    \item can be differentiated analytically, enabling sensitivity studies.
+\end{enumerate}
+
+In operational settings, $\text{ADM}$ may be used off-line to generate: analytic lookup tables for $\text{Ri}_g(\zeta)$ and $B(\zeta)$, reduced-order dynamical models, or surrogate-model coefficients for machine-learning closures.
+
+\subsection{Summary}
+
+ADM offers an elegant and powerful framework for solving the nonlinear equations underlying SBL turbulence closures. Its key advantages are: direct, non-iterative treatment of nonlinearities; rapid convergence in stable regimes; compatibility with $\text{MOST}$ and $\text{TKE}$ closures; and analytical control over the base diffusivities that determine curvature bias. When combined with the $\text{McNider}$ grid-invariance correction, $\text{ADM}$ provides the analytic backbone for a new class of resolution-aware turbulence parameterizations: schemes in which physical consistency is preserved regardless of the discretization scale.
+
+\end{document}
+
