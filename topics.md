@@ -148,6 +148,36 @@ Strategic focus: leverage curvature-aware MOST corrections, grid-dependence diag
 
 ---
 
+### 2D. Machine-Learned Dynamic Critical Richardson Number (NEW)
+**Title (draft):** "Physics-Informed Symbolic Regression for Dynamic Critical Richardson Number: A Data-Driven Closure for Stable Boundary Layer Intermittency"
+
+**Target Journal:** *Monthly Weather Review* or *Artificial Intelligence for the Earth Systems*
+
+**Core Contribution:**
+- Apply symbolic regression (PySR) to discover $Ri_c^* = f(\Gamma, S, h_{\text{inv}}, \text{TKE})$ from tower/LES data
+- Feature engineering anchored to MOST curvature framework (18 physics-informed predictors)
+- Cross-site validation: SHEBA, ARM SGP, CASES-99, Dallas tower
+- Demonstrate 60% reduction in threshold prediction error vs fixed $Ri_c=0.25$
+- Operational deployment: <1% overhead via lookup table or ONNX runtime
+
+**Why MWR/AI4ES:** Bridges ML methodology with operational NWP; emphasizes interpretability over black-box accuracy
+
+**Extension Hooks:**
+- Hysteresis modeling (LSTM for turbulence memory)
+- Ensemble uncertainty quantification (bootstrap-trained models)
+- Coupling with TKE-based schemes (IFS, MYNN)
+
+**Collaboration Structure:**
+- England: ML architecture, symbolic regression training, feature engineering
+- Biazar: Dallas tower data prep, CMAQ integration, A/B testing
+- McNider: Physical constraint validation, SHEBA/ARM case selection, regime classification
+
+**Funding Alignment:**
+- DOE ASR: "Machine Learning for Boundary Layer Parameterization" (target 2025 call)
+- NSF AGS: "Data-Driven Turbulence Closures" (collaborative with computer science)
+
+---
+
 ## Tier 3: Extended Framework & Theory (18–36 months)
 
 ### 3A. Variable Obukhov Length L(z) Mapping and Omission Metrics
@@ -352,12 +382,13 @@ Strategic focus: leverage curvature-aware MOST corrections, grid-dependence diag
 ### Phase 2 (Year 2): Validate & Extend
 4. **2A (JGR-A):** Arctic application → climate relevance.
 5. **2B (AMT/BLM):** Urban remote sensing → instrumentation synergy.
-6. **5A (GMD/JOSS):** Toolkit release → community adoption.
+6. **2D (MWR/AI4ES):** ML-learned $Ri_c^*$ → operational ML demonstration
+7. **5A (GMD/JOSS):** Toolkit release → community adoption.
 
 ### Phase 3 (Year 3+): Broaden Impact
-7. **3B (GMD):** Multi-profile comparison → comprehensive reference.
-8. **4B (NCC/GRL):** Arctic Amplification → high-impact policy connection.
-9. **4A (Icarus):** Planetary → showcase universality.
+8. **3B (GMD):** Multi-profile comparison → comprehensive reference.
+9. **4B (NCC/GRL):** Arctic Amplification → high-impact policy connection.
+10. **4A (Icarus):** Planetary → showcase universality.
 
 ### Opportunistic (As Data/Collaborations Emerge)
 - **2C (JAS/BLM):** LLJ case studies.
@@ -434,6 +465,7 @@ Strategic focus: leverage curvature-aware MOST corrections, grid-dependence diag
 ### Year 2 Milestones
 - 1A published; 1B, 1C submitted.
 - 2A drafted (Arctic application).
+- 2D initial results (ML Ri_c^*).
 - Toolkit v1.0 + GMD submission (5A).
 - Present at AMS Annual Meeting (poster + oral).
 
