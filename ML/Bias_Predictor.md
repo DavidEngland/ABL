@@ -48,3 +48,26 @@ By predicting $B$ accurately, the $\text{ML}$ ensures that the correction $f_c$ 
 The **Sensitivity Test** showed that even when the $\text{MOST}$ parameters change significantly (switching from Businger to Beljaars-Holtslag), the $\text{ML}$ model still retains $\mathbf{R^2 > 0.99}$, meaning that **the core physics (the $\Delta z \times \zeta$ interaction) is still dominating the error**, although retraining is necessary for the best accuracy.
 
 This project successfully establishes the $\text{ML}$ model as the **high-speed, high-fidelity gateway** for integrating the necessary physical corrections into operational atmospheric models.
+
+# Bias/G Surrogate — Quick Spec
+
+Task
+- Predict curvature-aware damping G to reduce bulk-vs-point Richardson bias on coarse vertical grids.
+
+I/O
+- X = [Δz, ζ, Ri_b, z_g, a_m, a_h]  (stable branch only, ζ>0)
+- y = G ∈ (0,1]  (target from analytic correction or matched to fine-grid truth)
+
+Model
+- RandomForestRegressor or GradientBoosting with:
+  - bound clip (0,1],
+  - penalties to enforce G(0)=1 and ∂G/∂ζ|_0≈0 (features or loss).
+
+Metrics
+- Bias reduction: ΔB = B_before − B_after (target ≥ 0.4 absolute on coarse Δz).
+- Neutral preservation: small error at ζ≈0.
+- Speed: ≤ 100 µs per layer on CPU.
+
+Deploy
+- Export to ONNX and/or bake LUT on grids of (Δz, ζ, Ri_b).
+- Provide deterministic fallback to analytic G template.

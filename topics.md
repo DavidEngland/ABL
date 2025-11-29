@@ -24,6 +24,8 @@ Strategic focus: leverage curvature-aware MOST corrections, grid-dependence diag
 - Geometric mean height justification for layer reconstruction.
 - Comparison with Beljaars–Holtslag, Cheng–Brutsaert forms.
 
+**NEW (ML note):** Include a companion results section showing an ML surrogate G(Δz,ζ,Ri_b) that preserves neutral curvature and achieves equivalent bias reduction with negligible runtime cost.
+
 ---
 
 ### 1B. Richardson Number Series Inversion and Pole-Free Closures
@@ -43,6 +45,8 @@ Strategic focus: leverage curvature-aware MOST corrections, grid-dependence diag
 - Hybrid ζ/Ri switching criteria.
 - Dynamic turbulent Prandtl Pr_t(Ri) = 1 + a₁Ri + a₂Ri².
 - Regularized power-law (RPL) and variable-exponent (VEXP) forms.
+
+**NEW (ML note):** Provide a brief appendix on training a surrogate ζ(Ri) seed or direct f_m,h(Ri) Padé coefficients with physics-informed loss to avoid poles.
 
 ---
 

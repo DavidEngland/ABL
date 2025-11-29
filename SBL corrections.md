@@ -451,55 +451,57 @@ def compute_grid_damping(zeta, dz, Delta, dz_ref, zeta_ref, D=1.0, p=1.5, q=2.0)
 
 ---
 
-## 9. Common Pitfalls and Troubleshooting
+## Appendix: ML Classification Metrics (Laminar Layer Flagging)
 
-### 9.1 Pitfall: Sign Confusion in L
+Core goal: decide whether a layer should use background K (collapse) or full turbulence closure. The logistic model outputs P_laminar ∈ [0,1]. Selecting a threshold requires robust metrics:
 
-**Symptom:** Model predicts stable stratification (cold surface) but L < 0; or convective day with L > 0.
+Terminology
+- Confusion matrix: TP (correct laminar), FP (false laminar), TN (correct turbulent), FN (missed laminar).
+- Precision = TP / (TP + FP): “How many flagged layers are truly laminar?”
+- Recall (Sensitivity) = TP / (TP + FN): “How many laminar layers did we catch?”
+- Specificity = TN / (TN + FP): “How many turbulent layers did we keep active?”
+- F1 score = 2 * (Precision * Recall)/(Precision + Recall): balanced harmonic mean.
+- ROC curve: plot of TPR (recall) vs FPR (1 − specificity) as the threshold sweeps 0→1.
+- AUC (Area Under ROC Curve): probability that the classifier ranks a random laminar layer higher than a random turbulent layer. Threshold‑independent discrimination quality (AUC=0.5 random, ≥0.9 excellent).
+- PR curve (Precision–Recall): preferred when laminar class is rare; highlights performance under imbalance.
 
-**Diagnosis:**
+Why AUC-ROC for SBL layer flagging
+- Threshold may be site/time dependent (seasonal stability shifts). AUC summarizes separability before threshold choice.
+- No assumption about laminar prevalence (robust across class ratios).
+- High AUC (>0.99 reported) indicates the simple feature set (Ri_b, ζ, Δz) captures physics-driven separation.
+
+Threshold selection (operational)
+1. Compute ROC; find point maximizing TPR − FPR or closest to (0,1).
+2. If false laminar (FP) is very costly (prematurely zeroing K), shift to higher precision: use PR curve and pick threshold at desired precision (e.g. ≥0.995).
+3. Final rule example: if P_laminar ≥ 0.999 → apply K_background; else keep corrected K.
+
+Class imbalance handling
+- If laminar layers rare: use stratified sampling or class weights (e.g. weight = N_total/(2*N_class)).
+- Avoid over-optimistic accuracy; prefer AUC, F1, PR AUC.
+
+Calibration
+- Well-calibrated probabilities: predicted 0.9 should mean ≈90% laminar frequency.
+- Use reliability curve or apply Platt scaling / isotonic regression if miscalibrated.
+- Store calibration parameters with model version.
+
+Recommended reporting set
+- AUC-ROC, AUC-PR (if imbalance >5:1)
+- F1 at chosen threshold
+- Confusion matrix counts (TP, FP, TN, FN)
+- Max observed drift in prevalence (seasonal or site-specific)
+
+Operational guardrails
+- Enforce upper bound: if model outputs P_laminar=1 for >X% of layers, trigger fallback (e.g., require secondary feature check).
+- Log per-run metrics for reproducibility (DatasetVersion, ModelVersion, ThresholdUsed).
+
+Minimal pseudo-evaluation
 ```python
-# Check flux sign consistency
-print(f"H_sfc = {H:.2f} W/m^2")
-print(f"w'θ' = {wt_flux:.4f} K·m/s")
-print(f"L = {L:.1f} m")
+from sklearn.metrics import roc_auc_score, precision_recall_curve, f1_score
 
-if H < 0 and L < 0:
-    print("ERROR: Cooling surface but L negative (should be L > 0)")
-if H > 0 and L > 0:
-    print("ERROR: Heating surface but L positive (should be L < 0)")
+auc = roc_auc_score(y_true, y_prob)
+prec, rec, thr = precision_recall_curve(y_true, y_prob)
+f1_at_thr = f1_score(y_true, (y_prob >= 0.999).astype(int))
 ```
 
-**Fix:**
-- Check flux sign convention: Standard is $\theta_* = -\overline{w'\theta'}/u_*$ with **negative** sign.
-- Verify $L$ formula includes **negative** sign: $L = -u_*^3 \theta / (\kappa g \overline{w'\theta'})$.
-
-### 9.2 Pitfall: Applying Unstable φ to Stable Regime
-
-**Symptom:** Unphysical spike in $K$ at height where $\zeta \approx 1/16$ (power-law pole).
-
-**Diagnosis:**
-```python
-if regime == 'unstable' and zeta > 0:
-    print(f"WARNING: Unstable φ used with ζ = {zeta:.3f} > 0!")
-    print(f"Check: L = {L:.2f} (should be negative for unstable)")
-```
-
-**Fix:**
-- Always branch on `sign(L)` **before** calling φ functions.
-- Add assertion: `assert (regime == 'stable') == (L > 0)`.
-
-### 9.3 Pitfall: Using |L| in ζ Computation
-
-**Symptom:** All ζ values positive; no unstable regime detected; model always applies stable corrections.
-
-**Diagnosis:**
-```python
-zeta_wrong = z / abs(L)  # BAD
-zeta_correct = z / L     # GOOD
-
-if all(zeta_array >= 0):
-    print("ERROR: All ζ ≥ 0 suggests |L| was used instead of L")
-```
-
-**Fix:** Search codebase for `abs(L)` and replace with `L` (preserving sign).
+Summary
+High AUC-ROC confirms physical separability; threshold is then tuned to trade missed collapses (FN) vs over-suppression (FP). Always document chosen threshold and class distribution.

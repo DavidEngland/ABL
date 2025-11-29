@@ -546,7 +546,80 @@ ABL/
 
 ---
 
-**Document Status:** Living guide — updated as new ML methods are validated  
-**Contributors:** David E. England, [Student Names], McNider/Biazar (advisors)  
-**License:** MIT (code), CC BY 4.0 (documentation)  
-**Contact:** david.england@uah.edu
+# ML Guide: Curvature-Aware SBL Corrections
+
+Goal
+- Train lightweight surrogates to emulate curvature-aware damping G, provide laminar flagging, and estimate dynamic Ri_c* with physics-informed constraints.
+
+Components
+- G surrogate (regression): inputs [Δz, ζ, Ri_b, z_g, a_m, a_h], target G ∈ (0,1].
+- Layer flagging (classification): inputs [Ri_b, ζ, Δz/z_g], target P_laminar ∈ [0,1].
+- Dynamic Ri_c* (symbolic regression): inputs [Γ, S, ζ, Δz/z_g, u_*, θ_*, (TKE)], target Ri_c* ∈ [0.15,2.0].
+
+Constraints (loss or model)
+- Neutral invariance: G(0)=1, ∂G/∂ζ|_0=0.
+- Monotone: ∂G/∂ζ ≤ 0, ∂G/∂Δz ≤ 0; clip 0<G≤1.
+- Branching: apply only for ζ>0 (stable).
+- Ri_c* bounds: clamp to [0.15, 2.0].
+
+Data
+- Synthetic (preferred): MOST profiles (stable branch), sweep (Δz, ζ, a_m, a_h), compute truth G from analytic B reduction.
+- Observational: ARM NSA, SHEBA; compute Ri_b, ζ, z_g; label laminar via Rib thresholds and QC.
+
+Deployment options
+- Lookup table (CSV) → bilinear interp; fastest, reproducible.
+- ONNX (RandomForest/LogReg) → simple runtime loading in Python/C++/Fortran wrappers.
+- Hard floor fallback: analytic G template if model unavailable.
+
+Validation KPIs
+- Bias ratio reduction: B_before → B_after (target ≥ 40%).
+- Neutral curvature preserved: |Δ_ML − Δ_ref| < ε near ζ→0.
+- Classifier AUC-ROC ≥ 0.98 on held-out sites.
+- Runtime: ≤ 1% overhead vs baseline diffusion loop.
+
+Example (pseudo)
+- K_new = K_old * G_hat(Δz, ζ, Ri_b, z_g, a_m, a_h)
+- if P_laminar_hat > 0.999: K_new = K_background
+- f_m,h(Ri) = exp(−γ Ri / Ri_c_star_hat)
+
+Versioning
+- Log DatasetVersion and ModelVersion into Diagnostics table for each runtime application.
+
+## Classification Metrics (Layer Flagging)
+
+Core terms
+- TP, FP, TN, FN: confusion matrix counts.
+- Precision = TP/(TP+FP): reliability of laminar flags.
+- Recall (TPR) = TP/(TP+FN): capture rate of true laminar cases.
+- Specificity = TN/(TN+FP): retention of turbulent layers.
+- F1 = harmonic mean (precision, recall) for threshold tuning.
+- ROC curve: TPR vs FPR across thresholds.
+- AUC-ROC: threshold-independent separability (0.5 random, ≥0.9 strong).
+- PR curve: precision vs recall; preferred under strong class imbalance.
+- AUC-PR: area under PR; more informative when laminar is rare.
+
+Workflow
+1. Train logistic regression on labeled synthetic/observational data.
+2. Compute AUC-ROC; if ≥0.98 proceed.
+3. Examine PR curve if laminar fraction <10%.
+4. Pick threshold (e.g. P_laminar ≥ 0.999) maximizing F1 or minimizing expected cost.
+5. Calibrate probabilities if required (isotonic regression).
+
+Cost framing
+- FP (false laminar): suppress turbulence prematurely → stability bias.
+- FN (missed laminar): retain mixing where physics says collapse → numerical noise.
+
+Reporting
+- AUC-ROC, AUC-PR (if imbalance)
+- F1 at chosen threshold
+- Confusion matrix
+- Drift of class prevalence over dataset
+
+Minimal selection snippet
+```python
+best_thr = 0.999  # set by validation
+y_pred = (y_prob >= best_thr).astype(int)
+```
+
+Neutral preservation
+Classification does not change neutral curvature (2Δ); it gates application of K damping only when collapse probability is extremely high.

@@ -568,12 +568,51 @@ where $f_{\text{mem}}$ is a simple exponential decay function.
 
 ---
 
-**Document Status:** Research framework — ready for phased implementation  
-**Next Actions:**
-1. McNider: Define regime-specific $Ri_c$ ranges from SHEBA/ARM literature review
-2. Biazar: Prepare Dallas tower CSV (features + diagnosed $Ri_c$)
-3. England: Set up PySR environment + initial training runs (target: Feb 2025)
+# Dynamic Ri_c* — ML Strategy (concise)
 
-**Contact:** david.england@uah.edu  
-**Repository:** https://github.com/DavidEngland/ABL/tree/main/ML  
-**License:** MIT (code), CC BY 4.0 (documentation)
+Objective
+- Learn a state-dependent critical Richardson number Ri_c*(state) to improve collapse/onset timing under strong stability and intermittency.
+
+Features (physics-informed)
+- Stratification & shear: Γ=dθ/dz, S, Ri_b, ζ
+- Surface/turbulence: u_*, θ_*, TKE (if available)
+- Geometry: Δz/z_g, z_g/L
+- Context: Pr_t proxy or a_m,a_h if available
+
+Targets & bounds
+- y = Ri_c* ∈ [0.15, 2.0] (clip in training/inference)
+
+Approach
+- Phase 1: Symbolic regression (PySR) with constraints and penalty terms (monotone in Γ, decaying with S).
+- Phase 2: Calibrate coefficients per site/regime, export simple closed form or LUT.
+
+Use
+- Normalized closures: f(Ri) = exp(−γ Ri / Ri_c*(state))
+- Guard hysteresis via simple memory term (e.g., last-on turbulence flag)
+
+Validation
+- Threshold accuracy vs fixed 0.25 (MAE reduction ≥ 30%)
+- Event timing: onset/cessation precision/recall
+- Stability of diffusion tendency (no oscillations)
+
+Ops
+- Evaluate cost (< 1% overhead).
+- Version and log predictions to Diagnostics (ModelVersion, DatasetVersion).
+
+### Metrics for Regime / Laminar Classification
+
+- ROC AUC: primary discriminator quality (≥0.98 target).
+- PR AUC: use when laminar/intermittent regime <10% of samples.
+- F1 (at operational threshold): balance false collapse vs missed collapse.
+- Calibration: reliability curve; apply isotonic regression if systematic overconfidence.
+- Drift tracking: monitor monthly laminar prevalence; retrain if shift > factor 2.
+
+Threshold guidance
+- High-stability operations: favor high precision → reduce false laminar (FP).
+- Intermittent regimes (towers like CASES-99): prioritize recall to catch collapse onset.
+
+Logging fields
+- ModelVersion, DatasetVersion, Threshold, AUC_ROC, F1, Prevalence.
+
+Fallback
+- If AUC_ROC < 0.9: revert to analytic heuristic (Ri_b > 1.0 OR ζ > ζ_crit).

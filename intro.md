@@ -287,6 +287,27 @@ $$
 
 ---
 
+## 5A. ML-assisted SBL corrections (NEW slide)
+
+Why ML complements theory
+- Surrogate for G: instant, neutral-preserving damping vs analytic integral.
+- Smooth switching: logistic P_laminar avoids brittle IF/THEN collapses.
+- Dynamic Ri_c*: symbolic regression discovers state-dependent thresholds.
+
+One-slide recipe
+- Inputs: [Δz, ζ, Ri_b, z_g, (a_m,a_h) or αβ].
+- Outputs: Ĝ(Δz, ζ, Ri_b), P̂_laminar, Ri_ĉ*.
+- Use:
+  - K* = K · Ĝ
+  - if P̂_laminar > 0.999 → K = K_background
+  - f_m,h(Ri) = exp(−γ Ri / Ri_ĉ*)
+
+Guardrails
+- Ĝ(0)=1, ∂Ĝ/∂ζ|_0=0; 0<Ĝ≤1; apply only for ζ>0.
+- Track versions and site regimes; keep analytic fallback.
+
+---
+
 ## 6. Open Questions & Future Work (Slide 18–20)
 
 **Slide 18: "The Frontier" (bullet points become discussion starters)**

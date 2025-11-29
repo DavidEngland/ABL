@@ -106,3 +106,35 @@ This dual application ensures both the strength of the mixing (K) and the thresh
  * Surface Layer Exception: \text{DO NOT} apply f_c in the first (lowest) model layer. That layer's flux is determined by \text{MOST} surface similarity, not by the layer's local K value.
  * Off-Line Calculation: It is highly recommended to pre-calculate B(\zeta) and f_c(\Delta z, \zeta) and store them in a lookup table or a polynomial fit during the model initialization. This avoids complex analytical integral calculations during every timestep.
  * Numerical Stability: The correction factor f_c must be bounded: \mathbf{0 < f_c \le 1}. Ensure the exponent in the f_c equation remains non-positive. If the model incorrectly predicts B < 1 (concave-up), f_c should be capped at 1.0 (no correction applied).
+
+## ML Metric Primer (AUC-ROC etc.)
+
+Definitions
+- ROC curve: plot of TPR (Recall) vs FPR (1 − Specificity) sweeping threshold.
+- AUC-ROC: probability a random positive ranks above a random negative; threshold-free quality.
+- Precision: TP/(TP+FP); Recall: TP/(TP+FN); F1: harmonic mean; Specificity: TN/(TN+FP).
+- PR curve: better focus under rare positive class; AUC-PR complements AUC-ROC.
+- Calibration: alignment of predicted probability with empirical frequency.
+
+Why AUC-ROC
+- Threshold not fixed during development; AUC summarizes separability.
+- Robust to class imbalance compared to raw accuracy.
+
+Operational threshold selection
+1. Evaluate ROC + PR.
+2. Pick threshold maximizing F1 or minimizing cost function (cost_FP, cost_FN).
+3. Enforce guard: if predicted positive fraction drifts (>2× historical), trigger recalibration.
+
+Class imbalance handling
+- Use stratified sampling or class weights.
+- Report both ROC AUC and PR AUC when positive fraction <10%.
+
+Minimal example
+```python
+from sklearn.metrics import roc_auc_score, f1_score
+auc = roc_auc_score(y_true, y_prob)
+f1 = f1_score(y_true, (y_prob >= 0.999).astype(int))
+```
+
+Documentation bundle
+- Store AUC_ROC, AUC_PR (if used), threshold, confusion matrix, calibration curve summary.
