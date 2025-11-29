@@ -1,0 +1,26 @@
+Subject: SBL ML Update — Bias Predictor & Layer Flagging (short summary)
+
+Hi Dick & Arastoo,
+
+Short summary:
+- Random Forest surrogate for McNider correction (G) shows R² ≈ 0.998 on synthetic tests.
+- Logistic regression layer flagging achieves AUC-ROC ≈ 0.9997 for laminar/turbulent decision.
+- Both tools are fast to run and suitable for operational prototyping.
+
+Key results:
+- Bias predictor: MAE ≈ 0.0011, inference ≈ 0.1 ms/layer.
+- Layer flagging: clean probabilistic switch for K → K_background where P_laminar high.
+
+Next steps (proposed):
+1) Finalize QC (IsolationForest) on Dallas and SHEBA/ARM SGP data.
+2) Prepare PySR symbolic regression constraints for Ri_c^* discovery.
+3) Decide deployment path: (A) lookup table (safe) or (B) ONNX runtime (agile).
+
+Attachments: performance summary PDF, feature-importance figure (if helpful).
+
+If you'd like, I can:
+- Paste the plain-text version into Gmail for a test send,
+- Or provide an inline-HTML version that preserves bold/links.
+
+Best,
+Dave
