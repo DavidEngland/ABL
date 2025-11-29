@@ -20,6 +20,12 @@ $$\Delta=a_h-2a_m,\quad c_1=b_h-2b_m.$$
 $$\zeta=Ri_g - \Delta Ri_g^2 + \Big(\tfrac32\Delta^2 - \tfrac12 c_1\Big)Ri_g^3+O(Ri_g^4).$$
 Seed for Newton refinement when evaluating φ at given Ri.
 
+## 4. Important note on ζ sign and series inversion
+All relations using ζ = z/L are sensitive to the sign of L:
+- If L > 0 (stable), ζ > 0 and expansions/inversions should be taken from the ζ→0^+ side using stable-branch φ forms.
+- If L < 0 (unstable), ζ < 0 and expansions/inversions must use the ζ→0^- side (unstable power-law φ) and may have different leading coefficients.
+Practical implication: when inverting Ri↔ζ numerically (series seed + Newton), initialize the seed with the correct one-sided expansion depending on the sign of L to ensure convergence to the physically correct branch.
+
 ## 5. Curvature
 Log derivatives:
 $$V_{\log}=\frac{\phi_h'}{\phi_h}-2\frac{\phi_m'}{\phi_m},\quad W_{\log}=V_{\log}'.$$

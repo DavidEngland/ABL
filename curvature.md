@@ -718,3 +718,12 @@ def zeta_from_ri_series_table(Ri_vals, Delta, c1, c2, order=6):
 - Newton (2 iterations): ~80 FLOPs (φ evaluations + derivatives)
 
 **Use case:** Bulk processing of ERA5 climatologies where ζ range is known.
+
+## Note on the sign of L and branch handling
+The analytic formulas in this note use ζ = z / L. Because L may be positive (stable) or negative (unstable), ζ can be positive or negative and the φ_m/φ_h functions must be evaluated on the correct branch. Near-neutral expansions and the neutral-curvature invariant Δ refer to the appropriate one-sided limit:
+- for the SBL we use ζ → 0^+ (L>0) and stable-branch φ expansions;
+- for the UBL we use ζ → 0^- (L<0) and unstable-branch φ expansions (power-law forms).
+When performing series inversions or curvature signs, keep the sign of ζ explicit — substituting |ζ| or assuming a single branch can change the sign of curvature terms and produce incorrect interpretations.
+
+## Erratum (brief)
+In the original 1995 derivation a branch dependence on the sign of L was not made explicit. The expressions remain valid when the correct φ branch is used, but readers should note that neutral-limit expansions and the interpretation of Δ must be taken as one‑sided (ζ→0^+ for stable, ζ→0^- for unstable). This repository updates the documentation and examples to make the branch selection explicit.

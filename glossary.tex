@@ -1,0 +1,61 @@
+\begin{table}[t]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{l c X}
+\hline
+\textbf{Term} & \textbf{Symbol} & \textbf{Definition / Project Context} \\
+\hline
+
+Obukhov length
+ & $L$
+ & Scale at which shear and buoyancy production balance; fundamental length scale for SBL stability. \\
+
+Dimensionless height
+ & $\zeta$
+ & $\zeta = z/L$. Non-dimensional height used in MOST functions; $\zeta>0$ in stable conditions. \\
+
+Geometric mean height
+ & $z_g$
+ & $z_g = \sqrt{z_0 z_1}$. Representative height for log-layer profiles and where $\mathrm{Ri}_g$ is often evaluated. \\
+
+Logarithmic mean height
+ & $z_L$
+ & $z_L = (z_1 - z_0) / \ln(z_1 / z_0)$. Exact representative height for the velocity difference in a logarithmic wind law. \\
+
+Gradient Richardson number
+ & $\mathrm{Ri}_g$
+ & $\displaystyle \mathrm{Ri}_g(z)=\frac{(g/\theta)\,(\partial\theta/\partial z)}{(\partial U/\partial z)^2}$. Local stability diagnostic used to determine the collapse threshold $\mathrm{Ri}_c$. \\
+
+Bulk Richardson number
+ & $\mathrm{Ri}_b$
+ & $\displaystyle \mathrm{Ri}_b=\frac{(g/\bar{\theta})\,(\Delta\theta\,\Delta z)}{(\Delta U)^2}$. Layer-averaged stability measure and main input for NWP closures. \\
+
+Bias ratio
+ & $B$
+ & $B = \mathrm{Ri}_g(z_g) / \mathrm{Ri}_b$. Diagnostic of curvature-induced bias. $B>1$ indicates that $\mathrm{Ri}_b$ underestimates local stability. \\
+
+Grid damping factor
+ & $G$
+ & $G(\zeta,\Delta z)$; multiplicative correction applied to eddy diffusivity: $K_{\text{new}} = K_{\text{old}} \cdot G$. ML model predicts $G$ from $(\zeta,\Delta z)$. \\
+
+Eddy diffusivities
+ & $K_m, K_h$
+ & Momentum and heat diffusivities (m$^2$ s$^{-1}$). Grid damping factor $G$ is applied directly. \\
+
+Critical Richardson number
+ & $\mathrm{Ri}_c,\ \mathrm{Ri}_c^\ast$
+ & Threshold for turbulence collapse. $\mathrm{Ri}_c^\ast$ denotes dynamic, state-dependent value (symbolic regression target). \\
+
+Neutral curvature invariant
+ & $\Delta$
+ & $\Delta = a_h - 2 a_m$. Determines the sign of $\partial_z^2 \mathrm{Ri}_g$ near neutrality, which sets the initial sign of the bias ratio $B$. \\
+
+Turbulent kinetic energy
+ & TKE
+ & $0.5(\overline{u'^2}+\overline{v'^2}+\overline{w'^2})$. Used in higher-order closures for turbulence memory and intermittency. \\
+
+\hline
+\end{tabularx}
+\caption{Canonical definitions and symbols used in the ABL Closure Project and associated machine-learning components.}
+\label{tab:abl-glossary}
+\end{table}
