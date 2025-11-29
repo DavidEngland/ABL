@@ -720,10 +720,73 @@ def zeta_from_ri_series_table(Ri_vals, Delta, c1, c2, order=6):
 **Use case:** Bulk processing of ERA5 climatologies where ζ range is known.
 
 ## Note on the sign of L and branch handling
-The analytic formulas in this note use ζ = z / L. Because L may be positive (stable) or negative (unstable), ζ can be positive or negative and the φ_m/φ_h functions must be evaluated on the correct branch. Near-neutral expansions and the neutral-curvature invariant Δ refer to the appropriate one-sided limit:
-- for the SBL we use ζ → 0^+ (L>0) and stable-branch φ expansions;
-- for the UBL we use ζ → 0^- (L<0) and unstable-branch φ expansions (power-law forms).
-When performing series inversions or curvature signs, keep the sign of ζ explicit — substituting |ζ| or assuming a single branch can change the sign of curvature terms and produce incorrect interpretations.
+
+**Physical origin of the sign:**
+The Obukhov length definition,
+$$
+L = -\frac{u_*^3 \theta}{\kappa g \overline{w'\theta'}},
+$$
+includes a **negative sign** by convention (Monin & Obukhov 1954). This ensures:
+- **Stable BL (surface cooling):** $\overline{w'\theta'} < 0$ (downward heat flux) → $L > 0$.
+- **Unstable BL (surface heating):** $\overline{w'\theta'} > 0$ (upward heat flux) → $L < 0$.
+
+**Why preserve the sign in ζ = z/L:**
+1. **Regime indicator:** $\zeta > 0$ signals stable stratification; $\zeta < 0$ signals convective instability.
+2. **Function branch:** Different φ_m, φ_h forms apply to each regime (linear stable vs power-law unstable).
+3. **Series expansions:** Near-neutral limits approach from opposite sides (ζ → 0⁺ vs ζ → 0⁻).
+
+**Branch-aware implementation:**
+
+```python
+def select_phi_branch(zeta):
+    """Select stability function based on sign of zeta (= z/L)."""
+    if zeta > 0:
+        # Stable branch: linear or Beljaars-Holtslag
+        phi_m = 1.0 + 4.7 * zeta
+        phi_h = 1.0 + 7.8 * zeta
+    elif zeta < 0:
+        # Unstable branch: Businger-Dyer power-law
+        phi_m = (1.0 - 16.0 * zeta)**(-0.25)
+        phi_h = (1.0 - 16.0 * zeta)**(-0.50)
+    else:  # zeta == 0 (neutral)
+        phi_m = phi_h = 1.0
+    return phi_m, phi_h
+```
+
+**Common mistakes to avoid:**
+
+❌ **Using |L| everywhere:**
+```python
+zeta = z / abs(L)  # WRONG: loses sign information
+```
+This forces all ζ ≥ 0, making stable/unstable indistinguishable.
+
+❌ **Applying unstable φ to stable regime:**
+```python
+if zeta != 0:
+    phi = (1 - 16*zeta)**(-0.25)  # WRONG: creates pole at zeta=1/16 for stable!
+```
+
+✅ **Correct approach:**
+```python
+zeta = z / L  # Preserve sign
+if L > 0:     # Explicit check on L, not zeta
+    phi = stable_form(zeta)
+else:
+    phi = unstable_form(zeta)
+```
+
+**Near-neutral series inversion:**
+When inverting Ri → ζ using series, **initialize seed with correct one-sided expansion:**
+
+- **Stable (ζ > 0):** $\zeta \approx Ri - \Delta Ri^2 + \ldots$ with $\Delta = a_h - 2a_m < 0$ (typical).
+- **Unstable (ζ < 0):** $\zeta \approx Ri - \Delta_{\text{unst}} Ri^2 + \ldots$ with $\Delta_{\text{unst}} = \alpha_h\beta_h - 2\alpha_m\beta_m$.
+
+**Curvature sign consistency:**
+- Stable $\phi$ (linear): $\Delta = a_h - 2a_m$ → typically negative → concave-down $Ri_g$.
+- Unstable $\phi$ (power-law): $\Delta_{\text{unst}} = \alpha_h\beta_h - 2\alpha_m\beta_m$ → often near zero → weaker curvature near neutral.
+
+**Reference:** Businger et al. (1971), Beljaars & Holtslag (1991), Gryanik et al. (2020).
 
 ## Erratum (brief)
 In the original 1995 derivation a branch dependence on the sign of L was not made explicit. The expressions remain valid when the correct φ branch is used, but readers should note that neutral-limit expansions and the interpretation of Δ must be taken as one‑sided (ζ→0^+ for stable, ζ→0^- for unstable). This repository updates the documentation and examples to make the branch selection explicit.

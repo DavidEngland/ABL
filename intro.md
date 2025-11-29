@@ -76,6 +76,46 @@ Then show: *"But if our model's first level is Δz = 100 m thick, what goes wron
 
 ---
 
+## 1A. Sign Convention (NEW SLIDE)
+
+**Slide 5A: "The Sign Matters!" (NEW — Critical Clarification)**
+
+**Visual (traffic light analogy):**
+```
+🔴 L > 0 → STABLE     (Use stable φ: linear forms)
+🟢 L < 0 → UNSTABLE   (Use unstable φ: power-law)
+🟡 L → ±∞ → NEUTRAL   (φ = 1)
+```
+
+**Physical Origin (say out loud):**
+> "The Obukhov length has a **negative sign** baked into its definition:
+> $$
+> L = -\frac{u_*^3 \theta}{\kappa g \overline{w'\theta'}}
+> $$
+> This ensures L > 0 when the surface is **cooling** (stable nights) and L < 0 when **heating** (convective days)."
+
+**Why ζ = z/L Preserves the Sign:**
+- ζ > 0: stable stratification → use **linear stable φ**
+- ζ < 0: unstable/convective → use **power-law unstable φ**
+- **Critical mistake:** Using |L| destroys this information!
+
+**Common Error Example (show code snippet):**
+```python
+❌ zeta = z / abs(L)  # WRONG: forces all ζ ≥ 0
+
+✅ zeta = z / L       # CORRECT: preserves regime
+   if L > 0:
+       phi = stable_phi(zeta)
+   else:
+       phi = unstable_phi(zeta)
+```
+
+**Takeaway:**
+- "Think of the sign as a **regime flag** embedded in the coordinate system."
+- "Tonight's focus: L > 0 (stable), where coarse grids fail hardest."
+
+---
+
 ## 2. Curvature of Ri_g and Why It Matters (Slide 7–10)
 
 **Reframe the Message (simplify cognitive load):**

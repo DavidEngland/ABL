@@ -21,10 +21,76 @@ $$\zeta=Ri_g - \Delta Ri_g^2 + \Big(\tfrac32\Delta^2 - \tfrac12 c_1\Big)Ri_g^3+O
 Seed for Newton refinement when evaluating φ at given Ri.
 
 ## 4. Important note on ζ sign and series inversion
-All relations using ζ = z/L are sensitive to the sign of L:
-- If L > 0 (stable), ζ > 0 and expansions/inversions should be taken from the ζ→0^+ side using stable-branch φ forms.
-- If L < 0 (unstable), ζ < 0 and expansions/inversions must use the ζ→0^- side (unstable power-law φ) and may have different leading coefficients.
-Practical implication: when inverting Ri↔ζ numerically (series seed + Newton), initialize the seed with the correct one-sided expansion depending on the sign of L to ensure convergence to the physically correct branch.
+
+**Physical context:**
+The dimensionless height $\zeta = z/L$ inherits the sign of the Obukhov length:
+- $L > 0$ (stable surface layer): $\zeta > 0$; use stable φ forms.
+- $L < 0$ (unstable/convective): $\zeta < 0$; use unstable φ forms.
+
+**Why the sign matters for numerics:**
+
+1. **Series expansions are one-sided:**
+   - Stable limit: $\zeta \to 0^+$ (approach from positive side).
+   - Unstable limit: $\zeta \to 0^-$ (approach from negative side).
+   - Coefficients differ between branches (e.g., $\Delta_{\text{stable}} \neq \Delta_{\text{unstable}}$).
+
+2. **Newton iteration requires correct seed:**
+   ```python
+   def zeta_from_Ri_newton(Ri, L, phi_m_func, phi_h_func, max_iter=5, tol=1e-8):
+       """Invert Ri → ζ using series seed and Newton refinement."""
+       # Determine branch from sign of L
+       if L > 0:
+           # Stable: use stable φ parameters
+           Delta = 7.8 - 2*4.7  # a_h - 2*a_m for linear stable
+           zeta = Ri - Delta*Ri**2  # Seed from stable series
+       else:
+           # Unstable: use unstable φ parameters
+           alpha_m, beta_m = 0.25, 16.0
+           alpha_h, beta_h = 0.50, 16.0
+           Delta_unst = alpha_h*beta_h - 2*alpha_m*beta_m
+           zeta = Ri - Delta_unst*Ri**2  # Seed from unstable series
+       
+       # Newton iterations
+       for _ in range(max_iter):
+           phi_m = phi_m_func(zeta)
+           phi_h = phi_h_func(zeta)
+           F = phi_h / phi_m**2
+           Ri_pred = zeta * F
+           error = Ri_pred - Ri
+           if abs(error) < tol:
+               break
+           # Derivative: dRi/dζ = F + ζ*F' (chain rule)
+           dF_dzeta = F * (dphi_h_dzeta(zeta)/phi_h - 2*dphi_m_dzeta(zeta)/phi_m)
+           dRi_dzeta = F + zeta * dF_dzeta
+           zeta -= error / dRi_dzeta  # Newton step
+       return zeta
+   ```
+
+3. **Diagnostic interpretation:**
+   - **Stable BL:** Compute $Ri_g(z_g)$ and $Ri_b$ using stable φ; expect $B = Ri_g/Ri_b > 1$ (concave-down bias).
+   - **Unstable BL:** Typically $|Ri_g| < |Ri_b|$ (bulk overestimates local instability due to convex profile).
+
+**Practical rule:**
+Always check `sign(L)` **before** selecting φ functions or computing diagnostics. Use conditional logic:
+```python
+if L > 0:
+    # Stable branch
+    phi_m, phi_h = stable_phi(zeta)
+    Delta = a_h - 2*a_m
+elif L < 0:
+    # Unstable branch
+    phi_m, phi_h = unstable_phi(zeta)
+    Delta = alpha_h*beta_h - 2*alpha_m*beta_m
+else:
+    # Neutral (L → ±∞)
+    phi_m = phi_h = 1.0
+    Delta = 0.0
+```
+
+**Reference checks:**
+- ARM tower data: L typically +20 to +100 m at night (stable) → use stable φ.
+- GABLS1 LES: L prescribed constant > 0 → always stable branch.
+- SHEBA Arctic: Weak winds + strong cooling → L often +10 to +50 m → highly stable.
 
 ## 5. Curvature
 Log derivatives:
