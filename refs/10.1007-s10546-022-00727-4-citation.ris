@@ -1,0 +1,22 @@
+TY  - JOUR
+AU  - McCandless, Tyler
+AU  - Gagne, David John
+AU  - Kosović, Branko
+AU  - Haupt, Sue Ellen
+AU  - Yang, Bai
+AU  - Becker, Charlie
+AU  - Schreck, John
+PY  - 2022
+DA  - 2022/11/01
+TI  - Machine Learning for Improving Surface-Layer-Flux Estimates
+JO  - Boundary-Layer Meteorology
+SP  - 199
+EP  - 228
+VL  - 185
+IS  - 2
+AB  - Flows in the atmospheric boundary layer are turbulent, characterized by a large Reynolds number, the existence of a roughness sublayer and the absence of a well-defined viscous layer. Exchanges with the surface are therefore dominated by turbulent fluxes. In numerical models for atmospheric flows, turbulent fluxes must be specified at the surface; however, surface fluxes are not known a priori and therefore must be parametrized. Atmospheric flow models, including global circulation, limited area models, and large-eddy simulation, employ Monin–Obukhov similarity theory (MOST) to parametrize surface fluxes. The MOST approach is a semi-empirical formulation that accounts for atmospheric stability effects through universal stability functions. The stability functions are determined based on limited observations using simple regression as a function of the non-dimensional stability parameter representing a ratio of distance from the surface and the Obukhov length scale (Obukhov in Trudy Inst Theor Geofiz AN SSSR 1:95–115, 1946), $$z/L$$. However, simple regression cannot capture the relationship between governing parameters and surface-layer structure under the wide range of conditions to which MOST is commonly applied. We therefore develop, train, and test two machine-learning models, an artificial neural network (ANN) and random forest (RF), to estimate surface fluxes of momentum, sensible heat, and moisture based on surface and near-surface observations. To train and test these machine-learning algorithms, we use several years of observations from the Cabauw mast in the Netherlands and from the National Oceanic and Atmospheric Administration’s Field Research Division tower in Idaho. The RF and ANN models outperform MOST. Even when we train the RF and ANN on one set of data and apply them to the second set, they provide more accurate estimates of all of the fluxes compared to MOST. Estimates of sensible heat and moisture fluxes are significantly improved, and model interpretability techniques highlight the logical physical relationships we expect in surface-layer processes.
+SN  - 1573-1472
+UR  - https://doi.org/10.1007/s10546-022-00727-4
+DO  - 10.1007/s10546-022-00727-4
+ID  - McCandless2022
+ER  -
