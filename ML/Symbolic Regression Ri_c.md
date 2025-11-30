@@ -33,7 +33,7 @@ The success of the $\text{ML}$ model hinges on the quality of the feature engine
 
 ### Feature Interaction Discovery
 
-The key advantage of Symbolic Regression is discovering the **Interaction Terms** that humans can only guess at heuristically. Your suggested $\mathbf{\text{buoyancy\_shear\_ratio}} (\Gamma/S)$ and **$\text{inversion\_squared}}$** terms are prime examples. The $\text{ML}$ will validate whether $Ri_c^*$ scales linearly, quadratically, or logarithmically with these composite variables.
+The key advantage of Symbolic Regression is discovering the **interaction terms** that humans can only guess at heuristically. For example, the **buoyancy-shear ratio** $\Gamma/S$ (inverse Richardson number scaled by $z$) and composite terms like $\Gamma \cdot h_{\text{inv}}$ naturally emerge from the search space. The $\text{ML}$ will validate whether $Ri_c^*$ scales linearly, quadratically, or logarithmically with these composite variables, revealing the functional form of stability-turbulence coupling that algebraic theory cannot predict a priori.
 
 ---
 
@@ -71,33 +71,129 @@ Your final goal of deriving a **citation-ready statement** based on improved pre
 
 ---
 
-# Symbolic Regression: Ri_c*(state)
+# Symbolic Regression Workflow — Dynamic Critical Richardson Number (Ri_c*)
 
-## Objective
+Goal
+- Discover a compact, interpretable formula Ri_c* = f(state) that improves onset/cessation timing of turbulence vs fixed Ri_c (e.g., 0.25).
+- Constraints: Ri_c* ∈ [0.15, 2.0], monotonic where physics demands, robust across sites and Δz.
 
-- Use symbolic regression (PySR/SymbolicRegressor) to produce simple closed-form Ri_c*(state) formulas that are:
-  * Interpretable, bounded, and monotone (where physics demands).
-  * Small (≤ ~6 terms) for trust and deployment.
+1) Define targets & metrics
+- Targets:
+  - Primary: Ri_c* (continuous) estimated from labeled events (onset/cessation) or optimization on LES/tower windows.
+  - Secondary: boolean event labels derived from turbulence diagnostics (TKE>thr).
+- Metrics:
+  - Regression: MAE, RMSE on Ri_c* (validation / held-site).
+  - Event: precision, recall, F1 for predicted collapse/restore within ±Δt window (e.g., 10 min).
+  - Operational: closed-loop test — change in surface bias, energy consistency, no solver crashes.
+- Success criteria (example): MAE_Ri_c* < 0.05 and event F1 increase ≥20% vs baseline.
 
-## Feature set (start)
+2) Data curation
+- Sources: LES ensembles (GABLS-type), tower obs (SHEBA, CASES-99, ARM), synthetic MOST param sweeps.
+- Labels:
+  - Define turbulence ON/OFF using TKE, vertical flux variance, or energy threshold; produce Ri_c* per event as the Ri where event flips in reanalysis.
+  - Aggregate per-layer samples (include Δz, z_g).
+- Splits:
+  - Train/val/test with site/experiment holdout (no leakage).
+  - Stratify by season, stability regime, Δz bins.
+- Minimum meta: store DatasetVersion, sensor/site id, time range.
 
-- Γ = dθ/dz (K/m), S = |dU/dz|, ζ, Δz/z_g, u_*, θ_*, TKE_proxy, H_sfc_sign
+3) Feature engineering (physics-first)
+- Core scalar features:
+  - zeta = z / L (preserve sign of L)
+  - Ri_b (bulk), Gamma = dθ/dz, S = |dU/dz|
+  - z_g = sqrt(z0*z1), Δz, Δz/z_g
+  - u_star, theta_star, H_sfc_sign
+  - previous_turb_flag (memory), hour_of_day, season
+- Derived / interactions:
+  - Γ/S, Γ*zeta, S*zeta, (Δz/Δz_ref)^p, zeta^2, log(|L|+eps)
+- Normalization: standardize continuous features (store scalers).
 
-## Target
+4) Symbolic regression setup
+- Engine: PySR (recommended) or Eureqa / gplearn.
+- Operators: +, -, *, /, pow (small integer exponents), exp, log, abs, min/max, conditional clipping. Avoid high-degree trig functions.
+- Loss: composite = w1 * MAE(Ri_c*) + w2 * EventTimingLoss + λ * complexity
+  - EventTimingLoss can be surrogate: MAE of predicted event times when using Ri_c* in simple threshold model.
+- Constraints:
+  - Enforce output bounds via transform: Ri_c_pred = clip(expr, 0.15, 2.0)
+  - Penalize violations of monotonicity on sampled grid (finite differences); add penalty term.
+- Complexity control:
+  - Use Pareto search: tradeoff between complexity and validation error; prefer formulas ≤ ~8 terms.
 
-- Ri_c* computed from labeled events (onset/cessation), or derived from LES via threshold optimization (minimizing false timing).
+5) Training protocol
+- Stage 0: baseline experiments with synthetic data to confirm identifiability.
+- Stage 1: broad symbolic search (relaxed complexity) on train set; keep top N candidates by validation loss.
+- Stage 2: refine candidates (local optimization of coefficients via bounded least squares) and re-evaluate on held-site val.
+- Stage 3: final selection on test sites unseen during training; include closed-loop column-model test for top candidates.
 
-## Search constraints
+6) Post-processing & safety
+- Simplify expressions algebraically; check numerical stability across feature domain.
+- Calibration:
+  - If expression systematically biased, fit an affine calibration (Ri_c_final = a * expr + b) within bounds.
+- Robustness checks:
+  - Monte Carlo perturbations on inputs (sensor noise) to ensure small output variance.
+  - Adversarial tests on extreme ζ, very large Δz.
+- Fallback logic:
+  - If model confidence low or input out-of-distribution → revert to baseline Ri_c = 0.25.
 
-- Restrict operators: {+, -, *, /, pow, exp, log} and unary clip to enforce bounds.
-* Penalize complexity and enforce bounds by post-processing (clip to [0.15,2.0]).
+7) Validation in column model (closed-loop)
+- Integrate Ri_c*(state) into a vertical diffusion closure in a single-column model.
+- Runs:
+  - Short (24–72 h) episodes from LES/tower cases, compare fluxes, Tsurf bias, turbulence persistence with baseline.
+- Diagnostics to log:
+  - Number of false collapses, solver stability, energy drift, per-timestep Ri_c*, ModelVersion, DatasetVersion.
 
-## Validation
+8) Export & deployment
+- Export symbolic formula in plain code (Python/Fortran-ready), and as ONNX if using surrogate numeric form.
+- Provide precomputed LUT for critical ranges (Δz × ζ × Ri_b) for low-overhead runtimes.
+- Package: model artifact (formula, coefficients), metadata json (versions), unit tests, small sample dataset.
 
-- Compare symbolic formula vs baseline Ri_c=0.25 on event timing (MAE of onset time).
-* Prefer formulas that reduce MAE by ≥30% and have simple monotonic dependence on inversion/proxies.
+9) Reproducibility & CI
+- Containerize training (Dockerfile) with exact PySR and dependencies.
+- Seed RNGs and record seeds, hyperparams.yaml.
+- Store best candidates and metrics in an experiments registry (CSV/JSON).
+- Add unit tests verifying monotonicity and bounds.
 
-## Export
+10) Experiment tracking & reporting
+- For each candidate formula, record:
+  - expression, complexity, train/val/test MAE, event metrics, closed-loop deltas, inference time.
+- Produce short report template (Bias_Predictor_Results.md style) summarizing the experiment.
 
-- Publish formula in manuscript + evaluate in column model.
-* Package as small function in profiles.py for direct use.
+11) Practical tips & heuristics
+- Use physics constraints up front: include ζ^2 in feature set to ensure zero slope at ζ→0 if preserving neutral behavior.
+- Favor additive small-term formulas (easier to constrain) over large nested polynomials.
+- Keep operator set small to promote interpretability.
+- Use symbolic regression outputs as proposals — finalize coefficients with bounded optimization to reduce extrapolation error.
+
+12) Minimal example (PySR config sketch)
+```python
+# filepath: /Users/davidengland/Documents/GitHub/ABL/ML/Symbolic Regression Ri_c.md
+# ...existing code...
+# PySR pseudo-config (run in controlled env)
+from pysr import PySRRegressor
+model = PySRRegressor(
+    niterations=2000,
+    binary_operators=["+", "-", "*", "/"],
+    unary_operators=["exp", "log", "abs"],
+    populations=20,
+    loss="loss(h, y) = mean(abs(h - y)) + 0.1*complexity(h)",
+    constraints={"output_min":0.15, "output_max":2.0},
+    model_selection="best"
+)
+model.fit(X_train, y_train)
+# ...existing code...
+```
+
+13) Deliverables
+- Candidate symbolic formulas (top-3) with validation suites.
+- Exported code snippet for model integration and a LUT fallback.
+- Notebook documenting dataset, feature transforms, and reproducible training run.
+
+14) Next steps (actionable)
+- Assemble dataset + labeler for Ri_c* events (priority: LES + one tower).
+- Prototype a small PySR search on synthetic data to validate operator set.
+- Schedule closed-loop column-model tests for top candidate formulas.
+
+References & resources
+- PySR documentation: https://pysr.readthedocs.io  
+- Symbolic regression reviews: "Interpretable ML" chapters, PySR tutorials  
+- Existing repo files: Bias_Predictor.md, Dynamic_Ric_ML_Strategy.md for alignment.
