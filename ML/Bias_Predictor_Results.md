@@ -366,6 +366,49 @@ RandomForestRegressor(
 
 ---
 
+# Bias Predictor — Results Template
+
+Experiment metadata
+- DatasetVersion: ...
+- ModelVersion: ...
+- Train date: YYYY-MM-DD
+- Synthetic vs obs mix: %synthetic / %obs
+- Features used: [list]
+
+Model summary
+- Model type: LightGBM / RandomForest / ONNX LUT
+- Params (brief): tree_count, max_depth, learning_rate (if applicable)
+- Artifact paths: onnx://..., csv_lut://...
+
+Validation metrics (hold-out)
+- RMSE (G): ...
+- MAE (G): ...
+- Neutral bias (mean G at ζ<0.02): target ≈ 1.0 → observed ...
+- B_before (median at Δz=100m): ...
+- B_after (median at Δz=100m): ...
+- Relative bias reduction: ...
+
+Classifier (laminar) metrics (if used)
+- AUC-ROC: ...
+- AUC-PR: ...
+- F1 @ threshold: ...
+- Confusion matrix: TP / FP / TN / FN
+
+Operational performance
+- Inference time per layer (µs): ...
+- Memory footprint: ...
+
+Notes & failure modes
+- Sites with strong surface heterogeneity require additional features: z0, z0_h.
+- Calibration drift observed in months: [list] → suggest periodic retrain.
+
+Next actions
+- Add LES dataset X for robustness.
+- Derive LUT for Δz ∈ {10,20,50,100} m, ζ bins.
+- Integrate ONNX into column solver and run 48-hour stability test.
+
+---
+
 **Document Status:** Complete analysis (Gemini execution)  
 **Contact:** David E. England (davideengland@gmail.com)
 **Model Archive:** `ABL/ML/models/bias_predictor_v1.0.pkl` (10 MB)  

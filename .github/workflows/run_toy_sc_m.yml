@@ -1,0 +1,32 @@
+name: Run toy_sc_m (Julia) and publish results
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [ main ]
+
+jobs:
+  run-toy-sc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: '1.9'
+
+      - name: Install Julia prereqs (if any)
+        run: |
+          julia -e 'import Pkg; Pkg.instantiate(); Pkg.precompile()' || true
+
+      - name: Run toy single-column model
+        run: |
+          julia julia/toy_sc_m.jl
+
+      - name: Upload results artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: toy_sc_m_results
+          path: ML/toy_sc_m_results.csv

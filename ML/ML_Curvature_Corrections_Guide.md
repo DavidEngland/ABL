@@ -546,80 +546,50 @@ ABL/
 
 ---
 
-# ML Guide: Curvature-Aware SBL Corrections
+# ML Guide: Curvature-Aware SBL Corrections (practical)
 
-Goal
-- Train lightweight surrogates to emulate curvature-aware damping G, provide laminar flagging, and estimate dynamic Ri_c* with physics-informed constraints.
+Scope
+- Train lightweight ML surrogates for:
+  1) Ĝ(Δz, ζ, Ri_b, z_g, a_m,a_h) — multiplicative damping on K.
+  2) P̂_laminar(Δz, ζ, Ri_b, Δz/z_g) — laminar/turbulent classifier.
+  3) Ri_ĉ*(state) — dynamic critical Richardson (see Dynamic_Ric_ML_Strategy.md).
 
-Components
-- G surrogate (regression): inputs [Δz, ζ, Ri_b, z_g, a_m, a_h], target G ∈ (0,1].
-- Layer flagging (classification): inputs [Ri_b, ζ, Δz/z_g], target P_laminar ∈ [0,1].
-- Dynamic Ri_c* (symbolic regression): inputs [Γ, S, ζ, Δz/z_g, u_*, θ_*, (TKE)], target Ri_c* ∈ [0.15,2.0].
+Feature engineering
+- Core numeric: Δz, ζ, Ri_b, z_g, Δz/z_g, local gradients (dU/dz,dθ/dz), a_m,a_h proxies.
+- Interaction features: ζ^2, (Δz/Δz_ref)^p, ζ*(Δz/Δz_ref).
+- Physics-features: sign(H_sfc), u_*, θ_*, time-of-day.
+- Normalize ζ by a reference ζ_ref for stability in training.
 
-Constraints (loss or model)
-- Neutral invariance: G(0)=1, ∂G/∂ζ|_0=0.
-- Monotone: ∂G/∂ζ ≤ 0, ∂G/∂Δz ≤ 0; clip 0<G≤1.
-- Branching: apply only for ζ>0 (stable).
-- Ri_c* bounds: clamp to [0.15, 2.0].
+Model choices
+- G surrogate: GradientBoostingRegressor / RandomForest with monotone post-processing and clipping to (0,1].
+- Classifier: LogisticRegression or LightGBM with class weights; prefer probabilistic outputs.
+- Ri_c*: Symbolic regression → simple closed form; keep coefficients small for stability.
 
-Data
-- Synthetic (preferred): MOST profiles (stable branch), sweep (Δz, ζ, a_m, a_h), compute truth G from analytic B reduction.
-- Observational: ARM NSA, SHEBA; compute Ri_b, ζ, z_g; label laminar via Rib thresholds and QC.
+Constraints & loss
+- Enforce G(0)=1 and ∂G/∂ζ|_0≈0 via:
+  - Augment training set with ζ≈0 examples and loss penalty on (G_pred−1)^2.
+  - Use feature transform (zeta^2) so small-ζ slope ≈0.
+- Clip G ∈ (ε,1]. Use ε ~ 1e-3 to avoid zeroing K in solver.
+- Penalize negative monotonicity violations if physics requires monotone decrease.
 
-Deployment options
-- Lookup table (CSV) → bilinear interp; fastest, reproducible.
-- ONNX (RandomForest/LogReg) → simple runtime loading in Python/C++/Fortran wrappers.
-- Hard floor fallback: analytic G template if model unavailable.
+Training recipe
+1. Build synthetic dataset from analytic φ forms over grid sweep (Δz ∈ [5,200]m, ζ ∈ [0,1], a_m,a_h range).
+2. Augment with LES/tower label matching when available.
+3. Split by site / experiment to avoid leakage.
+4. Train with early stopping and simple model selection (speed ≈ goal).
+5. Export top model to ONNX + CSV LUT for fallback.
 
-Validation KPIs
-- Bias ratio reduction: B_before → B_after (target ≥ 40%).
-- Neutral curvature preserved: |Δ_ML − Δ_ref| < ε near ζ→0.
-- Classifier AUC-ROC ≥ 0.98 on held-out sites.
-- Runtime: ≤ 1% overhead vs baseline diffusion loop.
+Evaluation (report)
+- Regression: RMSE, MAE, bias near ζ→0 (target < small ε).
+- Classification: AUC‑ROC, AUC‑PR, F1 at operational threshold (e.g., 0.999).
+- Operational: change in bias ratio B before/after (target ≥ 40% reduction).
+- Runtime: µs per call target (benchmark on intended CPU/Fortran host).
 
-Example (pseudo)
-- K_new = K_old * G_hat(Δz, ζ, Ri_b, z_g, a_m, a_h)
-- if P_laminar_hat > 0.999: K_new = K_background
-- f_m,h(Ri) = exp(−γ Ri / Ri_c_star_hat)
+Deployment pattern
+- Offer both: deterministic LUT (grid: Δz×ζ×Ri_b) and ONNX small model.
+- Provide analytic fallback G_template for safety (see notebook).
+- Version artifacts and log ModelVersion/DatasetVersion in diagnostics.
 
-Versioning
-- Log DatasetVersion and ModelVersion into Diagnostics table for each runtime application.
-
-## Classification Metrics (Layer Flagging)
-
-Core terms
-- TP, FP, TN, FN: confusion matrix counts.
-- Precision = TP/(TP+FP): reliability of laminar flags.
-- Recall (TPR) = TP/(TP+FN): capture rate of true laminar cases.
-- Specificity = TN/(TN+FP): retention of turbulent layers.
-- F1 = harmonic mean (precision, recall) for threshold tuning.
-- ROC curve: TPR vs FPR across thresholds.
-- AUC-ROC: threshold-independent separability (0.5 random, ≥0.9 strong).
-- PR curve: precision vs recall; preferred under strong class imbalance.
-- AUC-PR: area under PR; more informative when laminar is rare.
-
-Workflow
-1. Train logistic regression on labeled synthetic/observational data.
-2. Compute AUC-ROC; if ≥0.98 proceed.
-3. Examine PR curve if laminar fraction <10%.
-4. Pick threshold (e.g. P_laminar ≥ 0.999) maximizing F1 or minimizing expected cost.
-5. Calibrate probabilities if required (isotonic regression).
-
-Cost framing
-- FP (false laminar): suppress turbulence prematurely → stability bias.
-- FN (missed laminar): retain mixing where physics says collapse → numerical noise.
-
-Reporting
-- AUC-ROC, AUC-PR (if imbalance)
-- F1 at chosen threshold
-- Confusion matrix
-- Drift of class prevalence over dataset
-
-Minimal selection snippet
-```python
-best_thr = 0.999  # set by validation
-y_pred = (y_prob >= best_thr).astype(int)
-```
-
-Neutral preservation
-Classification does not change neutral curvature (2Δ); it gates application of K damping only when collapse probability is extremely high.
+Notes
+- Keep models tiny and interpretable for operational adoption.
+- Document training data provenance and calibration hyperparameters.

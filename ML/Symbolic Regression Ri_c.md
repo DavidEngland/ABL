@@ -68,3 +68,30 @@ The two-path deployment strategy effectively balances research ambition with ope
 2.  **Path B (Real-Time Inference/ONNX):** This is the **Aggressive** path that leverages the full power of the $\text{ML}$ by deploying the exact equation (or a $\text{Gradient Boosting}$ model). The computational cost check is vital: targeting $\mathbf{<0.5\%}$ overhead is a realistic and strict operational metric.
 
 Your final goal of deriving a **citation-ready statement** based on improved prediction error ($\text{RMSE}$) and computational cost provides clear, measurable success criteria for the entire 18-month project.
+
+---
+
+# Symbolic Regression: Ri_c*(state)
+
+## Objective
+- Use symbolic regression (PySR/SymbolicRegressor) to produce simple closed-form Ri_c*(state) formulas that are:
+  - Interpretable, bounded, and monotone (where physics demands).
+  - Small (≤ ~6 terms) for trust and deployment.
+
+## Feature set (start)
+- Γ = dθ/dz (K/m), S = |dU/dz|, ζ, Δz/z_g, u_*, θ_*, TKE_proxy, H_sfc_sign
+
+## Target
+- Ri_c* computed from labeled events (onset/cessation), or derived from LES via threshold optimization (minimizing false timing).
+
+## Search constraints
+- Restrict operators: {+, -, *, /, pow, exp, log} and unary clip to enforce bounds.
+- Penalize complexity and enforce bounds by post-processing (clip to [0.15,2.0]).
+
+## Validation
+- Compare symbolic formula vs baseline Ri_c=0.25 on event timing (MAE of onset time).
+- Prefer formulas that reduce MAE by ≥30% and have simple monotonic dependence on inversion/proxies.
+
+## Export
+- Publish formula in manuscript + evaluate in column model.
+- Package as small function in profiles.py for direct use.

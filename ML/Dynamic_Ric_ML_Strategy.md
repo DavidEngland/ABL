@@ -570,49 +570,48 @@ where $f_{\text{mem}}$ is a simple exponential decay function.
 
 # Dynamic Ri_c* — ML Strategy (concise)
 
-Objective
-- Learn a state-dependent critical Richardson number Ri_c*(state) to improve collapse/onset timing under strong stability and intermittency.
+Goal
+- Learn a state-dependent critical Richardson number Ri_c*(state) to improve timing of turbulence collapse/intermittency in SBL closures.
 
-Features (physics-informed)
-- Stratification & shear: Γ=dθ/dz, S, Ri_b, ζ
-- Surface/turbulence: u_*, θ_*, TKE (if available)
-- Geometry: Δz/z_g, z_g/L
-- Context: Pr_t proxy or a_m,a_h if available
+Inputs / Features (recommended)
+- Local: Γ = dθ/dz, S = shear magnitude, z/L (ζ), Δz/z_g
+- Surface: u_*, θ_*, H_sfc sign
+- Turbulence proxies: TKE or variance (if available), previous turbulence flag (memory)
+- Metadata: site_id, hour_of_day, season
 
-Targets & bounds
-- y = Ri_c* ∈ [0.15, 2.0] (clip in training/inference)
+Target
+- y = Ri_c* (continuous), bounded [0.15, 2.0]; or a small set of regimes {laminar, intermittent, turbulent} for classification.
 
-Approach
-- Phase 1: Symbolic regression (PySR) with constraints and penalty terms (monotone in Γ, decaying with S).
-- Phase 2: Calibrate coefficients per site/regime, export simple closed form or LUT.
+Model family
+- Phase 1 (interpretable): symbolic regression (PySR) to propose simple closed-form Ri_c*(state).
+- Phase 2 (surrogate): gradient-boosted tree (LightGBM/CatBoost) or small MLP with monotonic constraints (if available).
+- Phase 3 (deploy): simple analytic formula or small LUT/ONNX for runtime.
 
-Use
-- Normalized closures: f(Ri) = exp(−γ Ri / Ri_c*(state))
-- Guard hysteresis via simple memory term (e.g., last-on turbulence flag)
+Physics constraints / regularization
+- Bounds: clamp predictions within [0.15, 2.0].
+- Monotonicity: Ri_c* should not increase with increasing shear S (enforce via features or monotone learners).
+- Smoothness: penalize large second derivatives in loss to avoid oscillatory Ri_c*(state).
 
-Validation
-- Threshold accuracy vs fixed 0.25 (MAE reduction ≥ 30%)
-- Event timing: onset/cessation precision/recall
-- Stability of diffusion tendency (no oscillations)
+Data recipe
+- Synthetic: generate MOST/LES-derived profiles varying a_m,a_h, Δz and compute ground-truth Ri_c* via event labeling (turbulence on/off).
+- Observational sources: SHEBA, CASES-99, ARM; label Ri_c* per event onset/cessation windows.
+- Split: site/season hold-out for robust generalization.
 
-Ops
-- Evaluate cost (< 1% overhead).
-- Version and log predictions to Diagnostics (ModelVersion, DatasetVersion).
+Loss / metrics
+- Regression: MAE / RMSE on Ri_c*; improvement vs fixed 0.25 baseline.
+- Event timing: precision/recall for onset/cessation (±10 min window).
+- Operational: percent of correctly predicted collapses (recall) and false-collapse rate (precision).
+- Stability: check no model outputs extreme Ri_c* values causing numerical instability.
 
-### Metrics for Regime / Laminar Classification
+Validation & QA
+- Cross-site validation; ensure no catastrophic site-specific drift.
+- Test closed-loop: plug Ri_c*(state) into K-closure in a column model and measure energy/flux stability.
+- Track DatasetVersion, ModelVersion, and per-run stats.
 
-- ROC AUC: primary discriminator quality (≥0.98 target).
-- PR AUC: use when laminar/intermittent regime <10% of samples.
-- F1 (at operational threshold): balance false collapse vs missed collapse.
-- Calibration: reliability curve; apply isotonic regression if systematic overconfidence.
-- Drift tracking: monitor monthly laminar prevalence; retrain if shift > factor 2.
+Deployment
+- Prefer analytic/symbolic formula or small LUT for HPC. Provide ONNX for centers supporting it.
+- Provide fallback: fixed Ri_c = 0.25 when model confidence < τ.
+- Log per-timestep Ri_c*, ModelVersion, and flags.
 
-Threshold guidance
-- High-stability operations: favor high precision → reduce false laminar (FP).
-- Intermittent regimes (towers like CASES-99): prioritize recall to catch collapse onset.
-
-Logging fields
-- ModelVersion, DatasetVersion, Threshold, AUC_ROC, F1, Prevalence.
-
-Fallback
-- If AUC_ROC < 0.9: revert to analytic heuristic (Ri_b > 1.0 OR ζ > ζ_crit).
+Minimal training loop (pseudo)
+- featurize → train PySR / GBT → constrain & export → validate in column model → package as ONNX/LUT.

@@ -49,25 +49,32 @@ The **Sensitivity Test** showed that even when the $\text{MOST}$ parameters chan
 
 This project successfully establishes the $\text{ML}$ model as the **high-speed, high-fidelity gateway** for integrating the necessary physical corrections into operational atmospheric models.
 
-# Bias/G Surrogate — Quick Spec
+# Bias / G Surrogate — Spec
 
-Task
-- Predict curvature-aware damping G to reduce bulk-vs-point Richardson bias on coarse vertical grids.
+Purpose
+- Predict multiplicative damping G(ζ,Δz,Ri_b,...) ∈ (0,1] to reduce bulk-vs-point Ri bias on coarse grids.
 
 I/O
-- X = [Δz, ζ, Ri_b, z_g, a_m, a_h]  (stable branch only, ζ>0)
-- y = G ∈ (0,1]  (target from analytic correction or matched to fine-grid truth)
+- Inputs X: {Δz (m), ζ, Ri_b, z_g, Δz/z_g, a_m, a_h, u_*, H_sfc_sign}
+- Target y: G_target computed from analytic correction or fine-grid truth (K_new/K_old)
 
-Model
-- RandomForestRegressor or GradientBoosting with:
-  - bound clip (0,1],
-  - penalties to enforce G(0)=1 and ∂G/∂ζ|_0≈0 (features or loss).
+Model choices
+- Primary: LightGBM/RandomForest regressor (fast, robust).
+- Alternative: Small MLP (if vectorization in host exists).
+- Enforce clipping post-predict: ŷ = clip(ŷ, 1e-3, 1.0).
 
-Metrics
-- Bias reduction: ΔB = B_before − B_after (target ≥ 0.4 absolute on coarse Δz).
-- Neutral preservation: small error at ζ≈0.
-- Speed: ≤ 100 µs per layer on CPU.
+Training recipe
+- Synthetic generation: sweep Δz, ζ, a_m,a_h; derive G_true by solving integral correction (or analytic template).
+- Add observational LES/tower pairs for realism.
+- Loss: MSE + neutral-penalty λ*(G(ζ≈0)-1)^2.
 
-Deploy
-- Export to ONNX and/or bake LUT on grids of (Δz, ζ, Ri_b).
-- Provide deterministic fallback to analytic G template.
+Validation
+- Report RMSE, bias near ζ≈0, and percent reduction in B on validation set.
+- Stress-test on held-out sites and large Δz.
+
+Export
+- Prefer LUT (CSV) on coarse grid for deterministic behavior; also export small ONNX for flexible runtime.
+- Include calibration metadata: DatasetVersion, ModelVersion, training_date, hyperparameters.
+
+Operational guardrail
+- If predicted P_laminar > threshold (0.999), do not apply G; use K_background instead.
