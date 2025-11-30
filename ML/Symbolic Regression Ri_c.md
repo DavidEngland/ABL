@@ -25,13 +25,13 @@ By prioritizing **Symbolic Regression (Method 1)**, the project directly address
 
 The success of the $\text{ML}$ model hinges on the quality of the feature engineering, and your chosen set of predictors is excellent because it is **anchored directly to $\text{MOST}$ theory** and the $\text{TKE}$ budget.
 
-### Crucial Feature Categories:
+### Crucial Feature Categories
 
-1.  **Stability Curvature (McNider Link):** Features like $\mathbf{\text{Delta}}$ and $\mathbf{\zeta}$ (stability parameter) tie the dynamic $Ri_c^*$ directly back to the static grid-curvature bias problem. If the ML learns that $Ri_c^*$ is correlated with high curvature, it reinforces the need for the original $\text{McNider}$ correction framework.
-2.  **Inversion Diagnostics:** $\mathbf{\Gamma_{\max}}$ and $\mathbf{z_{\text{inv}}}$ are high-value predictors that capture the macro-scale stability of the entire column. A fixed $Ri_c$ ignores this context entirely, which is why it fails in strong $\text{SBL}$s.
-3.  **Memory Terms:** $\mathbf{\text{TKE}_{\text{ratio}}}$ and $\mathbf{\text{TKE}_{\text{decay}_{\text{rate}}}}$ account for **Hysteresis**, a major weakness of algebraic closures. Turbulence memory fundamentally raises the collapse threshold ($Ri_c^*$) above the theoretical $0.25$ because it takes time to dissipate TKE after mixing ceases.
+1. **Stability Curvature (McNider Link):** Features like $\mathbf{\text{Delta}}$ and $\mathbf{\zeta}$ (stability parameter) tie the dynamic $Ri_c^*$ directly back to the static grid-curvature bias problem. If the ML learns that $Ri_c^*$ is correlated with high curvature, it reinforces the need for the original $\text{McNider}$ correction framework.
+2. **Inversion Diagnostics:** $\mathbf{\Gamma_{\max}}$ and $\mathbf{z_{\text{inv}}}$ are high-value predictors that capture the macro-scale stability of the entire column. A fixed $Ri_c$ ignores this context entirely, which is why it fails in strong $\text{SBL}$s.
+3. **Memory Terms:** $\mathbf{\text{TKE}_{\text{ratio}}}$ and $\mathbf{\text{TKE}_{\text{decay}_{\text{rate}}}}$ account for **Hysteresis**, a major weakness of algebraic closures. Turbulence memory fundamentally raises the collapse threshold ($Ri_c^*$) above the theoretical $0.25$ because it takes time to dissipate TKE after mixing ceases.
 
-### Feature Interaction Discovery:
+### Feature Interaction Discovery
 
 The key advantage of Symbolic Regression is discovering the **Interaction Terms** that humans can only guess at heuristically. Your suggested $\mathbf{\text{buoyancy\_shear\_ratio}} (\Gamma/S)$ and **$\text{inversion\_squared}}$** terms are prime examples. The $\text{ML}$ will validate whether $Ri_c^*$ scales linearly, quadratically, or logarithmically with these composite variables.
 
@@ -63,9 +63,9 @@ The **Validation Protocol (Section 3.1)**—training on $\text{SGP}$/$\text{SHEB
 
 The two-path deployment strategy effectively balances research ambition with operational pragmatism.
 
-1.  **Path A (Lookup Table):** This is the immediate, low-risk **Conservative** path. If the $\text{ML}$ equation is too complex or the operational center refuses the dependency, the model still uses the $\text{ML}$-derived physics via simple, fast interpolation. This ensures a successful deployment outcome.
+1. **Path A (Lookup Table):** This is the immediate, low-risk **Conservative** path. If the $\text{ML}$ equation is too complex or the operational center refuses the dependency, the model still uses the $\text{ML}$-derived physics via simple, fast interpolation. This ensures a successful deployment outcome.
 
-2.  **Path B (Real-Time Inference/ONNX):** This is the **Aggressive** path that leverages the full power of the $\text{ML}$ by deploying the exact equation (or a $\text{Gradient Boosting}$ model). The computational cost check is vital: targeting $\mathbf{<0.5\%}$ overhead is a realistic and strict operational metric.
+2. **Path B (Real-Time Inference/ONNX):** This is the **Aggressive** path that leverages the full power of the $\text{ML}$ by deploying the exact equation (or a $\text{Gradient Boosting}$ model). The computational cost check is vital: targeting $\mathbf{<0.5\%}$ overhead is a realistic and strict operational metric.
 
 Your final goal of deriving a **citation-ready statement** based on improved prediction error ($\text{RMSE}$) and computational cost provides clear, measurable success criteria for the entire 18-month project.
 
@@ -74,24 +74,30 @@ Your final goal of deriving a **citation-ready statement** based on improved pre
 # Symbolic Regression: Ri_c*(state)
 
 ## Objective
+
 - Use symbolic regression (PySR/SymbolicRegressor) to produce simple closed-form Ri_c*(state) formulas that are:
-  - Interpretable, bounded, and monotone (where physics demands).
-  - Small (≤ ~6 terms) for trust and deployment.
+  * Interpretable, bounded, and monotone (where physics demands).
+  * Small (≤ ~6 terms) for trust and deployment.
 
 ## Feature set (start)
+
 - Γ = dθ/dz (K/m), S = |dU/dz|, ζ, Δz/z_g, u_*, θ_*, TKE_proxy, H_sfc_sign
 
 ## Target
+
 - Ri_c* computed from labeled events (onset/cessation), or derived from LES via threshold optimization (minimizing false timing).
 
 ## Search constraints
+
 - Restrict operators: {+, -, *, /, pow, exp, log} and unary clip to enforce bounds.
-- Penalize complexity and enforce bounds by post-processing (clip to [0.15,2.0]).
+* Penalize complexity and enforce bounds by post-processing (clip to [0.15,2.0]).
 
 ## Validation
+
 - Compare symbolic formula vs baseline Ri_c=0.25 on event timing (MAE of onset time).
-- Prefer formulas that reduce MAE by ≥30% and have simple monotonic dependence on inversion/proxies.
+* Prefer formulas that reduce MAE by ≥30% and have simple monotonic dependence on inversion/proxies.
 
 ## Export
+
 - Publish formula in manuscript + evaluate in column model.
-- Package as small function in profiles.py for direct use.
+* Package as small function in profiles.py for direct use.
