@@ -17,6 +17,11 @@ Profile families (refs):
   VEXP       : Variable exponent (curvature tuning) extension.
   DTP        : Dynamic turbulent Prandtl (φ_h = Pr_t(Ri)*φ_m) (e.g., Grachev & Fairall 1997 concept).
   URC        : Direct Ri-based closure f_m(Ri) without explicit ζ (analytic inversion family).
+Canonical IDs (catalog):
+  BD71      : Classical Businger–Dyer (unstable power-law, stable linear near neutral).
+  BH91      : Beljaars–Holtslag stable (hybrid polynomial + 1/3 power tail).
+  CB05      : Cheng–Brutsaert monotone stable form.
+  GF97      : Grachev–Fairall-style dynamic turbulent Prandtl (via DTP wrapper).
 
 Key equations:
   MOST power-law baseline: φ(ζ) = (1 - β ζ)^(-α) with domain ζ < 1/β (stable branch).
@@ -80,6 +85,7 @@ def make_profile(tag: str, pars: Dict[str, Union[float, int]]) -> Tuple[Callable
           VEXP:      alpha_m, beta_m, eta_m, alpha_h, beta_h, eta_h
           DTP:       base_tag, base_pars, a1, a2 (base φ before dynamic Pr_t)
           URC:       b_m, Ri_c, e_m [, b_h, e_h, Ri_c_h]
+          BH91:      am, bm, cm, ah, bh, ch [, c0h]
 
     Returns
     -------
@@ -162,6 +168,23 @@ def make_profile(tag: str, pars: Dict[str, Union[float, int]]) -> Tuple[Callable
         else:
             fh = lambda Ri: float('nan')  # heat unspecified
         return fm, fh
+
+    if tag == 'BH91':  # Beljaars–Holtslag (1991) stable branch (hybrid poly + (1+cζ)^(1/3))
+        # Parameters: a_m,b_m,c_m,a_h,b_h,c_h, with optional c0h offset (Prandtl ~ 1 near neutral)
+        am = pars.get('am', 5.0)
+        bm = pars.get('bm', 4.0)
+        cm = pars.get('cm', 0.5)
+        ah = pars.get('ah', 5.0)
+        bh = pars.get('bh', 4.0)
+        ch = pars.get('ch', 0.5)
+        c0h = pars.get('c0h', 1.0)
+        def phi_m(z: float) -> float:
+            # φ_m = 1 + a_m ζ + b_m ζ (1 + c_m ζ)^(1/3)
+            return 1.0 + am * z + bm * z * (1.0 + cm * z) ** (1.0 / 3.0)
+        def phi_h(z: float) -> float:
+            # φ_h = c0h + a_h ζ + b_h ζ (1 + c_h ζ)^(1/3)
+            return c0h + ah * z + bh * z * (1.0 + ch * z) ** (1.0 / 3.0)
+        return phi_m, phi_h
 
     raise ValueError(f"unknown profile tag '{tag}'")
 
@@ -418,6 +441,149 @@ def ri_closure_pade(alpha_m: float, beta_m: float,
     params = {'pm': pm, 'qm': qm, 'ph': ph, 'qh': qh}
     return fm, fh, params
 
-# Notes:
-# - Use ri_closure_series for Ri ≲ 0.05–0.1; switch to ri_closure_pade below the pole 1/q.
-# - For full-range fidelity, prefer ζ-inversion (zeta_from_ri_series + zeta_from_ri_newton) and evaluate φ(ζ).
+# -----------------------------------------------------------------------------
+# Canonical profile catalog and ML correction hooks
+# -----------------------------------------------------------------------------
+def profile_catalog() -> Dict[str, Dict[str, Dict[str, Union[float, int, str]]]]:
+    """Return canonical catalog mapping short IDs to (tag, pars).
+    IDs:
+      - 'BD71': Businger–Dyer classical composite (unstable power-law, stable linear near neutral).
+      - 'BH91': Beljaars–Holtslag stable hybrid (approximate form; tune coefficients to dataset).
+      - 'CB05': Cheng–Brutsaert monotone stable variant.
+      - 'GF97': Grachev–Fairall dynamic Prandtl via DTP wrapper (tune a1,a2).
+    Note: Default parameters are safe starting points; calibrate per site/dataset.
+    """
+    return {
+        'BD71': {
+            'tag': 'BD_CLASSIC',
+            'pars': {
+                'a': 16.0,        # unstable β
+                'pm_exp': -0.25,  # φ_m exponent (unstable)
+                'ph_exp': -0.50,  # φ_h exponent (unstable)
+                'cm': 4.7,        # stable linear a_m
+                'ch': 7.8         # stable linear a_h (c0h≈1.0 implicit in HOG88 variant)
+            }
+        },
+        'BH91': {
+            'tag': 'BH91',
+            'pars': {
+                # Moderate stable defaults; adjust from SBL fits (SHEBA/ARM)
+                'am': 4.5, 'bm': 3.5, 'cm': 0.5,
+                'ah': 5.5, 'bh': 3.5, 'ch': 0.5,
+                'c0h': 1.0
+            }
+        },
+        'CB05': {
+            'tag': 'CB',
+            'pars': {
+                # Monotone stable; γ, p exponents per family; tune to match site
+                'gm': 5.0, 'pm': 1.0,
+                'gh': 7.0, 'ph': 1.0
+            }
+        },
+        'GF97': {
+            'tag': 'DTP',
+            'pars': {
+                # Base stable (linear) + dynamic turbulent Prandtl coefficients (to be trained)
+                'base_tag': 'HOG88',
+                'base_pars': { 'cm': 5.0, 'ch': 7.8, 'c0h': 1.0 },
+                'a1': 0.0, 'a2': 0.0  # placeholders; fit from data (Grachev–Fairall style)
+            }
+        }
+    }
+
+def list_profiles() -> Tuple[str, ...]:
+    """Return available canonical profile IDs."""
+    return tuple(profile_catalog().keys())
+
+def make_profile_by_id(pid: str) -> Tuple[Callable[[float], float], Callable[[float], float]]:
+    """Convenience: build φ_m, φ_h from canonical ID."""
+    cat = profile_catalog()
+    key = pid.upper()
+    if key not in cat:
+        raise KeyError(f"unknown profile ID '{pid}', choose from {list_profiles()}")
+    meta = cat[key]
+    return make_profile(meta['tag'], meta['pars'])
+
+# -----------------------------------------------------------------------------
+# Minimal ML integration for correction factor G(ζ, Δz)
+# -----------------------------------------------------------------------------
+def G_template(zeta: float, dz: float, D: float = 1.0, dz_ref: float = 10.0,
+               zeta_ref: float = 0.5, p: float = 1.0, q: float = 2.0) -> float:
+    """Neutral-preserving damping: G = exp(-D (dz/dz_ref)^p (ζ/ζ_ref)^q). Use for ζ>0."""
+    if zeta <= 0.0:
+        return 1.0
+    return math.exp(-D * (dz / dz_ref) ** p * (zeta / zeta_ref) ** q)
+
+def build_features_for_G(zeta: float, dz: float, ri_b: float,
+                         z_g: Optional[float] = None,
+                         a_m: Optional[float] = None,
+                         a_h: Optional[float] = None) -> list[float]:
+    """Assemble a small, consistent feature vector for a G surrogate.
+    Order: [dz, zeta, ri_b, z_g or 0, a_m or 0, a_h or 0]
+    """
+    return [float(dz), float(zeta), float(ri_b),
+            0.0 if z_g is None else float(z_g),
+            0.0 if a_m is None else float(a_m),
+            0.0 if a_h is None else float(a_h)]
+
+def load_onnx_model(path: str):
+    """Load ONNX model with onnxruntime if available; return session or None."""
+    try:
+        import onnxruntime as ort  # type: ignore
+        return ort.InferenceSession(path, providers=['CPUExecutionProvider'])
+    except Exception:
+        return None
+
+def predict_G(session, features: list[float]) -> Optional[float]:
+    """Run ONNX model; return scalar G or None if session is None or error."""
+    if session is None:
+        return None
+    try:
+        inp_name = session.get_inputs()[0].name
+        out_name = session.get_outputs()[0].name
+        # onnxruntime expects 2D array [N, F]
+        import numpy as _np  # local import to avoid global dependency
+        X = _np.asarray([features], dtype=_np.float32)
+        y = session.run([out_name], {inp_name: X})[0]
+        g = float(_np.squeeze(y))
+        # safety: clip to (ε, 1]
+        return max(min(g, 1.0), 1e-3)
+    except Exception:
+        return None
+
+def corrected_G(zeta: float, dz: float,
+                ri_b: float,
+                model_sess=None,
+                z_g: Optional[float] = None,
+                a_m: Optional[float] = None,
+                a_h: Optional[float] = None,
+                fallback_D: float = 1.0) -> float:
+    """Return correction factor G from ML model if available; else analytic template.
+    Safe defaults: no damping for ζ≤0; clip 0< G ≤ 1.
+    """
+    if zeta <= 0.0:
+        return 1.0
+    feats = build_features_for_G(zeta, dz, ri_b, z_g=z_g, a_m=a_m, a_h=a_h)
+    g_ml = predict_G(model_sess, feats)
+    if g_ml is not None:
+        return g_ml
+    return G_template(zeta, dz, D=fallback_D)
+
+def generate_synthetic_G_data(pid: str,
+                              dz_vals: list[float],
+                              zeta_vals: list[float],
+                              ri_b_vals: list[float],
+                              a_m: Optional[float] = None,
+                              a_h: Optional[float] = None) -> list[list[float]]:
+    """Create a small synthetic dataset [features..., G_target] for training a G surrogate.
+    Target uses analytic G_template as proxy; replace with LES/tower truth when available.
+    """
+    data = []
+    for dz in dz_vals:
+        for zt in zeta_vals:
+            for rb in ri_b_vals:
+                feats = build_features_for_G(zt, dz, rb, z_g=None, a_m=a_m, a_h=a_h)
+                g = G_template(zt, dz)
+                data.append(feats + [g])
+    return data
