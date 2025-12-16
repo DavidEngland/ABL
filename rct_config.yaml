@@ -1,0 +1,70 @@
+# Richardson Curvature Toolkit Configuration
+# Default parameters for curvature corrections, ODE solvers, bootstrap, and visualization.
+
+# --- Stability regime thresholds (Ri values, dimensionless)
+stability_thresholds:
+  unstable_upper: -0.05          # Ri < this → clearly unstable
+  neutral_lower: -0.05
+  neutral_upper: 0.05             # -0.05 ≤ Ri ≤ 0.05 → near-neutral
+  stable_lower: 0.05
+  supercritical: 0.25             # Ri ≥ this → suppressed turbulence regime
+
+# --- Derivative & curvature parameters
+derivatives:
+  numerical_step: 1.0e-6          # h for central difference (ζ-domain)
+  curvature_limiter: "none"       # "tvd" for TVD limiter, "none" for standard
+  error_tolerance: 1.0e-8         # Convergence tolerance for derivative estimation
+
+# --- ODE correction factor solver
+correction_ode:
+  integrator: "rk45"              # "rk23" (faster) or "rk45" (accurate)
+  alpha: 0.3                      # Curvature weight in dC/dz equation
+  beta: 0.7                        # Shear damping weight
+  C_init: 1.0                     # Initial correction factor C(z_0)
+  monotonicity_constraint: true   # Enforce C(z) monotone or relaxed bounds
+  max_step: 0.1                   # Max step for adaptive integrator (relative to layer)
+
+# --- Bootstrap confidence interval estimation
+bootstrap:
+  n_samples: 1000                 # Number of bootstrap replicates
+  confidence_level: 0.95          # 95% CI
+  seed: 42                        # Random seed for reproducibility
+  resample_method: "percentile"   # "percentile" or "bca" (bias-corrected accelerated)
+
+# --- Visualization defaults
+visualization:
+  dpi: 150                        # Figure DPI for PNG export
+  style: "seaborn-v0_8"           # matplotlib style
+  colormap: "viridis"             # Phase plot colormap
+  figsize_default: [10, 6]        # Default figure size (inches)
+  save_format: "png"              # "png", "pdf", or "both"
+
+# --- Reference table generation
+reference_tables:
+  delta_z_range: [1.0, 100.0]     # Layer thickness sweep (m)
+  ri_b_range: [-0.2, 0.5]         # Bulk Ri range for phase plots
+  l_range: [-1000.0, 1000.0]      # Obukhov length range (m)
+  n_points: 50                    # Resolution of parameter grid
+
+# --- Data I/O & validation
+data:
+  units:
+    z: "meters"
+    theta: "kelvin"
+    U: "meters_per_second"
+    V: "meters_per_second"
+    L: "meters"
+  required_columns: ["z", "theta", "U", "V"]
+  optional_columns: ["V", "theta0", "metadata"]
+  
+# --- CLI defaults
+cli:
+  output_format: "json"           # "json", "csv", or "netcdf"
+  verbose: false
+  log_level: "INFO"               # "DEBUG", "INFO", "WARNING", "ERROR"
+
+# --- Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: null                      # null = stdout only; set path for file logging
