@@ -1,0 +1,466 @@
+[
+  {
+    "file": "0509086v1.pdf",
+    "title": "arXiv:physics/0509086v1  [physics.ao-ph]  12 Sep 2005",
+    "year": "2005",
+    "abstract": "The \u2018local scaling\u2019 hypothesis, \ufb01rst introduced by Nieuwstadt two decades ago, describes the turbulence structure of stable boundary layers in a very succinct way and is an integral part of numerous local closure-based numerical weather prediction models. However, the validity of this hypothesis under very stable conditions is a subject of on-going debate. In this work, we attempt to address this controversial issue by performing extensive analyses of turbulence data from several \ufb01eld campaigns, wind-tunnel experiments and large-eddy simulations. Wide range of stabilities, diverse \ufb01eld conditions and a comprehensive set of turbulence statistics make this study distinct.",
+    "status": "success"
+  },
+  {
+    "file": "1-s2.0-S1352231023003783-am.pdf",
+    "title": "Effects of Boundary Layer Dynamics and Meteorology on Ultrafine Particle Formation and",
+    "year": "2016",
+    "abstract": "It is currently not well understood how the planetary boundary layer (PBL) dynamics affects 14 the formation and growth of ultrafine particles in the atmosphere, because of the limited co-located 15 aerosol size distributions and lidar measurements. Here we show, from long-term in-situ observations, a 16 clear link between boundary layer processes and surface aerosol dynamics. Aerosol size distributions in 17 the diameter range from 7-300 nm were measured with a scanning mobility particle sizer (SMPS) at the 18 University of Alabama Huntsville campus in 2016, 2017, and 2022. The backscatter of larger aerosols 19 was measured using a co-located lidar ceilometer. Meteorological surface parameters including 20 temperature, relative humidity, station pressure, wind speed and direction, solar radiation, and 21 precipitation were also measured. New particle formation (NPF) and long growth (over 12 hours) events 22 occurred most frequently during the winter, unlike many other locations where NPF events occur more 23 frequently in spring and fall, indicating that cooler temperatures play important roles in ultrafine particle 24 formation in the warm subtropical environment. During the summer with strong solar radiation, there 25 were more short-time growth events (less than 6 hours), likely associated with convection within the 26 boundary layer. Our observations also show cold fronts affect the measured aerosol size distributions 27 because the combination of precipitation scavenging and cleaner air can provide thermodynamic 28 conditions favorable for NPF and aerosol growth. These results highlight the importance of meteorology 29 on aerosol formation and growth. 30 31",
+    "status": "success"
+  },
+  {
+    "file": "1202.5066v2.pdf",
+    "title": "The Critical Richardson Number and Limits of Applicability",
+    "year": "2012",
+    "doi": "10.1007/s10546-012-9771-0",
+    "abstract": "Measurements of atmospheric turbulence made over the Arctic pack ice during the Surface Heat Budget of the Arctic Ocean experiment (SHEBA) are used to determine the limits of applicability of Monin-Obukhov similarity theory (in the local scaling formulation) in the stable atmospheric boundary layer. Based on the spectral analysis of wind velocity and air temperature fluctuations, it is shown that, when both of the gradient Richardson number, Ri, and the flux Richardson number, Rf, exceed a \u2018critical value\u2019 of about 0.20 \u2013 0.25, the inertial subrange associated with the Richardson-Kolmogorov cascade dies out and vertical turbulent fluxes become small. Some small-scale turbulence survives even in this supercritical regime, but this is non-Kolmogorov turbulence, and it decays rapidly with further increasing stability. Similarity theory is based on the turbulent fluxes in the high-frequency part of the spectra that are associated with energy-containing/flux-carrying eddies. Spectral densities in this high-frequency band diminish as the Richardson-Kolmogorov energy cascade weakens; therefore, the applicability of local Monin-Obukhov similarity theory in stable conditions is limited by the inequalities Ri < cr Ri and Rf < cr Rf . However, it is found that cr Rf = 0.20 \u2013 0.25 is a primary threshold for applicability. Applying this prerequisite shows that the data follow classical Monin- Obukhov local z-less predictions after the irrelevant cases (turbulence without the Richardson- Kolmogorov cascade) have been filtered out.",
+    "status": "success"
+  },
+  {
+    "file": "1404.1397v1.pdf",
+    "title": "Similarity theory based on the Dougherty-Ozmidov length",
+    "year": "2014",
+    "venue": "the Royal Meteorological Society \n \n \n \n04 April 2",
+    "abstract": "Local similarity theory is suggested based on the Brunt-V\u00e4is\u00e4l\u00e4 frequency and the dissipation rate of turbulent kinetic energy instead the turbulent fluxes used in the traditional Monin- Obukhov similarity theory. Based on dimensional analysis (Pi theorem), it is shown that any properly scaled statistics of the small-scale turbulence are universal functions of a stability parameter defined as the ratio of a reference height z and the Dougherty-Ozmidov length scale which in the limit of z-less stratification is linearly proportional to the Obukhov length scale. Measurements of atmospheric turbulence made at five levels on a 20-m tower over the Arctic pack ice during the Surface Heat Budget of the Arctic Ocean experiment (SHEBA) are used to examine the behaviour of different similarity functions in the stable boundary layer. It is found that in the framework of this approach the non-dimensional turbulent viscosity is equal to the gradient Richardson number whereas the non-dimensional turbulent thermal diffusivity is equal to the flux Richardson number. These results are a consequence of the approximate local balance between production of turbulence by the mean flow shear and viscous dissipation. The turbulence framework based on the Brunt-V\u00e4is\u00e4l\u00e4 frequency and the dissipation rate of turbulent kinetic energy may have practical advantages for estimating turbulence when the fluxes are not directly available. Key Words: Dougherty-Ozmidov length scale; mixing efficiency; Monin-Obukhov similarity theory; oceanic vertical mixing; stable boundary layer; z-less similarity 3",
+    "status": "success"
+  },
+  {
+    "file": "172244.pdf",
+    "title": "A conceptual view on inertial oscillations",
+    "year": "2010",
+    "venue": "the Atmospheric Sciences \n \n \n \n \n \n \n \n \nAffiliat",
+    "abstract": "In the present work Blackadar\u2019s concept on nocturnal inertial oscillations is extended. Blackadar\u2019s concept describes frictionless inertial oscillations above the nocturnal inversion layer. The current work includes frictional effects within the nocturnal boundary layer. As a result it is shown that the nocturnal wind speed profile describes an oscillation around the nocturnal equilibrium wind vector, rather than around the geostrophic wind vector (as in the Blackadar case). By using this perspective continuous time-dependent wind profiles are predicted. As such, information on both the height and the magnitude of the nocturnal low-level jet is available as a function of time. Preliminary analysis shows that the proposed extension performs well in comparison with observations, when a simple Ekman model is used to represent the equilibrium state in combination with a realistic initial velocity profile. In addition to jet dynamics, backward inertial oscillations are predicted at lower levels close to the surface, which also appear to be present in observations. The backward oscillation forms an important mechanism behind weakening low-level winds during the afternoon transition. Both observational and theoretical modeling studies are needed to explore this phenomenon further. 3",
+    "status": "success"
+  },
+  {
+    "file": "1809.04429v1.pdf",
+    "title": "Gradient-based Representational Similarity Analysis",
+    "abstract": "Representational Similarity Analysis (RSA) aims to explore similari- ties between neural activities of different stimuli. Classical RSA techniques employ the inverse of the covariance matrix to explore a linear model between the neural activities and task events. However, calculating the inverse of a large-scale covariance matrix is time-consuming and can reduce the stability and robustness of the final analysis. Notably, it becomes severe when the num- ber of samples is too large. For facing this shortcoming, this paper proposes a novel RSA method called gradient-based RSA (GRSA). Moreover, the pro- posed method is not restricted to a linear model. In fact, there is a growing in- terest in finding more effective ways of using multi-subject and whole-brain fMRI data. Searchlight technique can extend RSA from the localized brain re- gions to the whole-brain regions with smaller memory footprint in each process. Based on Searchlight, we propose a new method called Spatiotemporal Search- light GRSA (SSL-GRSA) that generalizes our ROI-based GRSA algorithm to the whole-brain data. Further, our approach can handle some computational challenges while dealing with large-scale, multi-subject fMRI data. Experi- mental studies on multi-subject datasets confirm that both proposed approaches achieve superior performance to other state-of-the-art RSA algorithms.",
+    "status": "success"
+  },
+  {
+    "file": "2406.01751v1.pdf",
+    "title": "arXiv:2406.01751v1  [physics.flu-dyn]  3 Jun 2024",
+    "year": "2024",
+    "abstract": "The stable boundary layer (SBL) subjected to large-scale subsidence is studied through large-eddy simulations (LESs) with \ufb01xed surface temperature and a linear subsidence velocity pro\ufb01le. These boundary layers reach a truly steady state, where thermal equilibrium is established by a balance between surface cooling and subsidence-induced heating. We identify three governing dimension- less groups by scaling the governing equations with the geostrophic wind and Coriolis frequency, and systematically investigate the impact of these external parameters on global \ufb02ow properties and mean pro\ufb01les in the steady state. The SBL depth, low-level jet, and the magnitude of the turbulent momentum \ufb02ux are reduced when the subsidence rate or Buoyancy number increases, while surface heat \ufb02ux is enhanced. The shape of normalized mean pro\ufb01les of temperature and heat \ufb02ux is mainly determined by the subsidence rate, while they collapse for varying buoyancy and surface Rossby numbers. We develop empirical correlations for the stability parameter h\u03b8/LO and a thermal shape factor, and propose a new unidirectional geostrophic drag law, to form a closed set of equations that estimates relevant \ufb02ow properties from external parameters. The es- timation errors compared to the LES data are less than 5% for friction velocity and surface heat \ufb02ux, and at most 10% for the SBL depth h\u03b8. Within the surface layer, dimensionless velocity and temperature gradients in the steady SBL with subsidence show acceptable agreement to Monin\u2013 Obukhov similarity theory, while the collapse is improved when a recently proposed mixed scaling parameter, that includes h\u03b8/LO, is used. 1",
+    "status": "success"
+  },
+  {
+    "file": "43715.pdf",
+    "title": "University of Colorado CIRES / NOAA Environmental Technology Laboratory, Boulder, Colorado",
+    "year": "1997",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "43726.pdf",
+    "title": "University of Alabama in Huntsville",
+    "year": "1979",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "61_177.pdf",
+    "title": "\u306b\uff0c\u68ee\u6797\u3084\u8349\u539f\u306a\u3069\u306e\u690d\u751f\u4e0a\u306b\u304a\u3044\u3066\u6e26\u76f8\u95a2\u6cd5\u306b\u3088\u308b",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "a_novel_similarity_approach_for_describing_the_bu-wageningen_university_and_research_650383.pdf",
+    "title": "Boundary-Layer Meteorology (2024) 190:10",
+    "year": "2024",
+    "doi": "10.1007/s10546-023-00854-6",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "apme-2008jamc1816.1.pdf",
+    "title": "Exploring the Possible Role of Small-Scale Terrain Drag on Stable Boundary Layers",
+    "year": "2007",
+    "abstract": "This paper addresses the possible role of unresolved terrain drag, relative to the turbulent drag on the development of the stable atmospheric boundary layer over land. Adding a first-order estimate for terrain drag to the turbulent drag appears to provide drag that is similar to the enhanced turbulent drag obtained with the so-called long-tail mixing functions. These functions are currently used in many operational models for weather and climate, although they lack a clear physical basis. Consequently, a simple and practical quasi-empirical parameterization of terrain drag divergence for use in large-scale models is proposed and is tested in a column mode. As an outcome, the cross-isobaric mass flow (a measure for cyclone filling) with the new scheme, using realistic turbulent drag, appears to be equal to what is found with the unphysical long-tail scheme. At the same time, the new scheme produces a much more realistic less-deep boundary layer than is obtained by using the long-tail mixing function.",
+    "status": "success"
+  },
+  {
+    "file": "apme-JAMC-D-20-0266.1.pdf",
+    "title": "Predicting Urban Surface Roughness Aerodynamic Parameters Using Random Forest",
+    "year": "2020",
+    "abstract": "The surface roughness aerodynamic parameters z0 (roughness length) and d (zero-plane displacement height) are vital to the accuracy of the Monin\u2013Obukhov similarity theory. Deriving improved urban canopy parameteri- zation (UCP) schemes within the conventional framework remains mathematically challenging. The current study explores the potential of a machine-learning (ML) algorithm, a random forest (RF), as a complement to the traditional UCP schemes. Using large-eddy simulation and ensemble sampling, in combination with nonlinear least squares regression of the logarithmic-layer wind pro\ufb01les, a dataset of approximately 4.5 3 103 samples is established for the aerodynamic parameters and the morphometric statistics, enabling the training of the ML model. While the prediction for d is not as good as the UCP after Kanda et al., the performance for z0 is notable. The RF algorithm also categorizes z0 and d with an excep- tional performance score: the overall bell-shaped distributions are well predicted, and the 60.5s category (i.e., the 38% percentile) is competently captured (37.8% for z0 and 36.5% for d). Among the morphometric features, the mean and maximum building heights (Have and Hmax, respectively) are found to be of predominant in\ufb02uence on the prediction of z0 and d. A perhaps counterintuitive result is the considerably less striking importance of the building-height variability. Possible reasons are discussed. The feature importance scores could be useful for identifying the contributing factors to the surface aerodynamic characteristics. The results may shed some light on the development of ML-based UCP for mesoscale modeling.",
+    "status": "success"
+  },
+  {
+    "file": "atmosphere-12-00591-v2.pdf",
+    "title": "On the u\u22c6\u2212U Relationship in the Stable Atmospheric",
+    "year": "2021",
+    "abstract": "A relationship between the friction velocity u\u22c6and mean wind speed U in a stable atmo- spheric boundary layer (ABL) over Arctic sea ice was considered. To that aim, the observations collected during the Surface Heat Budget of the Arctic Ocean (SHEBA) experiment were used. The observations showed the so-called \u201chockey-stick\u201d shape of the u\u22c6\u2212U relationship, which consists of a slow increase of u\u22c6with increasing wind speed for U < Utr and a more rapid almost linear increase of u\u22c6for U > Utr, where Utr is the wind speed of transition between the two regimes. Such a relationship is most pronounced at the highest observational levels, namely at 9 and 14 m, and is also sharper when the air-surface temperature difference exceeds its average values for stable conditions. It is shown that the Monin\u2013Obukhov similarity theory (MOST) reproduces the observed u\u22c6\u2212U relationship rather well. This suggests that at least for the SHEBA dataset, there is no con- tradiction between MOST and the \u201chockey-stick\u201d shape of the u\u22c6\u2212U relationship. However, the SHEBA data, as well as the single-column simulations show that for cases with strong stability, u\u22c6 signi\ufb01cantly decreases with height due to the shallowness of the ABL. It was shown that when u\u22c6 was assumed independent of height, the value of the normalized drag coef\ufb01cient, i.e., of the so-called stability correction function for momentum, calculated using observations at a certain level, can be signi\ufb01cantly underestimated. To overcome this, the decrease of u\u22c6with height was taken into account in the framework of MOST using local scaling instead of the scaling with surface \ufb02uxes. Using such an extended MOST brought the estimates of the normalized drag coef\ufb01cient closer to the Businger\u2013Dyer relation.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-1520-0469_1969_26_656_motssa_2_0_co_2.pdf",
+    "title": "Unauthenticated | Downloaded 11/08/25 05:38 PM UTC",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "atsc-1520-0469_1976_033_2152_tsitcb_2_0_co_2.pdf",
+    "title": "Unauthenticated | Downloaded 11/08/25 05:43 PM UTC",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "atsc-1520-0469_2003_060_2509_ititsb_2.0.co_2.pdf",
+    "title": "q 2003 American Meteorological Society",
+    "year": "2003",
+    "abstract": "In this paper a classi\ufb01cation of stable boundary layer regimes is presented based on observations of near- surface turbulence during the Cooperative Atmosphere\u2013Surface Exchange Study-1999 (CASES-99). It is found that the different nights can be divided into three subclasses: a turbulent regime, an intermittent regime, and a radiative regime, which con\ufb01rms the \ufb01ndings of two companion papers that use a simpli\ufb01ed theoretical model (it is noted that its simpli\ufb02ied structure limits the model generality to near-surface \ufb02ows). The papers predict the occurrence of stable boundary layer regimes in terms of external forcing parameters such as the (effective) pressure gradient and radiative forcing. The classi\ufb01cation in the present work supports these predictions and shows that the predictions are robust in a qualitative sense. As such, it is, for example, shown that intermittent turbulence is most likely to occur in clear-sky conditions with a moderately weak effective pressure gradient. The quantitative features of the theoretical classi\ufb01cation are, however, rather sensitive to (often uncertain) local parameter estimations, such as the bulk heat conductance of the vegetation layer. This sensitivity limits the current applicability of the theoretical classi\ufb01cation in a strict quantitative sense, apart from its conceptual value.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-2008jas2668.1.pdf",
+    "title": "Surface Heterogeneity Effects on Regional-Scale Fluxes in Stable Boundary",
+    "year": "2007",
+    "abstract": "Large-eddy simulation, with recently developed dynamic subgrid-scale models, is used to study the effect of heterogeneous surface temperature distributions on regional-scale turbulent \ufb02uxes in the stable boundary layer (SBL). Simulations are performed of a continuously turbulent SBL with surface heterogeneity added in the form of streamwise transitions in surface temperature. Temperature differences between patches of 6 and 3 K are explored with patch length scales ranging from one-half to twice the equivalent homogeneous boundary layer height. The surface temperature heterogeneity has important effects on the mean wind speed and potential temperature pro\ufb01les as well as on the surface heat \ufb02ux distribution. Increasing the difference between the patch temperatures results in decreased magnitude of the average surface heat \ufb02ux, with a corresponding increase in the mean potential temperature in the boundary layer. The simulation results are also used to test existing models for average surface \ufb02uxes over heterogeneous terrain. The tested models fail to fully represent the average turbulent heat \ufb02ux, with models that break the domain into homogeneous subareas grossly underestimating the heat \ufb02ux magnitude over patches with relatively colder surface temperatures. Motivated by these results, a new parameterization based on local similarity theory is proposed. The new formulation is found to correct the bias over the cold patches, resulting in improved average surface heat \ufb02ux calculations.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-2010jas3289.1.pdf",
+    "title": "A Conceptual View on Inertial Oscillations and Nocturnal Low-Level Jets",
+    "year": "2009",
+    "abstract": "In the present work Blackadar\u2019s concept of nocturnal inertial oscillations is extended. Blackadar\u2019s concept describes frictionless inertial oscillations above the nocturnal inversion layer. The current work includes frictional effects within the nocturnal boundary layer. It is shown that the nocturnal wind speed pro\ufb01le de- scribes an oscillation around the nocturnal equilibrium wind vector, rather than around the geostrophic wind vector (as in the Blackadar case). By using this perspective, continuous time-dependent wind pro\ufb01les are predicted. As such, information on both the height and the magnitude of the nocturnal low-level jet is available as a function of time. Preliminary analysis shows that the proposed extension performs well in comparison with observations when a simple Ekman model is used to represent the equilibrium state in combination with a realistic initial velocity pro\ufb01le. In addition to jet dynamics, backward inertial oscillations are predicted at lower levels close to the surface, which also appear to be present in observations. The backward oscillation forms an important mechanism behind weakening low-level winds during the afternoon transition. Both observational and theoretical modeling studies are needed to explore this phenomenon further.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-2010jas3680.1.pdf",
+    "title": "Comments on \u2018\u2018An Extremum Solution of the Monin\u2013Obukhov Similarity Equations\u2019\u2019",
+    "year": "2010",
+    "doi": "10.1175/2010JAS3680.1",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "atsc-jas-d-11-0330.1.pdf",
+    "title": "Scalar Turbulence in Convective Boundary Layers by Changing the Entrainment Flux",
+    "year": "2011",
+    "abstract": "A large-eddy simulation model is adopted to investigate the evolution of scalars transported by atmospheric cloud-free convective boundary layer \ufb02ows. Temperature \ufb02uctuations due to the ground release of sensible heat and concentration \ufb02uctuations of a trace gas emitted at the homogeneous surface are mixed by turbu- lence within the unstable boundary layer. On the top, the entrainment zone is varied to obtain two distinct situations: (i) the temperature inversion is strong and the trace gas increment across the entrainment region is small, yielding to a small top \ufb02ux with respect to the surface emission; (ii) the temperature inversion at the top of the convective boundary layer is weak, and the scalar increment large enough to achieve a concentration \ufb02ux toward the free atmosphere that overwhelms the surface \ufb02ux. In both cases, an estimation of the en- trainment \ufb02ux is obtained within a simple model, and it is tested against numerical data. The evolution of the scalar pro\ufb01les is discussed in terms of the different entrainment\u2013surface \ufb02ux ratios. Results show that, when entrainment at the top of the boundary layer is weak, temperature and trace gas scalar \ufb01elds are strongly correlated, particularly in the lower part of the boundary layer. This means that they exhibit similar behavior from the largest down to the smallest spatial scales. However, when entrainment is strong, as moving from the surface, differences in the transport of the two scalars arise. Finally, it is shown that, independently of the scalar regime, the temperature \ufb01eld exhibits more inter- mittent \ufb02uctuations than the trace gas.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-jas-d-12-0107.1.pdf",
+    "title": "The Minimum Wind Speed for Sustainable Turbulence in the Nocturnal",
+    "year": "2012",
+    "abstract": "The collapse of turbulence in the nocturnal boundary layer is studied by means of a simple bulk model that describes the basic physical interactions in the surface energy balance. It is shown that for a given mechanical forcing, the amount of turbulent heat that can be transported downward is limited to a certain maximum. In the case of weak winds and clear skies, this maximum can be signi\ufb01cantly smaller than the net radiative loss minus soil heat transport. In the case when the surface has low heat capacity, this imbalance generates rapid surface cooling that further suppresses the turbulent heat transport, so that eventually turbulence largely ceases (positive feedback mechanism). The model predicts the minimum wind speed for sustainable turbu- lence for the so-called crossing level. At this level, some decameters above the surface, the wind is relatively stationary compared to lower and higher levels. The critical speed is predicted in the range of about 5\u2013 7 m s21, depending on radiative forcing and surface properties, and is in agreement with observations at Cabauw. The critical value appears not very sensitive to model details or to the exact values of the input parameters. Finally, results are interpreted in terms of external forcings, such as geostrophic wind. As it is generally larger than the speed at crossing height, a 5 m s21 geostrophic wind may be considered as the typical limit below which sustainable, continuous turbulence under clear-sky conditions is unlikely to exist. Below this threshold emergence of the very stable nocturnal boundary layer is anticipated.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-jas-d-12-064.1.pdf",
+    "title": "The Cessation of Continuous Turbulence as Precursor of the Very Stable Nocturnal",
+    "year": "2012",
+    "abstract": "The mechanism behind the collapse of turbulence in the evening as a precursor to the onset of the very stable boundary layer is investigated. To this end a cooled, pressure-driven \ufb02ow is investigated by means of a local similarity model. Simulations reveal a temporary collapse of turbulence whenever the surface heat extraction, expressed in its nondimensional form h/L, exceeds a critical value. As any temporary reduction of turbulent friction is followed by \ufb02ow acceleration, the long-term state is unconditionally turbulent. In con- trast, the temporary cessation of turbulence, which may actually last for several hours in the nocturnal boundary layer, can be understood from the fact that the time scale for boundary layer diffusion is much smaller than the time scale for \ufb02ow acceleration. This limits the available momentum that can be used for downward heat transport. In case the surface heat extraction exceeds the so-called maximum sustainable heat \ufb02ux (MSHF), the near-surface inversion rapidly increases. Finally, turbulent activity is largely suppressed by the intense density strati\ufb01cation that supports the emergence of a different, calmer boundary layer regime.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-jas-d-13-0113.1.pdf",
+    "title": "A Large-Eddy Simulation Study of Scalar Dissimilarity in the Convective Atmospheric",
+    "year": "2013",
+    "abstract": "A numerical study of the effect of entrainment \ufb02uxes at the top of the atmospheric boundary layer (ABL) on dissimilarity between scalars within the mixed and surface layers is conducted. Simulation results clearly show that entrainment \ufb02uxes of opposite sign cause decorrelation between the scalars throughout the entire ABL. In the upper part of the mixed layer, this decorrelation is caused by changes in the covariance between the scalars and the scalar variance as well, and is distributed over the entire range of scales resolved in the simulation. Near the surface, the reduction in correlation coef\ufb01cient originates from an increasing scalar variance, which is present exclusively in the large scales. These effects are noticeable on time scales of about 24 min or longer, and could be interpreted as nonstationarity for the typical 30-min periods used in surface- layer data processing. In addition, it is shown that, for the conditions studied here, the scalar correlation coef\ufb01cient within the surface layer scales with the measurement height normalized by the ABL depth and not by the Obukhov length.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-jas-d-15-0068.1.pdf",
+    "title": "Atmospheric Stability In\ufb02uences on Coupled Boundary Layer and Canopy Turbulence",
+    "year": "2015",
+    "abstract": "Large-eddy simulation of atmospheric boundary layers interacting with a coupled and resolved plant canopy reveals the in\ufb02uence of atmospheric stability variations from neutral to free convection on canopy turbulence. The design and implementation of a new multilevel canopy model is presented. Instantaneous \ufb01elds from the simulations show that organized motions on the scale of the atmospheric boundary layer (ABL) depth bring high momentum down to canopy top, locally modulating the vertical shear of the hori- zontal wind. The evolution of these ABL-scale structures with increasing instability and their impact on vertical pro\ufb01les of turbulence moments and integral length scales within and above the canopy are discussed. Linkages between atmospheric turbulence and biological control impact horizontal scalar source distribu- tions. Decreasing spatial correlation between momentum and scalar \ufb02uxes with increasing instability results from ABL-scale structures spatially segregating momentum and scalar exchange at canopy top. In combi- nation, these results suggest the need for roughness sublayer parameterizations to incorporate an additional length or time scale re\ufb02ecting the in\ufb02uence of ABL-scale organized motions.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-jas-d-16-0186.1.pdf",
+    "title": "On the Formulation and Universality of Monin\u2013Obukhov Similarity Functions",
+    "year": "2016",
+    "abstract": "Surface-layer-resolving large-eddy simulations (LESs) of free-convective to near-neutral boundary layers are used to study Monin\u2013Obukhov similarity theory (MOST) functions. The LES dataset, pre- viously used for the analysis of MOST relationships for structure parameters, is extended for the mean vertical gradients and standard deviations of potential temperature, speci\ufb01c humidity, and wind. Also, local-free-convection (LFC) similarity is studied. The LES data suggest that the MOST functions for mean gradients are universal and unique. The data for the mean gradient of the horizontal wind display sig- ni\ufb01cant scatter, while the gradients of temperature and humidity vary considerably less. The LES results suggest that this scatter is mostly related to a transition from MOST to LFC scaling when approaching free- convective conditions and that it is associated with a change of the slope of the similarity functions toward the expected value from LFC scaling. Overall, the data show slightly, but consistent, steeper slopes of the similarity functions than suggested in literature. The MOST functions for standard deviations appear to be unique and universal when the entrainment from the free atmosphere into the boundary layer is suf\ufb01- ciently small. If entrainment becomes signi\ufb01cant, however, we \ufb01nd that the standard deviation of humidity no longer follows MOST. Under free-convective conditions, the similarity functions should reduce to universal constants (LFC scaling). This is supported by the LES data, showing only little scatter, but displaying a systematic height dependence of these constants. Like for MOST, the LFC similarity constant for the standard deviation of speci\ufb01c humidity becomes nonuniversal when the entrainment of dry air reaches signi\ufb01cant levels.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-JAS-D-19-0218.1.pdf",
+    "title": "Stable Boundary Layer Regimes in Single-Column Models",
+    "year": "2019",
+    "abstract": "Two contrasting \ufb02ow regimes exist in the stable boundary layer (SBL), as evidenced from both observa- tional and modeling studies. In general, numerical schemes such as those used in numerical weather prediction and climate models (NWPCs) reproduce a transition between SBL regimes. However, the char- acteristics of such a transition depend on the turbulence parameterizations and stability functions used to represent the eddy diffusivity in the models. The main goal of the present study is to detail how the two SBL regimes occur in single-column models (SCMs) by analyzing the SBL structure and its dependence on ex- ternal parameters. Two different turbulence closure orders (\ufb01rst order and an E\u2013l model) and two types of stability functions (short and long tail) are considered. The control exerted by the geostrophic wind and the surface cooling rate on the model SBL regimes is addressed. The model \ufb02ow presents a three-layer structure: a fully turbulent, weakly stable layer (WSL) next to the surface; a very stable layer (VSL) above that; and a laminar layer above the other two and toward the domain top. It is shown that the WSL and VSL are related to both SBL regimes, respectively. Furthermore, the numerically simulated SBL presents the two-layer structure regardless of the turbulence parameterization order and stability function used. The models also reproduce other features reported in recent observational studies: an S-shaped dependence of the thermal gradient on the mean wind speed and an independence of the vertical gradient of friction velocity du* on the mean wind speed.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-JAS-D-23-0079.1.pdf",
+    "title": "Mechanisms of Low-Level Jet Formation in the U.S. Mid-Atlantic Offshore",
+    "year": "2023",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "atsc-jas3654.1.pdf",
+    "title": "Modeling the Evolution of the Atmospheric Boundary Layer Coupled to the Land",
+    "year": "2004",
+    "abstract": "The modeling and prediction of the stable boundary layer over land is a persistent, problematic feature in weather, climate, and air quality topics. Here, the performance of a state-of-the-art single-column bound- ary layer model is evaluated with observations from the 1999 Cooperative Atmosphere\u2013Surface Exchange Study (CASES-99) field experiment. Very high model resolution in the atmosphere and the soil is utilized to represent three different stable boundary layer archetypes, namely, a fully turbulent night, an intermit- tently turbulent night, and a radiative night with hardly any turbulence (all at clear skies). Each archetype represents a different class of atmospheric stability. In the current model, the atmosphere is fully coupled to a vegetation layer and the underlying soil. In addition, stability functions (local scaling) are utilized based on in situ observations. Overall it is found that the vertical structure, the surface fluxes (apart from the intermittent character) and the surface temperature in the stable boundary layer can be satisfactorily modeled for a broad stability range (at a local scale) with the current understanding of the physics of the stable boundary layer. This can also be achieved by the use of a rather detailed coupling between the atmosphere and the underlying soil and vegetation, together with high resolution in both the atmosphere and the soil. This is especially true for the very stable nights, when longwave radiative cooling is dominant. Both model outcome and observations show that in the latter case the soil heat flux is a dominant term of the surface energy budget.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-jas3778.1.pdf",
+    "title": "Exploring Self-Correlation in Flux\u2013Gradient Relationships for",
+    "year": "2005",
+    "abstract": "In this paper, the degree of scatter in flux\u2013gradient relationships for stably stratified conditions is ana- lyzed. It is generally found that scatter in the dimensionless lapse rate \u0001h is larger than in the dimensionless shear \u0001m when plotted versus the stability parameter z/\u0002 (where \u0002 is the local Obukhov length). Here, this phenomenon is explained to be a result of self-correlation due to the occurrence of the momentum and the heat flux on both axes, measurement uncertainties, and other possibly relevant physical processes left aside. It is shown that the ratio between relative errors in the turbulent fluxes influences the orientation of self-correlation in the flux\u2013gradient relationships. In stable conditions, the scatter in \u0001m is largely sup- pressed by self-correlation while for \u0001h this is not the case (vice versa for unstable stratification). An alternative way of plotting is discussed for determining the slope of the linear \u0001m function.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-jas3903.1.pdf",
+    "title": "Mixing Processes in a Nocturnal Low-Level Jet: An LES Study",
+    "year": "2006",
+    "abstract": "A steady-state low-level jet observed in the Stable Atmospheric Boundary Layer Experiment in Spain- 1998 (SABLES-98) campaign is simulated using a large-eddy simulation model. The radiation is taken into account since its contribution to the budget of the tendency of temperature is as important as the contri- bution of the turbulence in the surface layer. The resulting regime is a two-layer flow separated by a change of the temperature gradient at the level of maximum speed. The upper part has turbulence originated by shear production extending up to 3 times the height of wind maximum and of the same order of magnitude as in the layer below. The jet nose is seen by the model as a decoupling layer, and the use of passive scalars allows for the inspection of the amount of transport across it, which is very small. The lower layer is very sensitive to the surface boundary conditions, but the principal patterns in the upper layer do not change significantly. The runs are compared to the observations through mean profiles, time series, and probability density functions.",
+    "status": "success"
+  },
+  {
+    "file": "atsc-jasD190255.pdf",
+    "title": "New Modi\ufb01ed and Extended Stability Functions for the Stable Boundary Layer based on",
+    "year": "2019",
+    "abstract": "Climate models still have de\ufb01cits in reproducing the surface energy and momentum budgets in Arctic regions. One of the reasons is that currently used transfer coef\ufb01cients occurring in parameterizations of the turbulent \ufb02uxes are based on stability functions derived from measurements over land and not over sea ice. An improved parameterization is developed using the Monin\u2013Obukhov similarity theory (MOST) and corre- sponding stability functions that reproduce measurements over sea ice obtained during the Surface Heat Budget of the Arctic Ocean (SHEBA) campaign. The new stability functions for the stable surface layer represent a modi\ufb01cation of earlier ones also based on SHEBA measurements. It is shown that the new functions are superior to the former ones with respect to the representation of the measured relationship between the MOST stability parameter and the bulk Richardson number. Nevertheless, the functions ful\ufb01ll the same criteria of applicability as the earlier functions and contain, as an extension, a dependence on the neutral-limit turbulent Prandtl number. Applying the new functions we develop an ef\ufb01cient noniterative parameterization of the near-surface turbulent \ufb02uxes of momentum and heat with transfer coef\ufb01cients as a function of the bulk Richardson number (Rib) and roughness parameters. A hierarchy of transfer coef\ufb01cients is recommended for weather and climate models. They agree better with SHEBA data for strong stability (Rib . 0.1) than previous parameterizations and they agree well with those based on the Businger\u2013Dyer functions in the range Rib # 0.",
+    "status": "success"
+  },
+  {
+    "file": "clim-jcli-d-11-00081.1.pdf",
+    "title": "The Changing Cryosphere: Pan-Arctic Snow Trends (1979\u20132009)",
+    "year": "1979",
+    "abstract": "Arctic snow presence, absence, properties, and water amount are key components of Earth\u2019s changing climate system that incur far-reaching physical and biological rami\ufb01cations. Recent dataset and modeling developments permit relatively high-resolution (10-km horizontal grid; 3-h time step) pan-Arctic snow es- timates for 1979\u20132009. Using MicroMet and SnowModel in conjunction with land cover, topography, and 30 years of the NASA Modern-Era Retrospective Analysis for Research and Applications (MERRA) atmo- spheric reanalysis data, a distributed snow-related dataset was created including air temperature, snow precipitation, snow-season timing and length, maximum snow water equivalent (SWE) depth, average snow density, snow sublimation, and rain-on-snow events. Regional variability is a dominant feature of the modeled snow-property trends. Both positive and negative regional trends are distributed throughout the pan-Arctic domain, featuring, for example, spatially distinct areas of increasing and decreasing SWE or snow season length. In spite of strong regional variability, the data clearly show a general snow decrease throughout the Arctic: maximum winter SWE has decreased, snow-cover onset is later, the snow-free date in spring is earlier, and snow-cover duration has decreased. The domain-averaged air temperature trend when snow was on the ground was 0.178C decade21 with minimum and maximum regional trends of 20.558 and 0.788C decade21, respectively. The trends for total number of snow days in a year averaged 22.49 days decade21 with minimum and maximum regional trends of 217.21 and 7.19 days decade21, respectively. The average trend for peak SWE in a snow season was 20.17 cm decade21 with minimum and maximum regional trends of 22.50 and 5.70 cm decade21, respectively.",
+    "status": "success"
+  },
+  {
+    "file": "Cohenetal_NGeo14.pdf",
+    "title": "NATURE GEOSCIENCE | ADVANCE ONLINE PUBLICATION | www.nature.com/naturegeoscience",
+    "year": "1979",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "DERIVATION_OF_THE_RELATIONSHIP_BETWEEN_T.pdf",
+    "title": "Finnish Institute of Marine Research, Box 33 , FIN-00931 , Helsinki, Finland",
+    "year": "1995",
+    "abstract": "Using the relationship botween the bulk Richardson number \u00c4, and the Obukhov stability parameter z I L (L is the Obukhov length), formally obtained from the flux-profile relationships, methods to estimate z f L are discussed. Generally, z f L can not be uniquely solved analytically from flux-profile relationships, and it may be defined using routine observations only by iteration. In this paper, relationships of z f L in terms of \u00c4, obtained semianalytically were corrected for variable aerodynamic roughness z0 and for aerodynamic-to-temperature roughness ratios zof zT, using the flux-profile iteration procedure. Assuming the so-called log-linear profiles to be valid for the near- neutral and moderately stable region (, lL < l), a simple relationship is obtained. For the extension to strong stability, a simple series expansion, based on utilisation of specified universal functions, is derived. For the unstable region, a simple form based on utilisation of the Businger-Dyer type universal functions, is_derived. The formulae yield good estimates for surfaces having an aerodynamic rough- ness of lO-s to l0-1 m, and an aerodyna-ic-to-temperature roughness ratio of ,nf ,7 :0.5 to i.3. When applied to the universal functions, the formulae yield transfer coefficients and fluxes which are almost identical with those from the iteration procedure.",
+    "status": "success"
+  },
+  {
+    "file": "Example-2.pdf",
+    "title": "Geometric Mean Height and Richardson Number Bias",
+    "abstract": "This exercise explores systematic bias in bulk Richardson number computation on coarse vertical grids in stable boundary layers. Students will apply Jensen\u2019s inequality to prove that layer-averaged Rib underestimates the point value at the geometric mean height zg = \u221az0z1 when Rig(z) is concave-down, and verify this bias numerically for realistic stable layer profiles. 1 Problem Statement Atmospheric models discretize the vertical using finite layers. In the stable boundary layer (SBL), the bulk Richardson number Rib computed across a layer systematically differs from the gra- dient Richardson number Rig evaluated at a representative height. Your task is to prove that when Rig(z) is concave-down (typical in SBL), the layer-averaged Rib underestimates the point value at the geometric mean height zg = \u221az0z",
+    "status": "success"
+  },
+  {
+    "file": "Example-3.pdf",
+    "title": "Status Report: Dynamic Critical Richardson Number",
+    "year": "2025",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "Example.pdf",
+    "title": "Boundary Layer Meteorology",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "FULLTEXT01.pdf",
+    "title": "Examensarbete vid Institutionen f\u00f6r geovetenskaper",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "Geometric Mean Height and Richardson Number Bias via Jensen Inequality.pdf",
+    "title": "Homework: Geometric Mean Height &",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "Geophysical Research Letters - 2022 - Wills - Systematic Climate Model Biases in the Large\u2010Scale Patterns of Recent.pdf",
+    "title": "Earth's climatological pattern of sea-surface temperature (SST) plays a key role in shaping the large-scale",
+    "year": "1969",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "gmd-11-4727-2018.pdf",
+    "title": "Geosci. Model Dev., 11, 4727\u20134738, 2018",
+    "year": "2018",
+    "doi": "10.5194/gmd-11-4727-2018",
+    "abstract": "It is well known that the representation of cer- tain atmospheric conditions in climate and weather models can still suffer from the limited grid resolution that is facil- itated by modern-day computer systems. Herein we study a simple one-dimensional analogy to those models by using a single-column model description of the atmosphere. The model employs an adaptive Cartesian mesh that applies a high-resolution mesh only when and where it is required. The so-called adaptive-grid model is described, and we re- port our \ufb01ndings obtained for tests to evaluate the representa- tion of the atmospheric boundary layer, based on the \ufb01rst two GEWEX ABL Study (GABLS) inter-comparison cases. The analysis shows that the adaptive-grid algorithm is indeed able to dynamically coarsen and re\ufb01ne the numerical grid whilst maintaining an accurate solution. This is an interesting result as in reality, transitional dynamics (e.g. due to the diurnal cy- cle or due to changing synoptic conditions) are the rule rather than the exception. 1",
+    "status": "success"
+  },
+  {
+    "file": "Grachev_et_al_2007_BLM_v124.pdf",
+    "title": "Boundary-Layer Meteorol (2007) 124:315\u2013333",
+    "year": "2007",
+    "doi": "10.1007/s10546-007-9177-6",
+    "abstract": "Measurements of atmospheric turbulence made during the Surface Heat Budget of the Arctic Ocean Experiment (SHEBA) are used to examine the pro\ufb01le stability functions of momentum, \u03d5m, and sensible heat, \u03d5h, in the stably strati\ufb01ed boundary layer over the Arctic pack ice. Turbulent \ufb02uxes and mean meteorological data that cover different surface conditions and a wide range of stability conditions were continuously measured and reported hourly at \ufb01ve levels on a 20-m main tower for 11 months. The comprehensive dataset collected during SHEBA allows studying \u03d5m and \u03d5h in detail and includes ample data for the very stable case. New parameter- izations for \u03d5m(\u03b6) and \u03d5h(\u03b6) in stable conditions are proposed to describe the SHEBA data; these cover the entire range of the stability parameter \u03b6 = z/L from neutral to very stable conditions, where L is the Obukhov length and z is the measurement height. In the limit of very strong stability, \u03d5m follows a \u03b6 1/3 dependence, whereas \u03d5h initially increases with increasing \u03b6, reaches a maximum at \u03b6 \u224810, and then tends to A. A. Grachev \u00b7 P. O. G. Persson Cooperative Institute for Research in Environmental Sciences, University of Colorado, Boulder, CO, USA A. A. Grachev (B) \u00b7 C. W. Fairall \u00b7 P. O. G. Persson NOAA Earth System Research Laboratory, Boulder, CO, USA e-mail: Andrey.Grachev@noaa.gov E. L Andreas U.S. Army Cold Regions Research and Engineering Laboratory, Hanover, NH, USA Present address: E. L Andreas NorthWest Research Associates, Inc. (Bellevue Division), 25 Eagle Ridge, Lebanon, NH 03766-1900, USA P. S. Guest Naval Postgraduate School, Monterey, CA, USA 316 A. A. Grachev et al. level off with increasing \u03b6. The effects of self-correlation, which occur in plots of \u03d5m and \u03d5h versus \u03b6, are reduced by using an independent bin-averaging method instead of conventional averaging.",
+    "status": "success"
+  },
+  {
+    "file": "hydr-1525-7541_2000_001_0075_ssdita_2_0_co_2.pdf",
+    "title": "q 2000 American Meteorological Society",
+    "year": "2000",
+    "abstract": "Field measurements are undertaken with the speci\ufb01c purpose of addressing open issues in subgrid-scale (SGS) modeling of turbulence for large eddy simulation. Wind velocity and temperature signals are obtained using a horizontal linear array of six three-dimensional sonic anemometers placed at a height of 2.15 m in the surface layer over a grass \ufb01eld. From these data, the SGS heat \ufb02ux and a two-dimensional surrogate of the SGS dissipation of temperature variance (x) are computed by means of two-dimensional horizontal \ufb01ltering and by invoking Taylor\u2019s hypothesis. Conditional averaging is used to isolate the effects of large-scale structures (sweeps and ejections) of the \ufb02ow on the SGS dissipation under different stability conditions. During \ufb02ow events associated with strong increments of vertical velocity (possibly associated with the onset of ejection events), negative values of x, indicative of transfer of temperature variance from the small scales to the resolved \ufb01eld (backscatter), have an important relative contribution regardless of atmospheric stability. Strong drops in the vertical velocity (possibly associated with the onset of sweeps) are accompanied by large positive values of the SGS dissipation. The two-dimensional SGS dissipation is compared with a one-dimensional surrogate based on a single sensor used in earlier work. The one- and two-dimensional results show qualitatively the same trends. Quantitative differences underscore the advantages of a two-dimensional approach based on the sensor array used in this work.",
+    "status": "success"
+  },
+  {
+    "file": "Influence_of_stability_on_the_flux_profi.pdf",
+    "title": "Nonlin. Processes Geophys., 13, 185\u2013203, 2006",
+    "year": "2006",
+    "abstract": "Data from SABLES98 experimental campaign have been used in order to study the in\ufb02uence of stability (from weak to strong strati\ufb01cation) on the \ufb02ux-pro\ufb01le rela- tionships for momentum, \u03c6m, and heat, \u03c6h. Measurements from 14 thermocouples and 3 sonic anemometers at three levels (5.8, 13.5 and 32 m) for the period from 10 to 28 September 1998 were analysed using the framework of the local-scaling approach (Nieuwstadt, 1984a; 1984b), which can be interpreted as an extension of the Monin-Obukhov similarity theory (Obukhov, 1946). The results show increas- ing values of \u03c6m and \u03c6h with increasing stability parameter \u03b6=z/3, up to a value of \u03b6\u22481\u20132, above which the values re- main constant. As a consequence of this levelling off in \u03c6m and \u03c6h for strong stability, the turbulent mixing is underesti- mated when linear similarity functions (Businger et al., 1971) are used to calculate surface \ufb02uxes of momentum and heat. On the other hand when \u03c6m and \u03c6h are related to the gra- dient Richardson number, Ri, a different behaviour is found, which could indicate that the transfer of momentum is greater than that of heat for high Ri. The range of validity of these linear functions is discussed in terms of the physical aspects of turbulent intermittent mixing. 1",
+    "status": "success"
+  },
+  {
+    "file": "J Adv Model Earth Syst - 2024 - Vignon - Designing a Fully\u2010Tunable and Versatile TKE\u2010l Turbulence Parameterization for the.pdf",
+    "title": "Designing a Fully\u2010Tunable and Versatile TKE\u2010l Turbulence",
+    "abstract": "In planetary atmospheres, turbulent motions actively contribute to the mixing of quantities such as heat, momentum, and chemical species. Such motions are not resolved in coarse\u2010 grid atmospheric models and have to be parameterized. The parameterization of turbulent mixing should ideally be based on physical laws and sufficiently sophisticated to realistically represent the full spectrum of motions over the full range of stability encountered in the atmospheres. However, it also necessarily contains a number of closure parameters not always well identified and whose values are determined empirically\u2014thereby questioning the universality of the parameterization and its potential application over the full globe or even to other planets\u2014or adjusted to guarantee the numerical stability of the model. This study presents the design of a turbulent mixing parameterization that can be fully calibrated and applied in planetary atmospheres such as that of Mars. We then calibrate the parameterization on an idealized simulation set\u2010up and test its robustness and performance by running simulations of the Antarctic and Martian atmospheres.",
+    "status": "success"
+  },
+  {
+    "file": "JGR Atmospheres - 2017 - Vignon - Antarctic boundary layer parametrization in a general circulation model  1\u2010D simulations.pdf",
+    "title": "Journal of Geophysical Research: Atmospheres",
+    "venue": "Geophysical Research: Atmospheres\nAntarctic bounda",
+    "abstract": "The parametrization of the atmospheric boundary layer (ABL) is critical over the Antarctic Plateau for climate modelling since it a\ufb00ects the climatological temperature inversion and the negatively buoyant near-surface \ufb02ow over the ice-sheet. This study challenges state-of-the-art parametrizations used in general circulation models to represent the clear-sky summertime diurnal cycle of the ABL at Dome C, Antarctic Plateau. The Laboratoire de M\u00e9t\u00e9orologie Dynamique-Zoom model is run in a 1-D con\ufb01guration on the fourth Global Energy and Water Cycle Exchanges Project Atmospheric Boundary Layers Study case. Simulations are analyzed and compared to observations, giving insights into the sensitivity of one model that participates to the intercomparison exercise. Snow albedo and thermal inertia are calibrated leading to better surface temperatures. Using the so-called \u201cthermal plume model\u201d improves the momentum mixing in the diurnal ABL. In stable conditions, four turbulence schemes are tested. Best simulations are those in which the turbulence cuts o\ufb00above 35 m in the middle of the night, highlighting the contribution of the longwave radiation in the ABL heat budget. However, the nocturnal surface layer is not stable enough to distinguish between surface \ufb02uxes computed with di\ufb00erent stability functions. The absence of subsidence in the forcings and an underestimation of downward longwave radiation are identi\ufb01ed to be likely responsible for a cold bias in the nocturnal ABL. Apart from model-speci\ufb01c improvements, the paper clari\ufb01es on which are the critical aspects to improve in general circulation models to correctly represent the summertime ABL over the Antarctic Plateau.",
+    "status": "success"
+  },
+  {
+    "file": "MAILLARD_Julia_these_2022.pdf",
+    "title": "https://theses.hal.science/tel-04638981v1",
+    "year": "2024",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "McNider_Biazar_Status_11212025.pdf",
+    "title": "To: Richard T. McNider richard.mcnider@uah.edu, Arastoo P. Biazar arastoo.biazar@uah.edu",
+    "year": "2025",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "McNider_etal_JAMC_2018_GreatLakes_StableBoundaryLayer.pdf",
+    "title": "Examination of the Physical Atmosphere in the Great Lakes Region and Its Potential",
+    "year": "2017",
+    "abstract": "High mixing ratios of ozone along the shores of Lake Michigan have been a recurring theme over the last 40 years. Models continue to have dif\ufb01culty in replicating ozone behavior in the region. Although emissions and chemistry may play a role in model performance, the complex meteorological setting of the relatively cold lake in the summer ozone season and the ability of the physical model to replicate this environment may contribute to air quality modeling errors. In this paper, several aspects of the physical atmosphere that may affect air quality, along with potential paths to improve the physical simulations, are broadly examined. The \ufb01rst topic is the consistent overwater overprediction of ozone. Although overwater measurements are scarce, special boat and ferry ozone measurements over the last 15 years have indicated consistent overprediction by models. The roles of model mixing and lake surface temperatures are examined in terms of changing stability over the lake. From an analysis of a 2009 case, it is tentatively concluded that excessive mixing in the me- teorological model may lead to an underestimate of mixing in of\ufb02ine chemical models when different boundary layer mixing schemes are used. This is because the stable boundary layer shear, which is removed by mixing in the meteorological model, can no longer produce mixing when mixing is rediagnosed in the of\ufb02ine chemistry model. Second, air temperature has an important role in directly affecting chemistry and emissions. Land\u2013water temperature contrasts are critical to lake and land breezes, which have an impact on mixing and transport. Here, satellite-derived skin temperatures are employed as a path to improve model temperature performance. It is concluded that land surface schemes that adjust moisture based on surface energetics are important in reducing temperature errors.",
+    "status": "success"
+  },
+  {
+    "file": "noaa_59124_DS1.pdf",
+    "title": "Boundary-Layer Meteorology (2022) 185:199\u2013228",
+    "year": "2022",
+    "doi": "10.1007/s10546-022-00727-4",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "Non_iterative_Surface_Flux_Parametrizati.pdf",
+    "title": "Full Terms & Conditions of access and use can be found at",
+    "year": "2005",
+    "doi": "10.3137/ao.430305",
+    "venue": "to this",
+    "abstract": "This study presents a semi-analytic non-iterative solution for the Monin-Obukhov similarity equa- tions under unstable surface conditions. The solution is represented in terms of the non-dimensional Monin- Obukhov stability parameter z/L. This parameter is given as a function of the bulk Richardson number and other surface parameters including the heat and momentum roughness lengths which are generally assumed to be dif- ferent in this formulation. The proposed formulations give results that are both quantitatively and qualitatively consistent with the fully iterated numerical solution for a wide range of surface parameters. RESUM\u00c9 [Traduit par la r\u00e9daction] Cette \u00e9tude pr\u00e9sente une solution semi-analytique non it\u00e9rative aux \u00e9quations de similitude de Monin-Obukhov dans des conditions de surface instables. La solution est exprim\u00e9e en fonction de la stabilit\u00e9 adimensionnelle z/L de Monin-Obukhov. Ce param\u00e8tre est donn\u00e9 comme une fonction du nombre de Richardson apparent et d\u2019autres param\u00e8tres de surface, y compris les longueurs de rugosit\u00e9 de la chaleur et de la quantit\u00e9 de mouvement, qui sont g\u00e9n\u00e9ralement suppos\u00e9es diff\u00e9rentes dans cette formulation. Les formula- tions propos\u00e9es donnent des r\u00e9sultats qui s\u2019accordent tant quantitativement que qualitativement avec la solution num\u00e9rique pleinement it\u00e9r\u00e9e pour une vaste gamme de param\u00e8tres de surface. ATMOSPHERE-OCEAN 43 (3) 2005, 249\u2013257 \u00a9 Canadian Meteorological and Oceanographic Society *Corresponding author\u2019s e-mail: Kabdella@trentu.ca 1",
+    "status": "success"
+  },
+  {
+    "file": "On_the_bulk_Richardson_number_and_flux_p.pdf",
+    "title": "Atmospheric Environment 37 (2003) 3681\u20133691",
+    "year": "2003",
+    "abstract": "For describing the surface \ufb02uxes in the atmospheric dispersion models, the commonly used linear universal similarity functions fm and fh for nondimensional wind and temperature pro\ufb01les (J. Atmos. Sci. 28 (1971) 181; Boundary-Layer Meteorol. 7 (1974) 363) are analyzed under weak wind stable conditions. The stability parameter z=L (z is the height above the ground and L is the Obukhov length) is not known a priori. On the other hand, the bulk Richardson number (RiB) is readily available from pro\ufb01le measurements. Thus, a systematic mathematical analysis is carried out to analyze the applicability of the linear functions in terms of RiB: These linear functions are found to be valid as long as RiB is smaller than Prt g=b2 where Prt is the turbulent Prandtl number and b and g are constants appearing in the linear functions of fm and fh: The linear functional forms for fm and fh underestimate the Obukhov length resulting in the large value of the stability parameter when RiBXPrt g=b2 occurring in weak wind stable conditions. Using the data from plume validation \ufb01eld experiment conducted by Electric Power Research Institute at Kincaid, it is found that in 70% of the weak wind cases, the RiB is larger than Prt g=b2: The similarity functions proposed by Beljaars and Holtslag (J. Appl. Meteorol. 30 (1991) 327) are shown to perform well in weak wind stable conditions for all the values of RiB: The computed surface \ufb02uxes are also compared with those based on turbulence measurements taken in Cooperative Atmospheric Surface Exchange Study. r 2003 Elsevier Ltd. All rights reserved.",
+    "status": "success"
+  },
+  {
+    "file": "phoc-2009jpo4133.1.pdf",
+    "title": "A New Look at Richardson Number Mixing Schemes for Equatorial Ocean Modeling",
+    "year": "2008",
+    "abstract": "A reexamination of turbulence dissipation measurements from the equatorial Paci\ufb01c shows that the tur- bulence diffusivities are not a simple function of the gradient Richardson number. A widely used mixing scheme, the K-pro\ufb01le parameterization, overpredicts the turbulent vertical heat \ufb02ux by roughly a factor of 4 in the stably strati\ufb01ed region between the surface mixed layer and the Equatorial Undercurrent (EUC). Ad- ditionally, the heat \ufb02ux divergence is of the incorrect sign in the upper 80 m. An alternative class of pa- rameterizations is examined that expresses the mixing coef\ufb01cients in terms of the large-scale kinetic energy, shear, and Richardson number. These representations collapse the turbulence diffusivities above and below the Equatorial Undercurrent, and a tuned version is able to reproduce the vertical turbulence heat \ufb02ux within the 50\u2013180-m depth range. Kinetic energy is not Galilean invariant, so the collapse of the data with the new parameterization suggests that oceanic turbulence responds to boundary forcing at depths well below the surface mixed layer.",
+    "status": "success"
+  },
+  {
+    "file": "PhysFluids_24_105105.pdf",
+    "title": "Mean velocity and temperature profiles in a sheared diabatic turbulent",
+    "year": "2012",
+    "doi": "10.1063/1.4757660",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "Physical_Interpretation_of_the_Curvature_of_the_Gradient_Richardson_Number_in_the_Stable_Atmospheric_Boundary_Layer.pdf",
+    "title": "Physical Interpretation of the Curvature of the Gradient",
+    "year": "2025",
+    "abstract": "The curvature of the gradient Richardson number Rig with respect to the Monin\u2013Obukhov stability parameter \u03b6 = z/L provides fundamental insight into the nonlinear coupling between stratification and turbulent mixing in the atmospheric surface layer. We derive a compact an- alytical expression for \u22022Rig/\u2202\u03b62 in terms of logarithmic derivatives of the Monin\u2013Obukhov stability functions \u03d5m and \u03d5h, introducing the neutral curvature invariant \u2206= \u03b1h\u03b2h \u22122\u03b1m\u03b2m that governs the initial departure from linearity. We demonstrate that negative curvature (typ- ical in stable boundary layers) leads to systematic underestimation of near-surface stability on coarse vertical grids, producing excessive turbulent mixing. A grid-aware correction strategy preserving the neutral curvature 2\u2206is outlined, with implications for improved parameterization of stable nocturnal and polar boundary layers. 1",
+    "status": "success"
+  },
+  {
+    "file": "Relationship_between_the_Monin_Obukhov_S.pdf",
+    "title": "q 2003 American Meteorological Society",
+    "year": "2003",
+    "abstract": "Relationships between the Monin\u2013Obukhov stability parameter and the bulk Richardson number are useful for explicit calculation of \ufb02uxes through the air\u2013sea interface. The most straightforward method assumes simple proportionality and is supported well by experimental evidence in a recent work by Grachev and Fairall. On the other hand, the reference iterative method is regarded as more accurate. To recognize possible differences, calculated values of the proportionality factor as a function of wind speed and air\u2013sea virtual potential temperature difference are shown. The calculation is based on commonly used sea roughness speci\ufb01cations and the Mellor\u2013 Yamada turbulence-closure model, which has been shown in previous studies to reproduce the three-sublayer structure of the atmospheric surface layer under convective conditions and to predict mean \ufb02ow pro\ufb01les that are consistent with empirical data. The results show that the proportionality factor varies with the wind speed and virtual potential temperature vertical differences and that this variability has a nonmonotonic character when wind speeds are smaller than 5 m s2",
+    "status": "success"
+  },
+  {
+    "file": "Retrieval_of_Model_Grid_Scale_Heat_Capac.pdf",
+    "title": "Retrieval of Model Grid-Scale Heat Capacity Using Geostationary Satellite Products.",
+    "year": "2004",
+    "abstract": "In weather forecast and general circulation models the behavior of the atmospheric boundary layer, especially the nocturnal boundary layer, can be critically dependent on the magnitude of the effective model grid-scale bulk heat capacity. Yet, this model parameter is uncertain both in its value and in its conceptual meaning for a model grid in heterogeneous conditions. Current methods for estimating the grid-scale heat capacity involve the areal/volume weighting of heat capacity (resistance) of various, often ill-defined, components. This can lead to errors in model performance in certain parameter spaces. Here, a technique is proposed and tested for recovering bulk heat capacity using time tendencies in satellite-retrieved surface skin temperature (SST). The technique builds upon sensitivity studies that show that surface temperature is most sensitive to thermal inertia in the early evening hours. The retrievals are made within the context of a surface energy budget in a regional-scale model [the fifth-generation Pennsylvania State University\u2013 National Center for Atmospheric Research Mesoscale Model (MM5)]. The retrieved heat capacities are used in the forecast model, and it is shown that the model predictions of temperature are improved in the nighttime during the forecast periods.",
+    "status": "success"
+  },
+  {
+    "file": "Ri.pdf",
+    "title": "Gradient and Bulk Richardson Numbers: \u03b6",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "Screen_Simmonds_2010_GRL.pdf",
+    "title": "Increasing fall\u2010winter energy loss from the Arctic Ocean",
+    "year": "2010",
+    "doi": "10.1029/2010GL044136.",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "sensors-21-03659-v2.pdf",
+    "title": "Atmospheric Boundary Layer Wind Pro\ufb01le Estimation Using",
+    "year": "2021",
+    "doi": "10.3390/s21113659",
+    "abstract": "This paper introduces a new methodology for estimating the wind pro\ufb01le within the ABL (Atmospheric Boundary Layer) using a neural network and a single-point near-ground measurement. An important advantage of this solution when compared with others available in the literature is that it only requires near surface measurements for the prognosis once the neural network is trained. Another advantage is that it can be used to study the wind pro\ufb01le temporal evolution. This work uses data collected by a lidar sensor located at the Universidad de Le\u00f3n (Spain). The neural network best con\ufb01guration was determined using sensibility analyses. The result is a multilayer perceptron with three layers for each altitude: the input layer has six nodes for the last three measurements, the second has 128 nodes and the third consists of two nodes that provide u and v. The proposed method has better performance than traditional methods. The obtained wind pro\ufb01le information obtained is useful for multiple applications, such as preliminary calculations of the wind resource or CFD models.",
+    "status": "success"
+  },
+  {
+    "file": "SHEBA_measurements.pdf",
+    "title": "Measurements near the Atmospheric Surface Flux Group tower",
+    "year": "2000",
+    "abstract": "and a discussion of the effects of uncertainties in the data on the conclusions. [5] Readers are referred to Persson et al. [2002] (available at the National Technical Information Service, 5285 Port Royal Road, Springfield, VA 22061) and the ASFG SHEBA website (http://www.weather.nps.navy.mil/\u0002psguest/sheba/) for more detailed descriptions of the site, data calibrations, editing and processing, and comparisons to other data sources at SHEBA. The data set can be obtained at http:// www.joss.ucar.edu/cgi-bin/codiac/projs?SHEBA. 2. Site and Measurement Description 2.",
+    "status": "success"
+  },
+  {
+    "file": "Stability_functions_based_upon_shear_fun.pdf",
+    "title": "DAVID E. ENGLAND and RICHARD T. MCNIDER",
+    "year": "1994",
+    "abstract": "The stability functions for momentum and heat under a Richardson number formulation are derived from the nondimensional shear functions under a Monin-Obukhov formulation. The Prandtl number is also derived as a function of the Richardson number. Previously, this has been done only in a limited sense. Because the Richardson number formulation is expressed in closed form, iterative techniques are no longer needed in numerical models that use Monin-Obukhov similarity theory. This time-saving approach is made possible by deriving expressions for the friction velocity and temperature in terms of the Richardson-number-dependent stability functions. In addition, the Richardson number approximation in the lowest layer is made to depend explicitly upon the surface roughness.",
+    "status": "success"
+  },
+  {
+    "file": "Turbulent_fluxes_in_stably_stratified_bo.pdf",
+    "title": "arXiv:0812.4017v1  [physics.flu-dyn]  21 Dec 2008",
+    "year": "2008",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "ubc_2025_november_lordmay_cole.pdf.pdf",
+    "title": "Turbulent heat fluxes and katabatic flow",
+    "year": "2018",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  },
+  {
+    "file": "VR3.pdf",
+    "title": "In a hypothetical two\u2010layer quasi\u2010geostrophic atmospheric model on a beta\u2010plane with Coriolis",
+    "abstract": "[Abstract not found]",
+    "status": "partial"
+  }
+]
