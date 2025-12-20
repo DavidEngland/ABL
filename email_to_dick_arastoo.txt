@@ -1,0 +1,22 @@
+Subject: Interactive MOST curvature visualization for SBL teaching & outreach
+
+Hi Dick and Arastoo,
+
+I put together an interactive MOST curvature visualization to help students see how Δ and grid spacing drive stability bias: https://claude.ai/public/artifacts/6887cbe9-1440-40aa-b296-4062bc18af14
+
+Highlights
+- Curvature regimes: Δ < 0 concave-down bias, Δ = 0 neutral, Δ > 0 rare.
+- Grid correction: master equation G(ζ, Δz) with live slider for Δz.
+- Bias impacts: shows B = Ri_g(z_g)/Ri_b shrinking from ~2.0 to ~1.3 with the fix.
+- Custom parameters: students can vary a_m, a_h and see Δ update in real time.
+
+Why it matters
+- Makes the “first 100 m” message tangible for atmospheric science students.
+- Good companion for our SBL lectures, WRF/CMAQ training, and outreach.
+
+Next steps / ask
+- Let me know if you’d like this embedded in the course site or linked from the slides.
+- Happy to add your feedback or additional cases (urban, Arctic) this week.
+
+Thanks!
+David
