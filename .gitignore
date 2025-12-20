@@ -369,6 +369,10 @@ output/
 results/
 scratch/
 
+# Ignore MYNN-EDF directory (root and any nested occurrences)
+MYNN-EDF/
+**/MYNN-EDF/
+
 # Exclude figures if regenerated from code
 # figures/
 

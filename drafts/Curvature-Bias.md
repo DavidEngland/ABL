@@ -1,0 +1,12 @@
+**Jensen’s Inequality** explains why atmospheric models on coarse grids systematically **underestimate stability** in the Stable Boundary Layer (SBL). In numerical weather prediction, turbulence is often calculated using a **Bulk Richardson number ($Ri_b$)**, which is a layer-averaged value over a vertical grid cell ($\Delta z$). However, the physical processes governing turbulence are dictated by local **Gradient Richardson numbers ($Ri_g$)**.
+
+The bias arises due to the following mathematical and physical relationships:
+
+*   **Concave-Down Curvature:** In the SBL, the profile of the local Richardson number ($Ri_g$) is typically **concave-down** ($\Delta < 0$). This means that the stability increases rapidly near the surface and then levels off.
+*   **The Mathematical Gap:** According to Jensen’s Inequality, the average value of a concave function over an interval is **mathematically guaranteed to be less than** the function’s value at its representative center. Specifically, the sources show that $Ri_b = \frac{1}{\Delta z}\int_{z_0}^{z_1} Ri_g(z)\,dz < Ri_g(z_g)$, where **$z_g$ is the geometric mean height**.
+*   **Systematic Underestimation:** Because $Ri_b$ is an average over the concave-down curve, it is **systematically lower** than the true local stability found at the "natural center" of the layer.
+*   **Consequences of Bias:** Because the model perceives the atmosphere as less stable ($Ri_b < Ri_g$), it erroneously predicts **excessive turbulent mixing** (over-mixing). This leads to common model errors such as **warm biases** at the surface during the night and incorrect inversion heights.
+*   **Grid Sensitivity:** This bias is highly sensitive to the **grid scale ($\Delta z$)**. Coarser grids average over a larger "gap" in the curvature, which exaggerates the underestimation of stability and leads to more significant forecasting errors.
+
+**Analogy**
+Imagine trying to calculate the average steepness of a rounded hill using a single straight plank of wood (the coarse grid layer) that only touches the very bottom and the very top. Because the hill is **curved (concave)**, the straight plank will always sit much lower than the actual slope of the hill's peak. If you were a model trying to predict how fast a ball would roll, you would mistakenly think the terrain is much flatter than it really is, leading you to predict a much slower, "smoother" result than the actual steep reality.
