@@ -1,22 +1,65 @@
-Subject: Interactive MOST curvature visualization for SBL teaching & outreach
+Subject: Interactive MOST Curvature Visualization — Teaching Tool for SBL Physics
 
 Hi Dick and Arastoo,
 
-I put together an interactive MOST curvature visualization to help students see how Δ and grid spacing drive stability bias: https://claude.ai/public/artifacts/6887cbe9-1440-40aa-b296-4062bc18af14
+I've built an interactive web-based visualization to help students grasp the curvature correction concept:
 
-Highlights
-- Curvature regimes: Δ < 0 concave-down bias, Δ = 0 neutral, Δ > 0 rare.
-- Grid correction: master equation G(ζ, Δz) with live slider for Δz.
-- Bias impacts: shows B = Ri_g(z_g)/Ri_b shrinking from ~2.0 to ~1.3 with the fix.
-- Custom parameters: students can vary a_m, a_h and see Δ update in real time.
+https://claude.ai/public/artifacts/6887cbe9-1440-40aa-b296-4062bc18af14
 
-Why it matters
-- Makes the “first 100 m” message tangible for atmospheric science students.
-- Good companion for our SBL lectures, WRF/CMAQ training, and outreach.
+**What it demonstrates:**
 
-Next steps / ask
-- Let me know if you’d like this embedded in the course site or linked from the slides.
-- Happy to add your feedback or additional cases (urban, Arctic) this week.
+1. **Curvature Regimes Tab:** Shows how Δ = a_h - 2a_m drives Ri_g curvature
+   - Δ < 0 (typical SBL): concave-down → models underestimate stability
+   - Δ = 0 (neutral): linear → no bias
+   - Δ > 0 (rare): concave-up
 
-Thanks!
+2. **Grid Correction Tab:** Master equation G(ζ, Δz) with live slider
+   - Students can adjust Δz from 10-200m and see damping factor respond
+   - Shows fine (10m), medium (40m), coarse (100m) grids simultaneously
+
+3. **Bias Ratio Tab:** B = Ri_g(z_g)/Ri_b visualization
+   - Demonstrates 40-60% error reduction with correction
+   - Before/after comparison for GABLS1-type scenarios
+
+4. **Temperature Profile Tab:** Why coarse models miss inversions
+   - Reality vs. model averaging over first 100m
+   - Visual explanation of warm bias mechanism
+
+5. **Custom Parameters Tab:** Educational sandbox
+   - Students adjust a_m and a_h, see Δ update in real-time
+   - Compares against Businger '71, Högström '88, Beljaars-Holtslag '91
+
+**Why this helps:**
+
+- Makes the "Jensen's inequality gap" visually obvious
+- Students can experiment with parameter sensitivity immediately
+- Reinforces that Δz=100m isn't "just coarse"—it's systematically biased
+- Perfect for homework assignments or thesis diagnostic phase
+
+**Potential uses:**
+
+- Embed in course website alongside lecture slides
+- Link from ABL GitHub README as interactive supplement
+- Use in WRF/CMAQ training workshops (EPA, NOAA summer schools)
+- Student projects: "Run your tower data diagnostic, then check the viz"
+
+**Next steps (if you approve):**
+
+1. Add urban/Arctic case toggles with different parameter sets
+2. Include MOSAiC/ARM NSA validation data overlays
+3. Export static figures for publication supplements
+4. Create Jupyter notebook version for offline use
+
+Let me know if you'd like me to:
+- Present this at our next lab meeting
+- Add specific features (e.g., dynamic Ri_c* visualization)
+- Package it for the atmospheric sciences teaching community
+
+The code is pure React/Recharts (no backend needed), so we can host it anywhere or embed in course management systems.
+
+Thoughts?
+
 David
+
+---
+P.S. The visualization already includes the master equation reference card and typical value tables—students can literally copy-paste the formula into their own code.
