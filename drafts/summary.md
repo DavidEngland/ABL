@@ -81,4 +81,20 @@ Let's use a typical value $\mathbf{\beta=1.0}$ and evaluate $B(\zeta)$ to see th
 
 **Conclusion:** As $\zeta$ increases from 0.5 to 2.0, the bias ratio $B(\zeta)$ nearly doubles, from **1.21 to 1.92**. This massive increase in $B-1$ forces a strong negative exponent in the correction factor $f_c$, significantly reducing the modeled eddy diffusivity ($K$) to prevent spurious mixing in the SBL.
 
+-----
+
+# Recent Arctic/Ocean Mixing Literature (2024–2025)
+
+- **Ocean vertical-mixing parameterization (Oct 2024)** — Sea-ice thickness sensitivity to TKE penetration changes across ice regimes.
+- **Low-cloud parameterization changes (Nov 2024)** — Arctic cloud property biases traced to parameter choices; highlights coupling to surface fluxes.
+- **Grid dependence of lateral mixing (0.4° realm)** — Mid-scale grids under-resolve lateral mixing; caution for bias when coarse-graining.
+- **Estuary mixing in CESM2 (Aug 2024)** — Estuary parameterization alters large-scale hydrography; demonstrates regional-to-global coupling.
+- **Barents–Kara constrained storylines (Aug 2024)** — Arctic summer warming pathways depend on Barents boundary conditions.
+- **6.25 km Arctic SIC record** — Reference dataset for SIC validation and model tuning at polar spatial scales.
+- **Constrained Arctic warming projections (Mar 2025)** — Bias-corrected ensembles reduce warming/wetting overestimation.
+- **Finescale mixing quantification** — Low S/N in quiescent Arctic hampers standard finescale parameterization.
+- **ML climate-model correction (200 km → 25 km)** — Super-resolution/ML approach reduces coarse-grid climate biases.
+- **Internal-wave mixing across Arctic (Apr 2021)** — Increased heat flux via internal waves; modest present-day melt impact.
+- **Multi-resolution ECHAM6–FESOM (2014)** — Motivation for variable resolution to capture small-scale, climate-relevant processes.
+
 The provided video may contain valuable context on the complexity of atmospheric modeling. [Understanding the Complexities of Atmospheric Modeling](https://www.google.com/search?q=https://www.youtube.com/watch%3Fv%3DsO7u_440Jic).

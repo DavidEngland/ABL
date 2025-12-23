@@ -103,11 +103,20 @@ The incorporation of $\text{Biazar}$-style nonlinear decomposition methods not o
 
 This synthesis provides a pathway toward turbulence closures that are not merely “scale-aware,” but genuinely \textbf{resolution-aware}, ensuring consistent SBL behavior from $\text{LES}$-type fine grids to global-model vertical spacings. An obvious next step is testing this framework against high-quality Arctic observations and large-eddy simulations, as well as embedding it into operational $\text{NWP}$ systems where grid-induced distortions remain a major source of $\text{SBL}$ bias.
 
+\section{Related Work: Arctic Mixing Parameterizations (Brief)}
+Recent studies underscore resolution and parameterization sensitivities in polar environments:
+\begin{itemize}
+    \item Ocean vertical-mixing sensitivity across ice regimes and sea-ice thickness impacts (e.g., Copernicus 2024, UCLouvain 2024).\cite{copernicus2024mixing}
+    \item Arctic low-cloud parameterization changes driving surface flux and cloud biases.\cite{agu2024lowcloud}
+    \item Grid dependence of lateral mixing at $\sim$0.4$^\circ$ resolution showing mid-scale under-resolution issues.\cite{sciencedirect2007lateral}
+    \item Estuary mixing parameterizations in CESM2 altering basin-scale hydrography.\cite{ams2024estuary}
+\end{itemize}
+These findings reinforce the need for grid-aware curvature corrections: coarse vertical (and horizontal) grids systematically distort stability and mixing, so $f_c$ should be paired with vetted mixing/entrainment schemes when applied in Arctic configurations.
+
 \bibliographystyle{plain}
 % You will need to populate the bibliography section with the relevant citations
 \begin{thebibliography}{99}
-\bibitem{mcnider1995} McNider, R. T., and M. D. England, 1995: The effects of grid resolution on the stable boundary layer in regional models. \textit{Proceedings of the AMS 11th Symposium on Boundary Layers and Turbulence}. Charlotte, NC, 128--129.
-\bibitem{biazar} (Placeholder for a relevant Biazar/ADM paper on solving atmospheric ODEs/PDEs.)
+
 \end{thebibliography}
 
 \end{document}

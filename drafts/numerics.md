@@ -35,6 +35,18 @@ The dynamic critical $\text{Ri}$ is given by $\text{Ri}_{\text{cr,dyn}} = \text{
 
 ---
 
+## Numerical Illustration: Bias and Dynamic $Ri_{\text{cr}}$
+
+| Case | $\Delta z$ (m) | $\zeta$ | $B=\dfrac{Ri_g}{Ri_b}$ | $f_c$ (example) |
+|------|---------------|---------|-----------------------|-----------------|
+| Neutral check | 10 | 0.00 | 1.00 | 1.00 |
+| Weak SBL | 40 | 0.10 | 1.28 | 0.86 |
+| Moderate SBL | 60 | 0.20 | 1.55 | 0.78 |
+| Strong SBL | 100 | 0.35 | 1.95 | 0.68 |
+
+- $f_c=\exp[-D (\Delta z/\Delta z_{\rm ref})^p (\zeta/\zeta_{\rm ref})^q]$ with $(D,p,q)=(0.8,0.8,2.0)$ for illustration.
+- Dynamic $Ri_{\text{cr}}$: use $Ri_{\text{cr}}^* = Ri_{\text{cr,0}}\,(1 + \gamma\,B)$ to raise the critical threshold as curvature bias increases (tunable $\gamma \sim 0.2$).
+
 ## 3. 📝 Worked $\text{ADM}$ Example (Simplified TKE Equation)
 
 To demonstrate the Biazar methodology, we apply $\text{Adomian Decomposition}$ to a simplified, non-linear steady-state $\text{TKE}$ (Turbulent Kinetic Energy) budget equation. The base eddy diffusivity $K_{\text{old}}$ is derived from $\text{TKE} (\epsilon)$.
