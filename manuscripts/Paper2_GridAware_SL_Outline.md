@@ -4,9 +4,8 @@
 
 **Affiliations:**
 ¹ Department of Atmospheric & Earth Science, University of Alabama in Huntsville
-  (England: Research Engineer III)
 
-**Corresponding Author:** David E. England (david.england@uah.edu)
+**Corresponding Author:** David E. England
 
 **Target journal (candidate):** *Journal of the Atmospheric Sciences* or
 *Boundary-Layer Meteorology*
