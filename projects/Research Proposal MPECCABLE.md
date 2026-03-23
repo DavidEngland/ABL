@@ -247,9 +247,4 @@ Prior campaigns have already demonstrated the severity of the problem:
 - **Figure 4:** Project timeline Gantt chart
 - **Figure 5:** Conceptual diagram of canopy-snow-ABL coupling
 
-**References** (Abbreviated; full bibliography to be provided)
-- Stull, R.B. (1988). *An Introduction to Boundary Layer Meteorology*
-- Holtslag et al. (2013). Stable atmospheric boundary layers and diurnal cycles. *Bull. Amer. Meteor. Soc.*
-- England & McNider (1995). Sensitivity of mesoscale model urban boundary layer simulations. *Proc. AMS Symp.*
-- Biazar et al. (2024). Curvature-aware MOST corrections for winter air quality. *(In prep)*
 

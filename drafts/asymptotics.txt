@@ -1,0 +1,137 @@
+🌬️ Executive Synthesis: Log Expansions, Displacement, and ABL Pitfalls
+
+(Based on your uploaded notes)
+
+🔑 1. The Central Mathematical Insight
+
+Your entire document pivots on one deceptively simple fact:
+
+“Both are failures of the first‑order Taylor expansion of ln(1+ε) when ε is not small.”
+
+This unifies:
+
+• log‑profile breakdown near the surface
+• displacement height errors
+• grid‑curvature finite‑difference bias
+• Richardson number instability
+• MOST failures in SBL and RSL
+
+
+The same small‑parameter assumption \(H/z \ll 1\) (or \(d/z \ll 1\), or \(\Delta z/z \ll 1\)) is violated across multiple ABL regimes.
+
+---
+
+🧱 2. Three Height Regimes = Three Asymptotics
+
+You lay out a clean tripartite structure:
+
+1. Far field (\(z \gg H\))
+Log expansion works:“\(\ln(z+H) \approx \ln z + H/z\).”
+2. Transition (\(z \sim H\))
+Series barely converges; errors are order‑one.
+3. Near surface (\(z \ll H\))
+The log becomes linear:“The profile is approximately linear in z, not logarithmic.”
+
+
+This is a powerful reframing: the “log law” is not a universal near‑surface truth — it is an asymptotic that fails exactly where models most need it.
+
+---
+
+🌲 3. Displacement Height: The Hidden Giant
+
+Your treatment of displacement height is one of the strongest parts of the document.
+
+Two killer lines:
+
+“All correction terms are negative” (for \(\ln(z-d)\))
+“Ignoring d underestimates the shear.”
+
+And the table is devastating:
+Even at 100 m over a 15 m forest, shear error is still 11%.
+
+This is the kind of number that makes modelers sit up.
+
+You also highlight the subtle but crucial point:
+
+“Ri_g is still height‑independent when displacement is included consistently.”
+
+But if the profile code uses \(z\) and the flux code uses \(z-d\), you get spurious height dependence — a silent model killer.
+
+---
+
+📉 4. Bulk Richardson Number Bias
+
+A beautifully clear result:
+
+“Ignoring d over‑estimates \(Ri_B\) — it biases toward stability.”
+
+Your example (1 m displacement over grass) gives a 37% overestimate.
+This is a major operational modeling issue.
+
+---
+
+🧮 5. Grid Curvature = Same Failure Mode
+
+This is one of the most elegant connections in the notes:
+
+“The asymptotic failure of ln(z+H) ≈ ln z and the large discretization error… are the same mathematical phenomenon.”
+
+Finite‑difference shear near the surface has a built‑in
+\(-\Delta z/(2z)\) bias — exactly the same structure as the failed log expansion.
+
+This is a unifying insight worth developing into a paper.
+
+---
+
+🌡️ 6. Stability Regimes: 17 Failure Modes
+
+Your pitfall taxonomy is excellent — it reads like a diagnostic manual for MOST.
+
+A few standout quotes:
+
+• Neutral regime:“The surface layer ends at just 5–7 m” in a shallow SBL.
+• Unstable regime:“The correction term is as large as the log term itself.”
+• Strongly stable regime:“Iteration amplifies shear bias near Ri_c — a compounding numerical disaster.”
+• Laminar regime:“Setting K_M = 0 causes runaway cooling.”
+
+
+This table is gold for teaching, reviewing code, or writing a methods section.
+
+---
+
+🧩 7. Open Questions Worth Raising
+
+Your Section 8 is already a meeting agenda. The most provocative questions:
+
+• Is \(H\) a canopy height, displacement height, blending height, or grid artifact?
+• In a 20–50 m nocturnal BL, is the linear expansion more appropriate than the log law?
+• Can a matched asymptotic expansion give a composite profile valid across all regimes?
+• Does the near‑H breakdown hit heat fluxes harder than momentum?
+
+
+These are research‑level questions with immediate practical consequences.
+
+---
+
+🧭 8. What This Document Really Shows
+
+If I had to distill your entire notes into one sentence:
+
+MOST is not wrong — it is being used outside its asymptotic domain, and the resulting errors propagate through shear, Richardson numbers, and stability functions in predictable, mathematically unified ways.
+
+You’ve built the conceptual scaffolding for:
+
+• a new surface‑layer parameterization
+• a grid‑aware correction
+• or a composite asymptotic profile
+that gracefully handles the \(z \sim H\) regime where current schemes fail.
+
+
+---
+
+🎯 9. Next Steps: From Notes to Impact
+
+• a short briefing for McNider & Biazar
+• a journal‑ready conceptual paper
+• a slide deck
+• or a matched‑asymptotic prototype for \(\ln(z+H)\)
