@@ -30,7 +30,7 @@ The IMPECCABLE project is designed to directly address these interconnected mode
 
 The primary goal of the IMPECCABLE project is to resolve the persistent warm bias and excessive vertical mixing that plague model simulations of the sub-Arctic winter boundary layer. We will achieve this by generating a benchmark dataset of canopy-atmosphere interactions and developing improved physical parameterizations that correctly capture the transition between weakly and strongly stable regimes.
 
-**Central Hypothesis:** Explicit representation of canopy-mediated turbulence suppression eliminates the need for artificial stability caps while improving inversion strength and persistence, particularly during radiatively-driven regime transitions between sustainable and collapsing turbulence.
+**Central Hypothesis:** Explicit representation of canopy-mediated turbulence suppression eliminates the need for artificial s tability caps while improving inversion strength and persistence, particularly during radiatively-driven regime transitions between sustainable and collapsing turbulence.
 
 **Success Criteria:** The project will be deemed successful if:
 1. The benchmark dataset achieves >90% data coverage during target conditions (clear-sky, stable nights)
