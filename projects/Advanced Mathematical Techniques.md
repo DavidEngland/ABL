@@ -241,3 +241,98 @@ $$A = \frac{1}{h^{1.5}} \begin{bmatrix} 1.0 & 0 & 0 & 0 & 0 & 0 \\ -1.5 & 1.0 & 
 In the very stable regimes characteristic of McNider's polar research, turbulence damping is often too aggressive in NWP models. The Toeplitz structure prevents vertical levels from fully decoupling: even when the local $Ri$ is high, the non-local weights allow a residual flux that mimics observed patchy turbulence.
 
 The CSV file `fractional_weights.csv` contains the calculated weights for $\alpha=1.5$, showing how quickly the non-local influence decays with height.
+
+---
+
+## One-Page Lecture Handout: GL Approximation and Toeplitz Structure
+
+### Audience
+Graduate atmospheric science students (stable boundary layers, persistence, and nonlocal transport).
+
+### Learning Goals
+- Explain why the Grunwald-Letnikov (GL) derivative represents memory.
+- Show how GL discretization generates a lower-triangular Toeplitz matrix.
+- Interpret one small numerical example using an atmospheric time series.
+
+### 1) Core Idea in One Line
+For $0 < \alpha < 1$, the GL derivative at time $t_n$ is
+
+$$
+D_t^\alpha x(t_n) \approx \frac{1}{h^\alpha}\sum_{k=0}^{n} w_k\,x_{n-k}, \quad
+w_k = (-1)^k\binom{\alpha}{k}
+$$
+
+with recursive weights
+
+$$
+w_0=1, \qquad w_k = \left(1-\frac{\alpha+1}{k}\right)w_{k-1}.
+$$
+
+Interpretation: the present tendency is a weighted sum of present plus all past states (long memory).
+
+### 2) Explicit Weights (Small $N$)
+Choose $\alpha=0.6$ and $N=5$ (indices $k=0,\dots,4$):
+
+$$
+\begin{aligned}
+w_0 &= 1.0000 \\
+w_1 &= -0.6000 \\
+w_2 &= -0.1200 \\
+w_3 &= -0.0560 \\
+w_4 &= -0.0336
+\end{aligned}
+$$
+
+These decay slowly compared with integer-order finite differences, which is why memory persists.
+
+### 3) Toeplitz Form of the GL Operator
+Define $\mathbf{x}=[x_0,x_1,x_2,x_3,x_4]^T$. Then
+
+$$
+\mathbf{y}=\frac{1}{h^\alpha}W\mathbf{x},
+$$
+
+where
+
+$$
+W=
+\begin{bmatrix}
+w_0 & 0   & 0   & 0   & 0 \\
+w_1 & w_0 & 0   & 0   & 0 \\
+w_2 & w_1 & w_0 & 0   & 0 \\
+w_3 & w_2 & w_1 & w_0 & 0 \\
+w_4 & w_3 & w_2 & w_1 & w_0
+\end{bmatrix}.
+$$
+
+Each descending diagonal is constant, so $W$ is Toeplitz (and lower triangular for the one-sided history form).
+
+### 4) Worked Numerical Example (Mini Atmospheric Time Series)
+Let $h=1$ hour and consider normalized near-surface wind-speed anomaly:
+
+$$
+\mathbf{x}=[0.20,\ 0.40,\ 0.10,\ 0.50,\ 0.30].
+$$
+
+Compute the GL tendency at $n=4$:
+
+$$
+\begin{aligned}
+y_4 &= w_0x_4 + w_1x_3 + w_2x_2 + w_3x_1 + w_4x_0 \\
+&= (1)(0.30) + (-0.60)(0.50) + (-0.12)(0.10) + (-0.056)(0.40) + (-0.0336)(0.20) \\
+&= 0.3000 - 0.3000 - 0.0120 - 0.0224 - 0.00672 \\
+&= -0.04112.
+\end{aligned}
+$$
+
+So, $D_t^{0.6}x(t_4) \approx -0.041$ h$^{-0.6}$.
+
+Physical reading: although the current value is positive, recent strong past values still pull the tendency negative, demonstrating memory in the stable boundary layer.
+
+### 5) Atmospheric Takeaway
+- Integer derivative: mostly local-in-time response.
+- Fractional GL derivative: persistent, nonlocal-in-time response.
+- Toeplitz structure: same memory kernel at every time shift; computationally exploitable (FFT-based methods for long records).
+
+### 6) Quick Discussion Prompt
+If two nights have the same current Richardson number but different 6-hour histories, which framework (integer vs. fractional) can distinguish their turbulence tendency, and why?
