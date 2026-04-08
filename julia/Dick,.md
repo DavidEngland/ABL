@@ -2,15 +2,7 @@ Dick & Arastoo,
 
 Following our conversation about the vertical grid, I wanted to write up the approach I am proposing to try. Happy to talk through any of it.
 
----
-
-### The Problem: Uniform Grids Waste Resolution
-
-In a uniform $\Delta z$ grid with $N = 40$ levels and $z_\text{top} = 1000\,\text{m}$, the cell-centred levels have $\Delta z = 25\,\text{m}$ and the lowest level sits at $z_1 = \Delta z/2 = 12.5\,\text{m}$. That is already above the nocturnal stable layer and well above the roughness sublayer where MOST is defined. We waste most of our vertical degrees of freedom in the free atmosphere, where gradients are weak, while under-resolving the surface layer, where sensible heat, moisture, and momentum fluxes are concentrated.
-
----
-
-### The Solution: Exponential Stretching
+### Exponential Stretching
 
 Instead of specifying $z$-levels manually, I use a **cell-centred** layout: $N$ interface gaps span $\eta \in [0,1]$ uniformly, and prognostic levels sit at the cell centres
 
@@ -25,6 +17,14 @@ z(\eta) = z_\text{top} \cdot \frac{e^{s\,\eta} - 1}{e^s - 1}
 $$
 
 where $s > 0$ is a **stretch parameter** (I am currently using $s = 3$).
+
+Substituting the cell-centre $\eta_k$ directly gives the closed-form height of level $k$:
+
+$$
+\boxed{z_k = z_\text{top} \cdot \frac{\exp\!\left(\dfrac{s(2k-1)}{2N}\right) - 1}{e^s - 1}}, \qquad k = 1, \ldots, N
+$$
+
+For $k=1$ this gives $z_1 = z_\text{top}\,(e^{s/(2N)}-1)/(e^s-1)$, which for large $s$ scales as $z_\text{top}\,e^{s/(2N)}/e^s \approx z_\text{top}\,e^{-s(1-1/(2N))}$ — exponentially small relative to $z_\text{top}$, exactly the surface-layer clustering we want.
 
 Key properties:
 
@@ -48,7 +48,7 @@ The first prognostic level is at $z_1 \approx 2\,\text{m}$ — well within the s
 
 ---
 
-### The Jacobian: Why I Store $dz/d\eta$
+### The Jacobian: Store $dz/d\eta$?
 
 The exponential map has an analytically known derivative:
 
@@ -77,25 +77,6 @@ $$
 
 This is actually the generating function identity $e^{s\eta}/(e^s - 1) = \sum_n B_n(\eta)\,s^{n-1}/n!$ — a known result from analytic combinatorics. In practice this means: for small $s$ the grid is near-uniform with a slight linear tilt ($B_1(\eta) = \eta - \frac{1}{2}$); for large $s$ the near-surface clustering is controlled by the exponential. There is a continuous family of grids parameterized by $s$ that we can tune without changing any other code.
 
----
-
-### What Stays the Same
-
-The finite-difference operators (centered differences in the interior, one-sided at the boundaries), the tridiagonal implicit solver, and the closure interface — all of these use the physical $z$ array and $\Delta z$ spacings directly. Changing $s$ from 0 to 3 to 5 does not require touching any physics code, only the `create_grid` call.
-
----
-
-### Proposed Next Step
-
-I would like to run a short sensitivity test:
-
-- $s = 0$ (uniform)
-- $s = 2$ (moderate stretching)
-- $s = 4$ (strong near-surface clustering)
-
-with the stable nocturnal case (surface cooling −1 K/hr, 8 m/s geostrophic) and compare BL height estimates and surface flux convergence. This should show whether the stretching actually improves the near-surface gradient representation at modest $N$.
-
-Let me know if you would like to discuss or if you want me to run those tests first.
 
 Best,
 David

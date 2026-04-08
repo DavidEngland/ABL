@@ -21,11 +21,21 @@ The current prognostic state is stored in `ColumnState`:
 - `q`: specific humidity profile
 - `u`, `v`: horizontal wind components
 
-The lower boundary is represented separately by `SurfaceState`:
+The lower boundary is represented separately by `SurfaceState` and slab metadata/state:
 
 - `temperature`
 - `sensible_flux`
 - `latent_flux`
+- `net_radiation`
+- `ground_flux`
+
+Plus the coupled slab components:
+
+- `SurfaceSlabParameters`: material properties (depth, rho, cp, conductivity,
+  albedo, emissivity, roughness lengths, moisture availability)
+- `SurfaceSlabState`: prognostic `skin_temperature`, `deep_temperature`,
+  and `liquid_fraction`
+- `TowerSite`: observation geometry/metadata (`z_t`, `z_q`, `z_u`, lat/lon, terrain)
 
 This split is deliberate. In a fuller SCM, the surface scheme often evolves on a different logic than the atmospheric column.
 
@@ -35,11 +45,24 @@ The grid is a **simple physical-z array**. There is no covariant/contravariant c
 solver. The exponential stretching is applied once at grid-construction time, and thereafter the physics works entirely in
 physical metres.
 
-However, the **Jacobian** J = dz/dη is now stored explicitly in `grid.jacobian`:
+The current implementation uses **cell-centered levels**:
+
+$$\eta_k = \frac{k - 1/2}{N}, \quad k=1,\ldots,N$$
+
+so the first prognostic level is above the surface (`z_1 > 0`) and `z=0` remains a boundary interface.
+
+However, the **Jacobian** J = dz/deta is now stored explicitly in `grid.jacobian`:
 
 $$J(\eta) = z_\text{top} \cdot s \cdot \frac{e^{s\eta}}{e^s - 1}$$
 
 where $s$ is the stretch parameter and $\eta \in [0,1]$ is the uniform computational coordinate.
+
+Numerically, the grid builder uses `expm1` and a small-$s$ branch:
+
+- `|s| < 1e-8`: uniform limit, `z = z_top * eta`, `J = z_top`
+- otherwise: `z = z_top * expm1(s*eta) / expm1(s)`
+
+This avoids cancellation in the `s -> 0` limit.
 
 This is where the covariant/contravariant terms **would first appear** in a terrain-following upgrade:
 
@@ -73,7 +96,8 @@ Stores the vertical geometry:
 
 - `z`: cell-center heights,
 - `dz`: representative layer thickness,
-- `nz`: level count.
+- `nz`: level count,
+- `jacobian`: analytical `dz/deta` at cell centers.
 
 The current grid is exponentially stretched toward the surface so the lowest layers are resolved more tightly.
 
@@ -82,8 +106,11 @@ The current grid is exponentially stretched toward the surface so the lowest lay
 External tendencies for one timestep:
 
 - column tendencies for `theta`, `q`, `u`, `v`,
-- prescribed surface heat flux,
-- prescribed surface moisture flux.
+- optional prescribed surface heat/moisture fluxes,
+- downwelling shortwave and longwave radiation,
+- reference atmospheric state (`air_temperature_ref`, `specific_humidity_ref`,
+  `wind_speed_ref`, `surface_pressure`),
+- switch `prescribed_surface_fluxes` to select prescribed vs resolved coupling.
 
 This is where synoptic forcing, radiative cooling, geostrophic relaxation, nudging, or idealized experiments should enter.
 
@@ -98,7 +125,7 @@ The timestepper in [SCMSkeleton.jl](SCMSkeleton.jl) follows a simple sequence.
 1. The closure returns vertical diffusivity profiles `km` and `kh`.
 2. Diffusive tendencies are computed in flux-divergence form.
 3. External tendencies from `Forcing` are added.
-4. Surface fluxes are applied to the first model level.
+4. Surface fluxes are either prescribed or resolved from slab/tower state and then applied to the first model level.
 5. Surface diagnostics are updated.
 6. Model time advances by one step.
 
@@ -212,7 +239,7 @@ At that point, `SurfaceState` would likely need to hold additional variables suc
 
 The current implementation is a scaffold, not a verified solver. Important limitations are:
 
-- diffusion is advanced explicitly,
+- no monotonic advection scheme is included (diffusion-only transport skeleton),
 - top and bottom diffusive fluxes are zero unless prescribed separately,
 - moisture is not coupled to latent heating,
 - no pressure or density evolution is included,

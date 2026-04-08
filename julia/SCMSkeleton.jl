@@ -377,6 +377,9 @@ Physical heights come from the exponential map applied to the cell-centre η val
   • s > 0 → fine near the surface, coarse aloft
   • s = 0 → uniform spacing (z₁ = z_top/(2N))
 
+For numerical robustness near s = 0, the implementation uses `expm1` and
+falls back to the exact uniform-grid limit when |s| is very small.
+
 The Jacobian J = dz/dη is computed analytically and stored in `grid.jacobian`.
 It answers the coordinate-system question directly: the grid is a simple z-array
 in physical space, but the _stretch function_ induces a non-trivial metric.
@@ -386,12 +389,20 @@ physical z directly so no covariant terms appear, but storing J ensures they
 are available painlessly when a terrain-following upgrade is needed.
 """
 function create_grid(config::ModelConfig; stretch::Float64=3.0)
+    config.nz >= 2 || error("create_grid requires nz >= 2")
     # Cell-centred levels: ηᵢ = (i − ½)/N, so z₁ > 0 (surface is a BC, not a node)
     eta   = [(i - 0.5) / config.nz for i in 1:config.nz]
-    denom = exp(stretch) - 1.0
-    z     = config.z_top .* (exp.(stretch .* eta) .- 1.0) ./ denom
-    # Analytical Jacobian: dz/dη = z_top * s * exp(s*η) / (exp(s)-1)
-    jac   = config.z_top .* stretch .* exp.(stretch .* eta) ./ denom
+    if abs(stretch) < 1e-8
+        # Uniform-grid limit of exp-stretch map: z = z_top * η and dz/dη = z_top.
+        z = config.z_top .* eta
+        jac = fill(config.z_top, config.nz)
+    else
+        # Use expm1 for robust evaluation when stretch is small.
+        denom = expm1(stretch)
+        z = config.z_top .* expm1.(stretch .* eta) ./ denom
+        # Analytical Jacobian: dz/dη = z_top * s * exp(s*η) / (exp(s)-1)
+        jac = config.z_top .* stretch .* exp.(stretch .* eta) ./ denom
+    end
     dz    = zeros(config.nz)
     dz[1] = z[2] - z[1]
     for i in 2:config.nz-1
