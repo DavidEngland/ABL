@@ -13,10 +13,17 @@ module SCMSkeleton
 using Printf
 using LinearAlgebra   # Tridiagonal type used by the implicit diffusion solver
 
+const KAPPA_VK = 0.4
+const SIGMA_SB = 5.670374419e-8
+const LV_WATER = 2.5e6
+
 export Grid,
        ModelConfig,
        ColumnState,
        SurfaceState,
+    SurfaceSlabParameters,
+    SurfaceSlabState,
+    TowerSite,
        Forcing,
        SCMModel,
        SimulationHistory,
@@ -25,9 +32,12 @@ export Grid,
        RiBasedClosure,
        CurvatureRiClosure,
        create_grid,
+    default_surface_material,
+    default_tower_site,
        initialize_model,
        zero_forcing,
        default_forcing,
+    resolve_surface_fluxes!,
        step!,
        run_model,
        example_run
@@ -100,6 +110,54 @@ mutable struct SurfaceState
     temperature::Float64
     sensible_flux::Float64
     latent_flux::Float64
+    net_radiation::Float64
+    ground_flux::Float64
+end
+
+"""
+    SurfaceSlabParameters
+
+Physical parameters for the lower boundary slab. This supports water, ice,
+sea-ice, and user-defined molten/liquid surfaces through parameter choices.
+"""
+struct SurfaceSlabParameters
+    material::Symbol
+    depth::Float64
+    rho::Float64
+    cp::Float64
+    k::Float64
+    albedo::Float64
+    emissivity::Float64
+    z0m::Float64
+    z0h::Float64
+    moisture_availability::Float64
+end
+
+"""
+    SurfaceSlabState
+
+Prognostic slab state used by the coupled surface-energy balance.
+"""
+mutable struct SurfaceSlabState
+    skin_temperature::Float64
+    deep_temperature::Float64
+    liquid_fraction::Float64
+end
+
+"""
+    TowerSite
+
+Minimal tower metadata and reference heights used by the bulk flux scheme.
+"""
+struct TowerSite
+    name::String
+    latitude::Float64
+    longitude::Float64
+    elevation::Float64
+    terrain::String
+    z_t::Float64
+    z_q::Float64
+    z_u::Float64
 end
 
 """
@@ -109,13 +167,20 @@ External tendencies and lower-boundary fluxes applied over a single timestep.
 Large-scale advection, radiative cooling, nudging, or prescribed fluxes should
 be represented here.
 """
-struct Forcing
+mutable struct Forcing
     theta_tendency::Vector{Float64}
     q_tendency::Vector{Float64}
     u_tendency::Vector{Float64}
     v_tendency::Vector{Float64}
     surface_heat_flux::Float64
     surface_moisture_flux::Float64
+    sw_down::Float64
+    lw_down::Float64
+    air_temperature_ref::Float64
+    specific_humidity_ref::Float64
+    wind_speed_ref::Float64
+    surface_pressure::Float64
+    prescribed_surface_fluxes::Bool
 end
 
 """
@@ -129,6 +194,9 @@ mutable struct SCMModel
     grid::Grid
     state::ColumnState
     surface::SurfaceState
+    slab_params::SurfaceSlabParameters
+    slab::SurfaceSlabState
+    tower::TowerSite
     time::Float64
 end
 
@@ -260,14 +328,54 @@ function ModelConfig(; z_top::Float64=1000.0,
 end
 
 """
+    default_tower_site()
+
+Return a generic tower configuration for initial testing. Replace with actual
+station metadata for observation-constrained runs.
+"""
+function default_tower_site()
+    return TowerSite("Generic Tower", 0.0, 0.0, 0.0, "unknown", 2.0, 2.0, 10.0)
+end
+
+"""
+    default_surface_material([material])
+
+Return slab parameters for a named surface type.
+Supported materials: `:water`, `:ice`, `:seaice`, `:molten_liquid`.
+"""
+function default_surface_material(material::Symbol=:water)
+    if material == :water
+        return SurfaceSlabParameters(:water, 1.0, 1000.0, 4180.0, 0.6, 0.07, 0.98, 2e-4, 2e-5, 1.0)
+    elseif material == :ice
+        return SurfaceSlabParameters(:ice, 1.0, 917.0, 2100.0, 2.2, 0.65, 0.99, 1e-3, 2e-4, 0.2)
+    elseif material == :seaice
+        return SurfaceSlabParameters(:seaice, 1.0, 930.0, 2500.0, 1.8, 0.50, 0.99, 8e-4, 2e-4, 0.5)
+    elseif material == :molten_liquid
+        return SurfaceSlabParameters(:molten_liquid, 0.5, 2500.0, 1200.0, 1.5, 0.12, 0.95, 5e-4, 5e-5, 0.7)
+    end
+    error("Unsupported surface material: $material")
+end
+
+"""
     create_grid(config; stretch=3.0)
 
 Create a stretched vertical grid with finer resolution near the surface.
-The physical heights come from the exponential map
+
+The grid uses **cell-centred levels**: N interfaces span η ∈ [0,1] uniformly, and
+the prognostic levels sit at the cell centres
+
+    ηᵢ = (i − ½) / N,    i = 1 … N
+
+so that the lowest level z₁ > 0 (above the ground).  The surface z = 0 and the
+domain top z = z_top are interface levels that appear only as boundary conditions,
+not as prognostic nodes.
+
+Physical heights come from the exponential map applied to the cell-centre η values:
 
     z(η) = z_top · [exp(s·η) − 1] / [exp(s) − 1],    s = stretch
 
-where η ∈ [0,1] is a uniform computational coordinate.
+  • s > 0 → fine near the surface, coarse aloft
+  • s = 0 → uniform spacing (z₁ = z_top/(2N))
 
 The Jacobian J = dz/dη is computed analytically and stored in `grid.jacobian`.
 It answers the coordinate-system question directly: the grid is a simple z-array
@@ -278,7 +386,8 @@ physical z directly so no covariant terms appear, but storing J ensures they
 are available painlessly when a terrain-following upgrade is needed.
 """
 function create_grid(config::ModelConfig; stretch::Float64=3.0)
-    eta   = collect(range(0.0, 1.0, length=config.nz))
+    # Cell-centred levels: ηᵢ = (i − ½)/N, so z₁ > 0 (surface is a BC, not a node)
+    eta   = [(i - 0.5) / config.nz for i in 1:config.nz]
     denom = exp(stretch) - 1.0
     z     = config.z_top .* (exp.(stretch .* eta) .- 1.0) ./ denom
     # Analytical Jacobian: dz/dη = z_top * s * exp(s*η) / (exp(s)-1)
@@ -313,11 +422,17 @@ end
 Allocate and initialize the grid, prognostic state, and lower-boundary state.
 This is the main constructor numerical experiments should call before stepping.
 """
-function initialize_model(config::ModelConfig=ModelConfig())
+function initialize_model(config::ModelConfig=ModelConfig();
+                          surface_material::Symbol=:water,
+                          tower::TowerSite=default_tower_site())
     grid = create_grid(config)
     state = initialize_column_state(config, grid)
-    surface = SurfaceState(config.theta_surface, 0.0, 0.0)
-    return SCMModel(config, grid, state, surface, 0.0)
+    slab_params = default_surface_material(surface_material)
+    deep_temperature = config.theta_surface - 1.0
+    liquid_fraction = surface_material == :water ? 1.0 : 0.0
+    slab = SurfaceSlabState(config.theta_surface, deep_temperature, liquid_fraction)
+    surface = SurfaceState(config.theta_surface, 0.0, 0.0, 0.0, 0.0)
+    return SCMModel(config, grid, state, surface, slab_params, slab, tower, 0.0)
 end
 
 """
@@ -328,7 +443,11 @@ useful starting point for custom forcing functions.
 """
 function zero_forcing(model::SCMModel)
     nz = model.grid.nz
-    return Forcing(zeros(nz), zeros(nz), zeros(nz), zeros(nz), 0.0, 0.0)
+    return Forcing(zeros(nz), zeros(nz), zeros(nz), zeros(nz),
+                   0.0, 0.0,
+                   0.0, 0.0,
+                   NaN, NaN, NaN, 101325.0,
+                   false)
 end
 
 """
@@ -342,8 +461,85 @@ function default_forcing(model::SCMModel)
     hour = model.time / 3600.0
     cooling = hour <= 6.0 ? -2.0e-5 : -5.0e-6
     forcing.theta_tendency .= cooling
-    forcing.surface_heat_flux = -10.0
+    # Simple synthetic radiation cycle used when observational forcing is absent.
+    dayfrac = (model.time / 86400.0) % 1.0
+    forcing.sw_down = max(0.0, 180.0 * sin(2pi * dayfrac))
+    forcing.lw_down = 260.0
+    forcing.air_temperature_ref = model.state.theta[1]
+    forcing.specific_humidity_ref = model.state.q[1]
+    forcing.wind_speed_ref = max(0.5, hypot(model.state.u[1], model.state.v[1]))
+    forcing.surface_pressure = 101325.0
+    forcing.prescribed_surface_fluxes = false
     return forcing
+end
+
+@inline clamp01(x::Float64) = max(0.0, min(1.0, x))
+
+"""
+    saturation_specific_humidity(T, p)
+
+Saturation specific humidity over liquid water using a Tetens-type vapor
+pressure relation. Inputs: T in K, p in Pa.
+"""
+function saturation_specific_humidity(T::Float64, p::Float64)
+    es = 611.2 * exp((17.67 * (T - 273.15)) / (T - 29.65))
+    return 0.622 * es / max(p - 0.378 * es, 1.0)
+end
+
+"""
+    bulk_transfer_coefficients(model)
+
+Return neutral bulk transfer coefficients (Cm, Ch) derived from tower
+reference heights and slab roughness lengths.
+"""
+function bulk_transfer_coefficients(model::SCMModel)
+    z_u = max(model.tower.z_u, model.slab_params.z0m * 1.1)
+    z_t = max(model.tower.z_t, model.slab_params.z0h * 1.1)
+    cm = (KAPPA_VK / log(z_u / model.slab_params.z0m))^2
+    ch = (KAPPA_VK^2) / (log(z_u / model.slab_params.z0m) * log(z_t / model.slab_params.z0h))
+    return cm, ch
+end
+
+"""
+    resolve_surface_fluxes!(model, forcing)
+
+Compute sensible/latent heat fluxes and slab radiative-conductive terms from
+tower-height atmospheric forcing and slab state. If
+`forcing.prescribed_surface_fluxes` is true, provided fluxes are used directly.
+"""
+function resolve_surface_fluxes!(model::SCMModel, forcing::Forcing)
+    if forcing.prescribed_surface_fluxes
+        model.surface.sensible_flux = forcing.surface_heat_flux
+        model.surface.latent_flux = forcing.surface_moisture_flux
+        model.surface.net_radiation = 0.0
+        model.surface.ground_flux = 0.0
+        return forcing.surface_heat_flux, forcing.surface_moisture_flux, 0.0, 0.0
+    end
+
+    cfg = model.config
+    sp = model.slab_params
+    slab = model.slab
+    T_air = isfinite(forcing.air_temperature_ref) ? forcing.air_temperature_ref : model.state.theta[1]
+    q_air = isfinite(forcing.specific_humidity_ref) ? forcing.specific_humidity_ref : model.state.q[1]
+    U_ref = isfinite(forcing.wind_speed_ref) ? forcing.wind_speed_ref : hypot(model.state.u[1], model.state.v[1])
+    U_ref = max(U_ref, 0.25)
+    p_sfc = max(forcing.surface_pressure, 5.0e4)
+    sw = max(forcing.sw_down, 0.0)
+    lw = max(forcing.lw_down, 0.0)
+
+    _, ch = bulk_transfer_coefficients(model)
+    q_sat = saturation_specific_humidity(slab.skin_temperature, p_sfc)
+
+    H = cfg.rho_air * cfg.cp_air * ch * U_ref * (slab.skin_temperature - T_air)
+    LE = cfg.rho_air * LV_WATER * ch * U_ref * sp.moisture_availability * (q_sat - q_air)
+    Rn = (1.0 - sp.albedo) * sw + sp.emissivity * (lw - SIGMA_SB * slab.skin_temperature^4)
+    G = sp.k * (slab.deep_temperature - slab.skin_temperature) / max(sp.depth, 0.05)
+
+    model.surface.sensible_flux = H
+    model.surface.latent_flux = LE
+    model.surface.net_radiation = Rn
+    model.surface.ground_flux = G
+    return H, LE, Rn, G
 end
 
 function diffusivities(::AbstractClosure, model::SCMModel)
@@ -596,10 +792,29 @@ update the diagnostic surface state.
 function apply_surface_fluxes!(model::SCMModel, forcing::Forcing)
     cfg = model.config
     dz1 = model.grid.dz[1]
-    model.surface.sensible_flux = forcing.surface_heat_flux
-    model.surface.latent_flux = forcing.surface_moisture_flux
-    model.state.theta[1] += cfg.dt * forcing.surface_heat_flux / (cfg.rho_air * cfg.cp_air * dz1)
-    model.state.q[1] += cfg.dt * forcing.surface_moisture_flux / max(cfg.rho_air * dz1, 1e-12)
+    H, LE, Rn, G = resolve_surface_fluxes!(model, forcing)
+
+    # Flux sign convention: positive H/LE = upward from surface into air.
+    model.state.theta[1] += cfg.dt * H / (cfg.rho_air * cfg.cp_air * dz1)
+    model.state.q[1] += cfg.dt * LE / max(cfg.rho_air * LV_WATER * dz1, 1e-12)
+
+    # Slab prognostic update from residual surface energy.
+    sp = model.slab_params
+    slab_capacity = max(sp.rho * sp.cp * sp.depth, 1.0)
+    dTs = cfg.dt * (Rn - H - LE + G) / slab_capacity
+    model.slab.skin_temperature += dTs
+    model.slab.deep_temperature += cfg.dt * (model.slab.skin_temperature - model.slab.deep_temperature) / (24.0 * 3600.0)
+
+    if sp.material == :water
+        model.slab.liquid_fraction = 1.0
+    elseif sp.material == :ice
+        model.slab.liquid_fraction = 0.0
+    else
+        # Smooth transition around freezing for mixed-phase surfaces.
+        model.slab.liquid_fraction = clamp01((model.slab.skin_temperature - 271.15) / 4.0)
+    end
+
+    model.surface.temperature = model.slab.skin_temperature
 end
 
 """
@@ -642,7 +857,7 @@ function step!(model::SCMModel, closure::AbstractClosure, forcing::Forcing)
     end
 
     apply_surface_fluxes!(model, forcing)
-    model.surface.temperature = model.state.theta[1]
+    model.surface.temperature = model.slab.skin_temperature
     model.time += dt
     return nothing
 end
