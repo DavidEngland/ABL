@@ -5,4 +5,5 @@ Date,Day,Start,End,Lunch (hrs),Regular Hours,Project/Task,Notes
 2026-04-09,Thu,08:00,17:00,1,=((D5-C5)*24)-E5,General,
 2026-04-10,Fri,08:00,17:00,1,=((D6-C6)*24)-E6,General,
 ,,,,,,,
-Employee Name,,Manager,,Week Ending,,Total Regular Hours,=SUM(F2:F6)
+Employee Name,David England,UAH A-Number,A00084992,Week Ending,2026-04-10,Total Regular Hours,=SUM(F2:F6)
+Primary Email,David.England@UAH.Edu,Secondary Email,David.England@nsstc.uah.edu,,,,
