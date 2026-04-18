@@ -74,7 +74,8 @@ param/
 │   ├── gradients.md            ← shear and temperature gradient: exact vs. FD
 │   ├── fluxes.md               ← u*, θ*, τ, Hs, C_D, C_H derivations
 │   ├── richardson.md           ← Ri_g, Ri_B, curvature correction, near-Ric behavior
-│   └── mixing_length.md        ← l_m hierarchy: Prandtl, Blackadar, stability-modified
+│   ├── mixing_length.md        ← l_m hierarchy: Prandtl, Blackadar, stability-modified
+│   └── slab_column.md          ← snow/ice/land substrate slabs coupled to the air-side scheme
 │
 ├── corrections/
 │   ├── grid_curvature.md       ← Δz/(2z_k) correction to shear
