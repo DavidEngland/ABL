@@ -137,6 +137,202 @@ and with mixing-length form $K=l^2Sf$.
 
 Use a near-neutral inversion (or symbolic expansion) to obtain an approximate $\zeta(Ri_g)$ through at least second order, then substitute into $f_m$ and $f_h$ to get low-order Ri-series forms.
 
+### Worked Example: A One-Parameter Model with Finite $Ri_c$
+
+This worked example is intentionally simple. It is not the most general Businger-Dyer stable case, but it is a very clean model for learning how one can derive an Ri-based stability function directly from a MOST-style relation.
+
+Assume
+
+$$
+Ri_g(\zeta)=\frac{\zeta}{1+\beta\zeta}, \qquad \beta>0.
+$$
+
+Also assume the momentum similarity function has the matching form
+
+$$
+\phi_m(\zeta)=1+\beta\zeta.
+$$
+
+We will derive $\zeta(Ri_g)$, then $\phi_m(\zeta(Ri_g))$, and finally the Ri-based closure function $f_m(Ri_g)$.
+
+#### Step 1. Start from the given relation
+
+We are given
+
+$$
+Ri_g=\frac{\zeta}{1+\beta\zeta}.
+$$
+
+This already tells us something physical: as $\zeta$ grows, $Ri_g$ cannot grow without bound. Instead, it approaches a finite limit.
+
+#### Step 2. Solve explicitly for $\zeta$ in terms of $Ri_g$
+
+Multiply both sides by $(1+\beta\zeta)$:
+
+$$
+Ri_g(1+\beta\zeta)=\zeta.
+$$
+
+Expand the left side:
+
+$$
+Ri_g+\beta Ri_g\zeta=\zeta.
+$$
+
+Now collect the $\zeta$ terms on one side:
+
+$$
+Ri_g = \zeta - \beta Ri_g\zeta = \zeta(1-\beta Ri_g).
+$$
+
+Therefore,
+
+$$
+\boxed{\zeta(Ri_g)=\frac{Ri_g}{1-\beta Ri_g}}.
+$$
+
+This inversion is exact.
+
+#### Step 3. Identify the critical Richardson number
+
+Notice that the denominator becomes zero when
+
+$$
+1-\beta Ri_g=0.
+$$
+
+So the limiting Richardson number is
+
+$$
+\boxed{Ri_c=\frac{1}{\beta}}.
+$$
+
+This means that in this model,
+
+$$
+Ri_g \to Ri_c \quad \text{as} \quad \zeta \to \infty.
+$$
+
+That is a very appealing feature for stable-boundary-layer modeling: the model builds in a finite upper limit for sustained turbulence.
+
+#### Step 4. Substitute $\zeta(Ri_g)$ into $\phi_m$
+
+Recall that
+
+$$
+\phi_m(\zeta)=1+\beta\zeta.
+$$
+
+Substitute the inverted expression for $\zeta$:
+
+$$
+\phi_m(\zeta(Ri_g)) = 1+\beta\frac{Ri_g}{1-\beta Ri_g}.
+$$
+
+Put everything over a common denominator:
+
+$$
+\phi_m(\zeta(Ri_g)) = \frac{1-\beta Ri_g + \beta Ri_g}{1-\beta Ri_g}.
+$$
+
+The numerator simplifies immediately:
+
+$$
+\boxed{\phi_m(\zeta(Ri_g))=\frac{1}{1-\beta Ri_g}}.
+$$
+
+#### Step 5. Compute the Ri-based momentum stability function
+
+In Ri-based closure form,
+
+$$
+f_m(Ri_g)=\frac{1}{\phi_m(\zeta(Ri_g))^2}.
+$$
+
+Using the result above,
+
+$$
+f_m(Ri_g)=\left(1-\beta Ri_g\right)^2.
+$$
+
+So we obtain the compact formula
+
+$$
+\boxed{f_m(Ri_g)=\left(1-\beta Ri_g\right)^2}.
+$$
+
+Now replace $\beta$ by $1/Ri_c$:
+
+$$
+1-\beta Ri_g = 1-\frac{Ri_g}{Ri_c}=\frac{Ri_c-Ri_g}{Ri_c}.
+$$
+
+Therefore,
+
+$$
+\boxed{f_m(Ri_g)=\left(\frac{Ri_c-Ri_g}{Ri_c}\right)^2}.
+$$
+
+#### Step 6. Interpret the result physically
+
+This formula says:
+
+1. $f_m(0)=1$, so the neutral limit is recovered.
+2. $f_m(Ri_g)$ decreases smoothly as stability increases.
+3. $f_m(Ri_g)\to 0$ as $Ri_g\to Ri_c^{-}$, so mixing shuts down continuously at the critical Richardson number.
+
+This is mathematically elegant and physically suggestive.
+
+#### Step 7. Why this is a special case
+
+This derivation is exact only because we assumed a very special one-parameter structure:
+
+$$
+Ri_g=\frac{\zeta}{1+\beta\zeta}, \qquad \phi_m=1+\beta\zeta.
+$$
+
+For the more general stable linear MOST forms
+
+$$
+\phi_m=1+a_m\zeta, \qquad \phi_h=1+a_h\zeta,
+$$
+
+the Richardson number is
+
+$$
+Ri_g(\zeta)=\zeta\frac{1+a_h\zeta}{(1+a_m\zeta)^2},
+$$
+
+which is more complicated and generally does not reduce to the simple formula above unless the coefficients satisfy a special relation.
+
+So this worked example should be viewed as:
+
+- a pedagogically clean model,
+- a useful prototype for an Ri-based closure,
+- but not the most general Businger-Dyer derivation.
+
+#### Step 8. Optional extension for heat
+
+If, in this same toy model, you also assume
+
+$$
+\phi_h(\zeta)=\phi_m(\zeta),
+$$
+
+then
+
+$$
+f_h(Ri_g)=\frac{1}{\phi_m\phi_h}=\frac{1}{\phi_m^2}=f_m(Ri_g),
+$$
+
+so the turbulent Prandtl number becomes
+
+$$
+Pr_t=\frac{f_m}{f_h}=1.
+$$
+
+That is mathematically neat, but often too restrictive for real stable boundary layers, where momentum and heat usually do not behave identically.
+
 ---
 
 ## Part 4: Build Practical Stable Functions (Linear and Quadratic)
