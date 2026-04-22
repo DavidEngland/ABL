@@ -1,0 +1,41 @@
+Subject: Re: Displacement / mixing length / iterative method
+
+Hi Arastoo,
+
+CC: Dick
+
+Understood. I was mainly thinking about LLJs, which is what led me back to the Paulson-type iterative method, mixing length, and displacement height.
+
+I have been revisiting what I think of as the "three reciprocals." In the simplest form, Blackadar gives
+
+1/l_m = 1/(kappa*z) + 1/lambda,
+
+and Nieuwstadt adds a stability-limiting term,
+
+1/l_m = 1/(kappa*z) + 1/lambda + 1/(c*abs(L)).
+
+With displacement, the near-surface length scale becomes
+
+l_m = kappa*(z - d),
+
+so the geometry is shifted everywhere by d.
+
+My current impression is this:
+
+- For d = 0, the iterative method may be doing unnecessary work. If the math and numerics are set up carefully, I think there is a direct way to compute the needed quantities without iteration.
+- For d > 0, I am less certain. The displacement changes the log structure and may make the estimates more sensitive.
+
+One thing I remember from looking at this in the mid-1990s is that the results were sensitive to implementation details. One older code path used ATAN rather than ATAN2, and the behavior changed noticeably when that was updated. The code also seemed sensitive to whatever thresholds were imposed before the inverse tangent was evaluated.
+
+I saw something similar in the 1-D slope model I developed. The Richardson number estimate could change noticeably depending on the minimum-shear thresholds used in the denominator.
+
+So my suspicion is that, once displacement is included, we need to be careful with expressions of the form
+
+log(z[k+1] - d) - log(z[k] - d),
+
+rather than treating the layer geometry as though d = 0.
+
+That is where my thinking is at the moment.
+
+Best,
+Dave

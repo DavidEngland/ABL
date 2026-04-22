@@ -310,7 +310,7 @@ Please ensure:
 ## 📧 Contact
 
 **David E. England**  
-Email: david.england@uah.edu  
+Email: David.England@UAH.Edu  
 GitHub: [@DavidEngland](https://github.com/DavidEngland)
 
 **Project Links:**
