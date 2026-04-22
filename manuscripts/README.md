@@ -40,6 +40,19 @@
 
 ---
 
+### 3. WRF Integration Paper (Implementation-Focused)
+**Working Title:** "Grid-Aware Ri-Curvature and Dynamic Critical Richardson Number Integration in WRF Stable Boundary Layer Schemes"
+
+**Target Journal:** Monthly Weather Review (primary) or JAMC  
+**Lead Author:** England (proposed)  
+**Co-authors:** McNider, Biazar  
+**Status:** Outline drafted  
+**File:** `WRF_Ri_Curvature_Integration_Outline_v01.md`
+
+**Focus:** WRF-ready implementation, SCM+3D validation, and operationally safe defaults
+
+---
+
 ## File Naming Convention
 
 - Use semantic versioning: `Title_v01.md`, `Title_v02.md`, etc.
