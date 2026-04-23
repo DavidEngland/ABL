@@ -27,7 +27,11 @@ MODULE module_ri_correction
    PUBLIC :: compute_dynamic_ric
    PUBLIC :: update_turbulence_state
    PUBLIC :: compute_stability_functions_hybrid
-   PUBLIC :: STAB_FORM_LINEAR, STAB_FORM_QUADRATIC
+   PUBLIC :: map_bulk_to_effective_gradient_ri
+   PUBLIC :: solve_zeta_from_rig_bd71
+   PUBLIC :: compute_stability_functions_most_from_rig
+   PUBLIC :: STAB_FORM_LINEAR, STAB_FORM_QUADRATIC, STAB_FORM_MOST_BD71
+   PUBLIC :: RI_INPUT_GRADIENT, RI_INPUT_BULK
    
    ! Parameters (tunable, see rct_config.yaml for defaults)
    REAL, PARAMETER :: D_default = 0.8            ! Damping amplitude
@@ -54,6 +58,11 @@ MODULE module_ri_correction
    ! Stable-function selector IDs (for compute_stability_functions_hybrid)
    INTEGER, PARAMETER :: STAB_FORM_LINEAR = 1
    INTEGER, PARAMETER :: STAB_FORM_QUADRATIC = 2
+   INTEGER, PARAMETER :: STAB_FORM_MOST_BD71 = 3
+
+   ! Richardson number input-kind selector IDs
+   INTEGER, PARAMETER :: RI_INPUT_GRADIENT = 1
+   INTEGER, PARAMETER :: RI_INPUT_BULK = 2
    
 CONTAINS
 
@@ -192,7 +201,7 @@ CONTAINS
    !---------------------------------------------------------------------------
    ! Hybrid stability functions: MOST in unstable, Ri-based in stable
    !---------------------------------------------------------------------------
-   SUBROUTINE compute_stability_functions_hybrid(Ri, zeta, f_m, f_h, stable_form)
+   SUBROUTINE compute_stability_functions_hybrid(Ri, zeta, f_m, f_h, stable_form, ri_input_kind, B_ratio)
       !------------------------------------------------------------------------
       ! Unstable/near-neutral branch (Ri <= 0):
       !   Use MOST functions parameterized by zeta = z/L.
@@ -200,11 +209,16 @@ CONTAINS
       !   Use Ri-based stability functions with selectable forms.
       !
       ! Inputs:
-      !   Ri          - Richardson number
+      !   Ri          - Richardson number input (Ri_g preferred)
       !   zeta        - z/L (used on unstable branch)
       !   stable_form - Selector (optional):
       !                 STAB_FORM_LINEAR (default)
       !                 STAB_FORM_QUADRATIC
+      !                 STAB_FORM_MOST_BD71 (invert Ri_g->zeta, then use phi)
+      !   ri_input_kind - Selector (optional):
+      !                   RI_INPUT_GRADIENT (default)
+      !                   RI_INPUT_BULK
+      !   B_ratio     - Optional Ri_g/Ri_b for mapping bulk->effective gradient
       !
       ! Outputs:
       !   f_m, f_h    - Stability functions used in K = l_mix^2 * S * f
@@ -212,22 +226,32 @@ CONTAINS
 
       REAL, INTENT(IN) :: Ri, zeta
       INTEGER, INTENT(IN), OPTIONAL :: stable_form
+      INTEGER, INTENT(IN), OPTIONAL :: ri_input_kind
+      REAL, INTENT(IN), OPTIONAL :: B_ratio
       REAL, INTENT(OUT) :: f_m, f_h
 
-      INTEGER :: form_sel
-      REAL :: phi_m, phi_h, ri_loc
+      INTEGER :: form_sel, ri_kind_sel
+      REAL :: phi_m, phi_h, ri_loc, ri_eff
 
       form_sel = STAB_FORM_LINEAR
       IF (PRESENT(stable_form)) form_sel = stable_form
 
-      IF (Ri <= 0.0) THEN
+      ri_kind_sel = RI_INPUT_GRADIENT
+      IF (PRESENT(ri_input_kind)) ri_kind_sel = ri_input_kind
+
+      ri_eff = Ri
+      IF (ri_kind_sel == RI_INPUT_BULK) THEN
+         CALL map_bulk_to_effective_gradient_ri(Ri, ri_eff, B_ratio)
+      END IF
+
+      IF (ri_eff <= 0.0) THEN
          ! Businger-Dyer style unstable MOST (zeta < 0).
          phi_m = (1.0 - 16.0 * MIN(zeta, 0.0))**(-0.25)
          phi_h = (1.0 - 16.0 * MIN(zeta, 0.0))**(-0.50)
          f_m = 1.0 / (phi_m * phi_m)
          f_h = 1.0 / (phi_m * phi_h)
       ELSE
-         ri_loc = MAX(Ri, 0.0)
+         ri_loc = MAX(ri_eff, 0.0)
          SELECT CASE (form_sel)
          CASE (STAB_FORM_LINEAR)
             ! Linear-in-Ri denominator: tune coefficients per host scheme.
@@ -237,6 +261,9 @@ CONTAINS
             ! Quadratic tail for stronger damping in very stable conditions.
             f_m = 1.0 / (1.0 + 4.7 * ri_loc + 12.0 * ri_loc * ri_loc)
             f_h = 1.0 / (1.0 + 7.8 * ri_loc + 20.0 * ri_loc * ri_loc)
+         CASE (STAB_FORM_MOST_BD71)
+            ! MOST-consistent path: invert Ri_g to zeta, then evaluate phi-based f.
+            CALL compute_stability_functions_most_from_rig(ri_loc, f_m, f_h)
          CASE DEFAULT
             ! Safe fallback
             f_m = 1.0 / (1.0 + 5.0 * ri_loc)
@@ -252,6 +279,106 @@ CONTAINS
       f_h = MAX(0.0, MIN(f_h, 1.0))
 
    END SUBROUTINE compute_stability_functions_hybrid
+
+
+   !---------------------------------------------------------------------------
+   ! Map bulk Ri to effective gradient-like Ri for stability functions
+   !---------------------------------------------------------------------------
+   SUBROUTINE map_bulk_to_effective_gradient_ri(Ri_bulk, Ri_eff, B_ratio)
+      !------------------------------------------------------------------------
+      ! If B_ratio=Ri_g/Ri_b is available, use Ri_eff = Ri_bulk * B_ratio.
+      ! Otherwise, fall back to Ri_eff = Ri_bulk (neutral default behavior).
+      !------------------------------------------------------------------------
+
+      REAL, INTENT(IN) :: Ri_bulk
+      REAL, INTENT(OUT) :: Ri_eff
+      REAL, INTENT(IN), OPTIONAL :: B_ratio
+
+      REAL :: B_loc
+
+      B_loc = 1.0
+      IF (PRESENT(B_ratio)) B_loc = MAX(B_ratio, 0.0)
+
+      Ri_eff = Ri_bulk * B_loc
+
+   END SUBROUTINE map_bulk_to_effective_gradient_ri
+
+
+   !---------------------------------------------------------------------------
+   ! Solve zeta from gradient Ri for BD71-style stable linear phi functions
+   !---------------------------------------------------------------------------
+   SUBROUTINE solve_zeta_from_rig_bd71(Ri_g, zeta)
+      !------------------------------------------------------------------------
+      ! Uses Ri_g(zeta) = zeta*(1 + ch*zeta) / (1 + cm*zeta)^2
+      ! with cm=5.0, ch=7.8 on stable branch.
+      ! Newton iteration with a near-neutral series seed.
+      !------------------------------------------------------------------------
+
+      REAL, INTENT(IN)  :: Ri_g
+      REAL, INTENT(OUT) :: zeta
+
+      REAL, PARAMETER :: cm = 5.0, ch = 7.8
+      REAL, PARAMETER :: tol = 1.e-8
+      INTEGER, PARAMETER :: maxit = 20
+
+      REAL :: Delta, z, f, fp
+      REAL :: N, D, Np, Dp
+      INTEGER :: it
+
+      IF (Ri_g <= 0.0) THEN
+         zeta = Ri_g
+         RETURN
+      END IF
+
+      ! Near-neutral seed: zeta ~= Ri - Delta*Ri^2 with Delta = ch - 2*cm
+      Delta = ch - 2.0 * cm
+      z = Ri_g - Delta * Ri_g * Ri_g
+      z = MAX(0.0, z)
+
+      DO it = 1, maxit
+         N = z + ch * z * z
+         D = (1.0 + cm * z) * (1.0 + cm * z)
+         f = N / D - Ri_g
+
+         Np = 1.0 + 2.0 * ch * z
+         Dp = 2.0 * cm * (1.0 + cm * z)
+         fp = (Np * D - N * Dp) / (D * D)
+
+         IF (ABS(fp) < 1.e-12) EXIT
+
+         z = z - f / fp
+         z = MAX(0.0, z)
+
+         IF (ABS(f) < tol) EXIT
+      END DO
+
+      zeta = z
+
+   END SUBROUTINE solve_zeta_from_rig_bd71
+
+
+   !---------------------------------------------------------------------------
+   ! MOST-consistent f_m, f_h from Ri_g via zeta inversion
+   !---------------------------------------------------------------------------
+   SUBROUTINE compute_stability_functions_most_from_rig(Ri_g, f_m, f_h)
+      REAL, INTENT(IN)  :: Ri_g
+      REAL, INTENT(OUT) :: f_m, f_h
+
+      REAL, PARAMETER :: cm = 5.0, ch = 7.8
+      REAL :: zeta, phi_m, phi_h
+
+      CALL solve_zeta_from_rig_bd71(Ri_g, zeta)
+
+      phi_m = 1.0 + cm * zeta
+      phi_h = 1.0 + ch * zeta
+
+      f_m = 1.0 / (phi_m * phi_m)
+      f_h = 1.0 / (phi_m * phi_h)
+
+      f_m = MAX(0.0, MIN(f_m, 1.0))
+      f_h = MAX(0.0, MIN(f_h, 1.0))
+
+   END SUBROUTINE compute_stability_functions_most_from_rig
    
    
    !---------------------------------------------------------------------------
@@ -418,7 +545,8 @@ END MODULE module_ri_correction
 ! -------------------------
 !     USE module_ri_correction, ONLY: apply_simple_ri_correction, &
 !                                      compute_dynamic_ric, update_turbulence_state, &
-!                                      compute_stability_functions_hybrid, STAB_FORM_LINEAR
+!                                      compute_stability_functions_hybrid, STAB_FORM_MOST_BD71, &
+!                                      RI_INPUT_BULK
 !     
 !     DO k = kts, kte-1
 !        dz = z(k+1) - z(k)
@@ -455,8 +583,10 @@ END MODULE module_ri_correction
 !           S = SQRT(shear2) / MAX(dz, 1.e-3)
 !           l_mix = MIN(l_max, karman * z(k))
 !           ! Hybrid closure: MOST(zeta) for unstable, Ri-form for stable
+!           ! Here we pass Rib_corrected as bulk Ri, plus B_k to estimate Ri_g.
 !           CALL compute_stability_functions_hybrid(Rib_corrected, zeta_k, f_m, f_h, &
-!                                                   stable_form=STAB_FORM_LINEAR)
+!                                                   stable_form=STAB_FORM_MOST_BD71, &
+!                                                   ri_input_kind=RI_INPUT_BULK, B_ratio=B_k)
 !           K_m(k) = l_mix**2 * S * f_m
 !           K_h(k) = l_mix**2 * S * f_h
 !        ELSE
@@ -493,11 +623,13 @@ END MODULE module_ri_correction
 ! AFTER:
 ! ------
 !     USE module_ri_correction, ONLY: apply_stability_function_correction, &
-!                                      compute_stability_functions_hybrid, STAB_FORM_QUADRATIC
+!                                      compute_stability_functions_hybrid, STAB_FORM_QUADRATIC, &
+!                                      RI_INPUT_BULK
 !     
 !     ! Base function can be linear or quadratic on stable branch
 !     CALL compute_stability_functions_hybrid(Rib(k), zeta_k, f_m_base, f_h_base, &
-!                                             stable_form=STAB_FORM_QUADRATIC)
+!                                             stable_form=STAB_FORM_QUADRATIC, &
+!                                             ri_input_kind=RI_INPUT_BULK, B_ratio=B_k)
 !     CALL apply_stability_function_correction(Rib(k), dz, f_m_base, f_m_corrected, &
 !                                              zeta=zeta_k, B_ratio=B_k, D_param=0.8)
 !     K_m(k) = l_mix**2 * shear * f_m_corrected
@@ -508,7 +640,12 @@ END MODULE module_ri_correction
 !
 ! NOTE:
 !   - In this module, unstable/near-neutral uses MOST functions of zeta=z/L.
-!   - Stable branch uses Ri-based functions (linear or quadratic by selector).
+!   - Stable branch can use:
+!       (i) practical Ri-forms (linear/quadratic), or
+!      (ii) MOST-consistent inversion STAB_FORM_MOST_BD71.
+!   - Preferred Ri input for f_m,f_h is local gradient Ri_g.
+!   - If only bulk Ri_b is available, pass ri_input_kind=RI_INPUT_BULK and
+!     provide B_ratio=Ri_g/Ri_b when possible.
 !   - To insert your own stable function, add a CASE(...) branch in
 !     compute_stability_functions_hybrid and set f_m, f_h there.
 !

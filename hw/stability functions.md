@@ -52,6 +52,16 @@ $$
 \quad |x|<\frac{1}{16}.
 $$
 
+Interpretation note for boundary-layer similarity:
+
+- In unstable Businger-Dyer (1971), heat commonly uses
+
+$$
+\phi_h(\zeta)=(1-16\zeta)^{-1/2},\qquad \zeta<0.
+$$
+
+- Therefore, this central-binomial expansion is exactly the BD71 unstable heat shear-function form with $x=\zeta$.
+
 Write the first 6 nonzero terms explicitly.
 
 ### 1C. Singularity and branch discussion
@@ -68,6 +78,38 @@ answer:
 2. What happens at $x=1/b$?
 3. Why is $x>1/b$ not real-valued (without analytic continuation)?
 4. Give the principal complex continuation for $x>1/b$.
+
+### 1D. BD71 heat vs momentum exponents and implications
+
+For the same unstable argument $(1-16\zeta)$ in BD71:
+
+$$
+\phi_h(\zeta)=(1-16\zeta)^{-1/2},\qquad
+\phi_m(\zeta)=(1-16\zeta)^{-1/4}.
+$$
+
+Direct implications:
+
+- The larger-magnitude exponent for heat ($-1/2$ vs $-1/4$) gives stronger nonlinearity in thermal similarity than momentum for the same argument.
+- In closure space, this typically yields stronger damping of $K_h$ relative to $K_m$ as one approaches strong stratification limits in Ri-based mappings.
+- For SBL ($\zeta>0$), operational models do not evaluate these unstable radical forms directly; they switch to stable forms (often linear or Ri-based) to remain real-valued and physically interpretable.
+- The $x>1/b$ regime belongs to complex analytic continuation, useful mathematically but not as a physically admissible turbulent diffusivity branch.
+
+Answer the following briefly:
+
+1. Show from a binomial expansion that the heat function diverges faster than momentum as the singular point is approached.
+2. Explain why this implies stronger thermal-than-momentum suppression in the corresponding closure factors near the singular point.
+3. For stable conditions ($\zeta>0$), explain why these unstable forms are not used directly (the radical argument changes sign at finite positive $\zeta$).
+4. For a purely mathematical continuation beyond $x>1/b$, write the principal-branch forms:
+
+$$
+(1-bx)^{-1/2}=i\,(bx-1)^{-1/2},
+\qquad
+(1-bx)^{-1/4}=e^{-i\pi/4}(bx-1)^{-1/4},
+\quad x>1/b,
+$$
+
+and state clearly why complex-valued closure functions are not physically admissible in operational SBL parameterizations.
 
 ---
 

@@ -13,11 +13,13 @@ Grid-Aware Richardson-Number Curvature Corrections and Dynamic Critical Richards
 This paper is scoped as an implementation and evaluation study for WRF PBL physics (initially YSU, optional MYNN extension), with emphasis on:
 
 - physically consistent stable-layer corrections
+- explicit Richardson-number input handling (local gradient vs bulk)
 - minimal and restart-safe code changes
 - namelist-controlled activation
 - reproducible SCM and 3D validation
 
 The implementation anchor is the example module in examples/wrf_integration_example.F90.
+Reusable profile helpers are prototyped in examples/module_most_profile_utils.F90.
 
 ## Candidate Authors
 
@@ -58,6 +60,9 @@ One paragraph each for:
 ### 3.1 Baseline Relations
 
 - Ri_b, Ri_g, representative-height rationale (z_g and/or z_L as needed).
+- Explicit bulk-to-effective-gradient mapping when only Ri_b is available:
+- Ri_eff = B_ratio * Ri_b, with B_ratio constrained and diagnosed per layer.
+- API clarity via Ri-input-kind tagging on each stability-function call.
 
 ### 3.2 Neutral-Preserving Stable-Only Damping
 
@@ -66,6 +71,7 @@ One paragraph each for:
 - fc -> 1 as zeta -> 0
 - fc -> 1 as dz -> small
 - fc in [fc_min, 1]
+- Stable-only gating: no damping is applied in unstable or neutral branches.
 
 ### 3.3 Dynamic Critical Richardson Number
 
@@ -77,23 +83,38 @@ One paragraph each for:
 - suppress threshold: Ri > 1.5 Ric*
 - restart threshold: Ri < 0.5 Ric*
 
+### 3.5 Similarity-Function Consistency
+
+- Distinguish MOST similarity functions phi_m(zeta), phi_h(zeta) from Ri-based closure functions f_m(Ri), f_h(Ri).
+- Stable f_m, f_h options to document and compare:
+- algebraic Ri forms (linear/quadratic)
+- MOST-consistent inversion path (invert Ri_g -> zeta, then evaluate phi).
+- Clarify that BD71 unstable radicals are used only for zeta < 0 and are not analytically continued into operational SBL closures.
+
 ## 4. WRF Implementation Details
 
 ### 4.1 Files and Schemes
 
 - YSU primary insertion point (module_bl_ysu.F).
 - MYNN optional pathway via stability function correction.
+- Utility-module pathway for clean reuse:
+- phys/module_ri_mapping_utils.F90 (Ri_b -> Ri_g-effective and safeguards)
+- phys/module_most_profile_utils.F90 (phi profiles, Ri_g(zeta), zeta inversion)
 
 ### 4.2 Minimal Patch Philosophy
 
 - One new module/use block + local call sites.
 - No interface break for existing PBL APIs.
 - Optional activation by namelist switches.
+- Default behavior remains backward compatible when new switches are off.
+- Keep scalar safeguards local (bounds, floors) and avoid branch-dependent side effects.
 
 ### 4.3 Namelist/Runtime Controls (table)
 
 - apply_ri_correction
 - use_dynamic_ric
+- ri_input_kind (gradient|bulk)
+- stable_form_selector (LINEAR|QUADRATIC|MOST_BD71)
 - D_param, p, q, fc_min, B_threshold
 - Ric weights and bounds
 
@@ -102,12 +123,14 @@ One paragraph each for:
 - floors for shear and Ri denominators
 - bounds for fc and Ric*
 - stable-only gating
-- no added iterative solver in strong-stable branch
+- iterative inversion only when MOST_BD71 is selected; algebraic otherwise
+- bounded Newton iteration with fallback and clipping for robustness
 
 ### 4.5 Computational Cost Reporting
 
 - wall-clock overhead (%) in SCM and 3D test
 - number/fraction of timesteps using dynamic transitions
+- number/fraction of timesteps using inversion path (MOST_BD71)
 
 ## 5. Experimental Design
 
@@ -130,6 +153,8 @@ One paragraph each for:
 - D in [0.5, 0.8, 1.2]
 - with/without dynamic Ric*
 - with/without hysteresis
+- Ri-input-kind sensitivity (native Ri_g vs mapped Ri_b)
+- stable-form sensitivity (LINEAR, QUADRATIC, MOST_BD71)
 
 ## 6. Evaluation Metrics
 
@@ -139,6 +164,7 @@ One paragraph each for:
 - Near-surface T2 and wind10 bias
 - Regime classification skill (active/intermittent/suppressed)
 - Stability/robustness: CFL violations, crashes, outliers
+- Closure-consistency diagnostics: Ri-input-kind usage and mapped-vs-native Ri differences
 
 ## 7. Results
 
@@ -150,6 +176,7 @@ One paragraph each for:
 
 - B ratio and fc distributions by stability class.
 - Ric* distribution and transition frequencies.
+- Frequency and impact of MOST_BD71 inversion branch use.
 
 ### 7.3 3D Impacts
 
@@ -185,6 +212,7 @@ One paragraph each for:
 - Fig 1: Schematic of Ri_g curvature and bulk-vs-point bias.
 - Fig 2: fc response surface vs (dz, stability).
 - Fig 3: WRF insertion points (YSU and MYNN pathways).
+- Fig 3a: Decision tree for Ri-input-kind handling and stable-form selector.
 - Fig 4: SCM time series (h_BL, LLJ, fluxes).
 - Fig 5: Regime transition diagram with Ric* and hysteresis.
 - Fig 6: 3D case maps/time-height diagnostics.
@@ -192,6 +220,7 @@ One paragraph each for:
 ## Table Plan (initial)
 
 - Table 1: Parameter defaults and tuned ranges.
+- Table 1a: Ri-input-kind and stable-form options with default safeguards.
 - Table 2: SCM benchmark metrics.
 - Table 3: 3D case skill and runtime overhead.
 
