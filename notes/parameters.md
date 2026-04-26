@@ -5,6 +5,30 @@ Here is a consolidated, research‑grade synthesis of the parameter sets, regime
 
 1. Canonical Parameter Sets for Businger–Dyer Type Similarity Functions
 
+### Quick Reference Tables
+
+| Set / Source | k | a_h^{-1} (or Pr0inv) | Unstable coeff. (m, h) | Stable coeff. (m, h) | Notes |
+|---|---:|---:|---:|---:|---|
+| Businger et al. (1971) | 0.35 | 1.35 | (15.0, 9.0) | (4.7, 6.35) | Kansas dataset baseline |
+| Dyer (1974) / Brutsaert (1982) | 0.40 | 1.00 | (16.0, 16.0) | (5.0, 5.0) | Common WRF/LES default |
+| Högström (1996) | 0.40 | 1.00 | (19.0, 11.6) | (5.3, 5.3) | Stronger unstable momentum curvature |
+
+Notes:
+Unstable coefficients are often denoted \(\gamma_m, \gamma_h\) in literature and \(b_m, b_h\) in code-oriented implementations.
+
+| Regime Type | Range | Practical Meaning | Typical Modeling Guidance |
+|---|---|---|---|
+| Near-neutral unstable | \(-1 < \zeta < 0\) | Weak instability | Classical Businger-Dyer forms usually reliable |
+| Strongly unstable | \(\zeta < -1\) | Convective dominance increases | Consider free-convection behavior checks |
+| Formal unstable validity (classical) | \(-2 < \zeta < 0\) | Common cited calibration window | Avoid overextending without validation |
+| Moderately stable | \(0 < \zeta \le 1\) | Stratification suppresses mixing | Linear stable forms often acceptable |
+| Very/extremely stable | \(\zeta > 1\) | Intermittent, z-less turbulence regimes | Prefer specialized stable-layer formulations |
+| Ri nearly neutral | \(0 < Ri < 0.02\) | Turbulent and close to neutral | Standard closures work well |
+| Ri weakly stable | \(0.02 < Ri < 0.12\) | Increasing suppression of turbulence | Monitor stability-function sensitivity |
+| Ri very stable | \(0.12 < Ri < 0.7\) | Intermittency more likely | Use robust/capped stable closures |
+| Ri extremely stable | \(Ri > 0.7\) | Possible laminar tendency | Turbulence may collapse intermittently |
+| Critical threshold | \(Ri_c \approx 0.21\text{–}0.25\) | Onset of laminarization risk | Useful switch point in higher-order closures |
+
 The table you provided captures the core empirical constants used in MOST‑based surface‑layer schemes. These constants define:
 
 • Unstable branch:\phi_m = (1 - \gamma_m \zeta)^{-1/4}, \qquad
@@ -103,6 +127,111 @@ SHEBA (2007)
 3. Ensure continuity across neutral, unstable, and stable branches.
 4. Apply Ri‑based turbulence switches for very stable conditions.
 5. Validate against site‑specific data, especially in Arctic or nocturnal SBL cases.
+
+---
+
+5. Central Binomial Coefficient Expansions — A Key Structural Result
+
+**This is a big deal.** The MOST power-law functions
+
+$$
+\phi_m(\zeta) = (1 - b_m\,\zeta)^{-1/4}, \qquad \phi_h(\zeta) = (1 - b_h\,\zeta)^{-1/2}
+$$
+
+admit exact power-series representations near neutral via the generalized binomial theorem.
+For \(\phi_h\) the series coefficients collapse to *central binomial coefficients*:
+
+$$
+\phi_h(\zeta) = \sum_{n=0}^{\infty} \binom{2n}{n}\!\left(\frac{b_h}{4}\right)^n \zeta^n
+= 1 + \frac{b_h}{2}\,\zeta + \frac{3 b_h^2}{8}\,\zeta^2 + \cdots
+$$
+
+with the two-term recurrence
+$$
+c_{n+1} = c_n \cdot \frac{b_h\,(2n+1)}{2(n+1)}, \qquad c_0 = 1.
+$$
+
+For \(b_h = 16\) (Dyer default): coefficients are \(1,\,8,\,96,\,1280,\,\ldots\) — the central binomials scaled by powers of 4.
+
+For \(\phi_m\) (exponent 1/4), the coefficients follow the analogous generalized-binomial recurrence:
+$$
+c_{n+1}^{(1/4)} = c_n^{(1/4)} \cdot \frac{b_m\,(4n+1)}{4(n+1)}, \qquad c_0^{(1/4)} = 1.
+$$
+
+**Radius of convergence:** both series converge for \(|\zeta| < 1/b_h\) (resp. \(1/b_m\)), set by the branch point.
+
+### 5.1 The Structural Identity (degenerate case \(b_m = b_h = b\))
+
+When the unstable coefficients are equal,
+
+$$
+\phi_h(\zeta) = (1-b\zeta)^{-1/2} = \bigl[(1-b\zeta)^{-1/4}\bigr]^2 = \phi_m(\zeta)^2.
+$$
+
+This is an **exact algebraic identity**, not an approximation. Substituting into the
+MOST Richardson-number relation \(Ri_g = \zeta\,\phi_h / \phi_m^2\) gives immediately
+
+$$
+\boxed{Ri_g = \zeta} \qquad (b_m = b_h).
+$$
+
+The gradient Richardson number equals the stability parameter with no iterative solver required
+on the unstable branch. This degeneracy is an exact structural consequence of the half-power
+exponent relationship \(\alpha_h = 2\alpha_m\) and equal coefficients; it holds term by term
+in the CBC expansion.
+
+### 5.2 Asymptotic Expansion in the UBL (\(\eta = -\zeta\), \(\eta \to \infty\))
+
+Substituting \(\eta = -\zeta > 0\) for the strongly unstable branch:
+
+$$
+\phi_m \sim (b_m\,\eta)^{-1/4}\!\left[1 - \tfrac{1}{4}(b_m\eta)^{-1}
++ \tfrac{5}{32}(b_m\eta)^{-2} - \cdots\right]
+$$
+
+$$
+\phi_h \sim (b_h\,\eta)^{-1/2}\!\left[1 - \tfrac{1}{2}(b_h\eta)^{-1}
++ \tfrac{3}{8}(b_h\eta)^{-2} - \cdots\right]
+$$
+
+Both series are regular inverse-power hierarchies — no oscillatory terms.
+\(\phi_h \propto \eta^{-1/2}\) decays faster than \(\phi_m \propto \eta^{-1/4}\):
+scalar closures are intrinsically less sensitive to extreme instability than momentum closures.
+
+### 5.3 Parameter Mismatch and the Dynamic \(Ri_c\) Resolution
+
+In practice \(b_m \neq b_h\) (e.g., Businger: \(b_m=15,\,b_h=9\)), which **breaks** the
+\(Ri_g=\zeta\) identity. The correction (first-order perturbation):
+
+$$
+Ri_g \approx \zeta\!\left[1 - (a_h - 2a_m)\,b\,\zeta + \cdots\right]
+$$
+
+where \(\Delta = \alpha_h b_h - 2\alpha_m b_m\) is the neutral curvature invariant.
+
+The **dynamic critical Richardson number** framework reconciles the mismatch by allowing
+\(Ri_c^*\) to vary continuously between regime limits:
+
+| Regime | Natural limit | Origin |
+|---|---|---|
+| Strongly unstable (UBL) | \(Ri_c^{UBL} = -1/b_m\) | Convergence radius of \(\phi_m\) CBC series |
+| Stable (SBL) | \(Ri_c^{SBL} = +1/\beta\) | Pole of stable-linear inversion |
+
+A smooth transition \(Ri_c^* = Ri_c^*(S,\,\Gamma,\,\text{TKE})\) spanning
+\([-1/b_m,\,+1/\beta]\) provides a parameter-consistent closure that avoids
+the discontinuity at \(\zeta=0\) and eliminates the need for a fixed empirical
+threshold. See `Dynamic Critical Richardson Number Framework.md` for the full formulation.
+
+### 5.4 CBC vs Power Series vs Asymptotic: Comparison
+
+| Representation | Valid range | Coefficients | Evaluation cost | Best use |
+|---|---|---|---|---|
+| Full CBC series (truncated to N terms) | \(|\zeta| < 1/b_h\) | Exact, 2-term recurrence | O(N) | Near-neutral regime |
+| Stirling-approximated tail | \(n \gg 1\) | \(\approx 4^n/\sqrt{\pi n}\) | O(N_tail) | Accelerating convergence |
+| Asymptotic in \(\eta=-\zeta\) | \(\eta \gg 1\) | Exact, inverse-power | O(few terms) | Strongly unstable UBL |
+| Linear stable form | \(0 < \zeta \ll 1/\beta\) | Exact, trivial | O(1) | Near-neutral stable |
+
+See `code/phi_h_central_binomial.py` for a working implementation of the CBC + Stirling hybrid.
 
 
 ---
