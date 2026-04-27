@@ -12,6 +12,8 @@
 !==============================================================================
 
 MODULE module_most_profile_utils
+   USE module_cbc_legendre_most, ONLY: phi_h_cbc_unstable, phi_m_gegenbauer_unstable, &
+                                       compute_cbc_critical_ri_limits
    IMPLICIT NONE
    PRIVATE
 
@@ -20,6 +22,7 @@ MODULE module_most_profile_utils
    PUBLIC :: rig_from_zeta
    PUBLIC :: zeta_from_rig_newton
    PUBLIC :: fm_fh_from_rig
+   PUBLIC :: cbc_critical_ri_limits
 
    INTEGER, PARAMETER :: PROFILE_BD71 = 1
    INTEGER, PARAMETER :: PROFILE_HOG88 = 2
@@ -36,12 +39,21 @@ CONTAINS
       REAL, INTENT(IN)    :: zeta
       REAL, INTENT(OUT)   :: phi_m, phi_h
 
-      REAL, PARAMETER :: a_unst = 16.0
+      REAL, PARAMETER :: b_m_unst = 16.0
+      REAL, PARAMETER :: b_h_unst = 16.0
+      INTEGER, PARAMETER :: n_cbc = 12
+      REAL :: eta_mag
 
       IF (zeta < 0.0) THEN
-         ! Businger-Dyer unstable branch
-         phi_m = (1.0 - a_unst * zeta)**(-0.25)
-         phi_h = (1.0 - a_unst * zeta)**(-0.50)
+         ! Near neutrality, use the CBC / Gegenbauer recurrences directly.
+         eta_mag = -zeta
+         IF (MAX(b_m_unst * eta_mag, b_h_unst * eta_mag) <= 0.5) THEN
+            phi_m = phi_m_gegenbauer_unstable(zeta, b_m_unst, n_cbc)
+            phi_h = phi_h_cbc_unstable(zeta, b_h_unst, n_cbc)
+         ELSE
+            phi_m = (1.0 - b_m_unst * zeta)**(-0.25)
+            phi_h = (1.0 - b_h_unst * zeta)**(-0.50)
+         END IF
          RETURN
       END IF
 
@@ -147,5 +159,17 @@ CONTAINS
       f_m = MAX(0.0, MIN(f_m, 1.0))
       f_h = MAX(0.0, MIN(f_h, 1.0))
    END SUBROUTINE fm_fh_from_rig
+
+
+   SUBROUTINE cbc_critical_ri_limits(b_m, b_h, beta_s, ri_c_ubl_m, ri_c_ubl_h, ri_c_sbl)
+      !------------------------------------------------------------------------
+      ! Wrapper exposing the parameter-dependent critical Ri limits implied by
+      ! the CBC / stable-linear representations.
+      !------------------------------------------------------------------------
+      REAL, INTENT(IN)  :: b_m, b_h, beta_s
+      REAL, INTENT(OUT) :: ri_c_ubl_m, ri_c_ubl_h, ri_c_sbl
+
+      CALL compute_cbc_critical_ri_limits(b_m, b_h, beta_s, ri_c_ubl_m, ri_c_ubl_h, ri_c_sbl)
+   END SUBROUTINE cbc_critical_ri_limits
 
 END MODULE module_most_profile_utils

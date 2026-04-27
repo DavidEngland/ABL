@@ -91,6 +91,22 @@ One paragraph each for:
 - MOST-consistent inversion path (invert Ri_g -> zeta, then evaluate phi).
 - Clarify that BD71 unstable radicals are used only for zeta < 0 and are not analytically continued into operational SBL closures.
 
+### 3.6 Backward Derivation Track (CBC -> Gegenbauer/Legendre -> Ri Forms)
+
+- Start from unstable MOST forms with explicit coefficients:
+- phi_h = (1 - b_h zeta)^(-1/2), phi_m = (1 - b_m zeta)^(-1/4).
+- Show near-neutral expansions in eta = -zeta > 0:
+- heat branch via central-binomial coefficients (CBC),
+- momentum branch via Gegenbauer C_n^(1/4) equatorial values.
+- Connect CBC coefficients to even Legendre values P_{2n}(0) and P_n(cos(theta)) representation.
+- Document the degenerate identity when b_m = b_h:
+- phi_h = phi_m^2 and Ri_g = zeta.
+- Document non-degenerate corrections when b_m != b_h and implications for Ri inversion.
+- State parameter-aware critical limits:
+- UBL momentum limit: Ri_c,UBL,m = -1/b_m,
+- UBL heat limit: Ri_c,UBL,h = -1/b_h,
+- SBL linear limit: Ri_c,SBL = 1/beta (or component-wise 1/beta_m, 1/beta_h).
+
 ## 4. WRF Implementation Details
 
 ### 4.1 Files and Schemes
@@ -100,6 +116,8 @@ One paragraph each for:
 - Utility-module pathway for clean reuse:
 - phys/module_ri_mapping_utils.F90 (Ri_b -> Ri_g-effective and safeguards)
 - phys/module_most_profile_utils.F90 (phi profiles, Ri_g(zeta), zeta inversion)
+- examples/module_cbc_legendre_most.F90 (CBC/Gegenbauer recurrences + Ri_c limits)
+- examples/driver_cbc_gegenbauer_errors.F90 (tabulated exact-vs-series errors)
 
 ### 4.2 Minimal Patch Philosophy
 
@@ -132,6 +150,12 @@ One paragraph each for:
 - number/fraction of timesteps using dynamic transitions
 - number/fraction of timesteps using inversion path (MOST_BD71)
 
+### 4.6 Numerical Verification Artifacts (pre-results appendix)
+
+- Include driver-generated tables for phi_h and phi_m approximation errors vs zeta and truncation order N.
+- Report convergence envelope and practical switch threshold for series-vs-direct evaluation.
+- Include one table using b_m=b_h=16 (canonical) and one with b_m!=b_h (Businger set) to demonstrate non-degenerate behavior.
+
 ## 5. Experimental Design
 
 ### 5.1 WRF-SCM Benchmarks
@@ -155,6 +179,7 @@ One paragraph each for:
 - with/without hysteresis
 - Ri-input-kind sensitivity (native Ri_g vs mapped Ri_b)
 - stable-form sensitivity (LINEAR, QUADRATIC, MOST_BD71)
+- polynomial truncation sensitivity for unstable evaluation (N = 4, 8, 12, 16)
 
 ## 6. Evaluation Metrics
 
@@ -211,8 +236,10 @@ One paragraph each for:
 
 - Fig 1: Schematic of Ri_g curvature and bulk-vs-point bias.
 - Fig 2: fc response surface vs (dz, stability).
+- Fig 2a: CBC/Gegenbauer truncation error vs zeta and N (heat and momentum).
 - Fig 3: WRF insertion points (YSU and MYNN pathways).
 - Fig 3a: Decision tree for Ri-input-kind handling and stable-form selector.
+- Fig 3b: Backward derivation map (MOST -> CBC/Gegenbauer -> Legendre P_n(cos theta) -> Ri_g/Ri_c/Pr).
 - Fig 4: SCM time series (h_BL, LLJ, fluxes).
 - Fig 5: Regime transition diagram with Ric* and hysteresis.
 - Fig 6: 3D case maps/time-height diagnostics.
@@ -221,8 +248,10 @@ One paragraph each for:
 
 - Table 1: Parameter defaults and tuned ranges.
 - Table 1a: Ri-input-kind and stable-form options with default safeguards.
+- Table 1b: Parameter-dependent critical limits (Ri_c,UBL,m, Ri_c,UBL,h, Ri_c,SBL) for BD71/Businger/Hogstrom sets.
 - Table 2: SCM benchmark metrics.
 - Table 3: 3D case skill and runtime overhead.
+- Table A1 (appendix): exact vs CBC/Gegenbauer relative errors from driver output.
 
 ## BibTeX Plan
 
@@ -258,4 +287,5 @@ Note: Key names differ across bib files. Standardize into manuscripts/references
 
 ## Next Draft Target
 
-- v02 should include filled Sections 4-7 and full in-text citations.
+- v02 should include filled Sections 4-7, full in-text citations, and an appendix-ready
+  numerical verification package from examples/driver_cbc_gegenbauer_errors.F90.

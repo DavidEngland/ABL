@@ -11,6 +11,8 @@
 !==============================================================================
 
 MODULE module_ri_correction
+   USE module_cbc_legendre_most, ONLY: phi_h_cbc_unstable, phi_m_gegenbauer_unstable, &
+                                       compute_cbc_critical_ri_limits
    !---------------------------------------------------------------------------
    ! Richardson number curvature corrections for WRF PBL schemes
    ! Based on: England et al. (2025) "Grid-Dependent Stability Function
@@ -30,6 +32,7 @@ MODULE module_ri_correction
    PUBLIC :: map_bulk_to_effective_gradient_ri
    PUBLIC :: solve_zeta_from_rig_bd71
    PUBLIC :: compute_stability_functions_most_from_rig
+   PUBLIC :: cbc_critical_ri_limits
    PUBLIC :: STAB_FORM_LINEAR, STAB_FORM_QUADRATIC, STAB_FORM_MOST_BD71
    PUBLIC :: RI_INPUT_GRADIENT, RI_INPUT_BULK
    
@@ -232,6 +235,9 @@ CONTAINS
 
       INTEGER :: form_sel, ri_kind_sel
       REAL :: phi_m, phi_h, ri_loc, ri_eff
+      INTEGER, PARAMETER :: n_cbc = 12
+      REAL, PARAMETER :: b_m_unst = 16.0, b_h_unst = 16.0
+      REAL :: eta_mag
 
       form_sel = STAB_FORM_LINEAR
       IF (PRESENT(stable_form)) form_sel = stable_form
@@ -245,9 +251,16 @@ CONTAINS
       END IF
 
       IF (ri_eff <= 0.0) THEN
-         ! Businger-Dyer style unstable MOST (zeta < 0).
-         phi_m = (1.0 - 16.0 * MIN(zeta, 0.0))**(-0.25)
-         phi_h = (1.0 - 16.0 * MIN(zeta, 0.0))**(-0.50)
+         ! Businger-Dyer unstable MOST (zeta < 0), with CBC / Gegenbauer
+         ! evaluation near neutrality to preserve the recent series results.
+         eta_mag = -MIN(zeta, 0.0)
+         IF (MAX(b_m_unst * eta_mag, b_h_unst * eta_mag) <= 0.5) THEN
+            phi_m = phi_m_gegenbauer_unstable(MIN(zeta, 0.0), b_m_unst, n_cbc)
+            phi_h = phi_h_cbc_unstable(MIN(zeta, 0.0), b_h_unst, n_cbc)
+         ELSE
+            phi_m = (1.0 - b_m_unst * MIN(zeta, 0.0))**(-0.25)
+            phi_h = (1.0 - b_h_unst * MIN(zeta, 0.0))**(-0.50)
+         END IF
          f_m = 1.0 / (phi_m * phi_m)
          f_h = 1.0 / (phi_m * phi_h)
       ELSE
@@ -379,6 +392,18 @@ CONTAINS
       f_h = MAX(0.0, MIN(f_h, 1.0))
 
    END SUBROUTINE compute_stability_functions_most_from_rig
+
+
+   SUBROUTINE cbc_critical_ri_limits(b_m, b_h, beta_s, ri_c_ubl_m, ri_c_ubl_h, ri_c_sbl)
+      !------------------------------------------------------------------------
+      ! Return the parameter-dependent unstable/stable Ri limits associated
+      ! with the CBC / stable-linear branches.
+      !------------------------------------------------------------------------
+      REAL, INTENT(IN)  :: b_m, b_h, beta_s
+      REAL, INTENT(OUT) :: ri_c_ubl_m, ri_c_ubl_h, ri_c_sbl
+
+      CALL compute_cbc_critical_ri_limits(b_m, b_h, beta_s, ri_c_ubl_m, ri_c_ubl_h, ri_c_sbl)
+   END SUBROUTINE cbc_critical_ri_limits
    
    
    !---------------------------------------------------------------------------
