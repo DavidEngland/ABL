@@ -21,6 +21,7 @@ MODULE module_most_profile_utils
    PUBLIC :: phi_from_zeta
    PUBLIC :: rig_from_zeta
    PUBLIC :: zeta_from_rig_newton
+   PUBLIC :: zeta_from_rig_safeguarded
    PUBLIC :: fm_fh_from_rig
    PUBLIC :: cbc_critical_ri_limits
 
@@ -137,6 +138,112 @@ CONTAINS
    END SUBROUTINE zeta_from_rig_newton
 
 
+   SUBROUTINE zeta_from_rig_safeguarded(profile_id, rig_target, zeta, converged, n_iter)
+      !------------------------------------------------------------------------
+      ! Solve Ri_g(zeta)=rig_target using safeguarded Newton with bisection.
+      !
+      ! Strategy:
+      !   1) Build a monotone bracket [z_lo, z_hi] by branch.
+      !   2) Attempt Newton update when derivative is well-behaved and step
+      !      remains inside bracket.
+      !   3) Otherwise fall back to bisection (guaranteed contraction).
+      !------------------------------------------------------------------------
+      INTEGER, INTENT(IN) :: profile_id
+      REAL, INTENT(IN)    :: rig_target
+      REAL, INTENT(OUT)   :: zeta
+      LOGICAL, INTENT(OUT), OPTIONAL :: converged
+      INTEGER, INTENT(OUT), OPTIONAL :: n_iter
+
+      INTEGER, PARAMETER :: maxit = 50
+      REAL, PARAMETER    :: tol_f = 1.e-8
+      REAL, PARAMETER    :: tol_z = 1.e-6
+      REAL, PARAMETER    :: h = 1.e-5
+
+      INTEGER :: it
+      REAL :: z_lo, z_hi, z
+      REAL :: f_lo, f_hi, f, fp, rigp, rigm
+      REAL :: z_new, f_new
+      LOGICAL :: use_newton, done
+
+      ! Branch-aware initial bracket for typical surface-layer usage
+      IF (rig_target <= 0.0) THEN
+         z_lo = -20.0
+         z_hi =  0.0
+      ELSE
+         z_lo =  0.0
+         z_hi = 50.0
+      END IF
+
+      CALL rig_from_zeta(profile_id, z_lo, f_lo)
+      CALL rig_from_zeta(profile_id, z_hi, f_hi)
+      f_lo = f_lo - rig_target
+      f_hi = f_hi - rig_target
+
+      ! If the target is not bracketed, fall back to guarded Newton path.
+      IF (f_lo * f_hi > 0.0) THEN
+         CALL zeta_from_rig_newton(profile_id, rig_target, z)
+         z = MAX(z, z_lo)
+         z = MIN(z, z_hi)
+         zeta = z
+         IF (PRESENT(converged)) converged = .FALSE.
+         IF (PRESENT(n_iter)) n_iter = 0
+         RETURN
+      END IF
+
+      ! Near-neutral seed, then clamp into bracket.
+      z = rig_target
+      z = MAX(z, z_lo)
+      z = MIN(z, z_hi)
+
+      done = .FALSE.
+      DO it = 1, maxit
+         CALL rig_from_zeta(profile_id, z, f)
+         f = f - rig_target
+
+         IF (ABS(f) < tol_f) THEN
+            done = .TRUE.
+            EXIT
+         END IF
+         IF (ABS(z_hi - z_lo) < tol_z) THEN
+            done = .TRUE.
+            EXIT
+         END IF
+
+         CALL rig_from_zeta(profile_id, z + h, rigp)
+         CALL rig_from_zeta(profile_id, z - h, rigm)
+         fp = (rigp - rigm) / (2.0 * h)
+
+         use_newton = (ABS(fp) > 1.e-12)
+         IF (use_newton) THEN
+            z_new = z - f / fp
+            IF (z_new <= z_lo .OR. z_new >= z_hi) use_newton = .FALSE.
+         END IF
+
+         IF (.NOT. use_newton) THEN
+            z_new = 0.5 * (z_lo + z_hi)
+         END IF
+
+         CALL rig_from_zeta(profile_id, z_new, f_new)
+         f_new = f_new - rig_target
+
+         ! Bracket update preserves sign change over [z_lo, z_hi].
+         IF (f_lo * f_new <= 0.0) THEN
+            z_hi = z_new
+            f_hi = f_new
+         ELSE
+            z_lo = z_new
+            f_lo = f_new
+         END IF
+
+         z = z_new
+      END DO
+
+      zeta = z
+      IF (PRESENT(converged)) converged = done
+      IF (PRESENT(n_iter)) n_iter = it
+   END SUBROUTINE zeta_from_rig_safeguarded
+
+
    SUBROUTINE fm_fh_from_rig(profile_id, rig, f_m, f_h)
       !------------------------------------------------------------------------
       ! Build Ri-based closure functions from MOST profile by inversion:
@@ -149,8 +256,14 @@ CONTAINS
       REAL, INTENT(OUT)   :: f_m, f_h
 
       REAL :: zeta, phi_m, phi_h
+      LOGICAL :: ok
+      INTEGER :: it
 
-      CALL zeta_from_rig_newton(profile_id, rig, zeta)
+      CALL zeta_from_rig_safeguarded(profile_id, rig, zeta, ok, it)
+      IF (.NOT. ok) THEN
+         ! Safety fallback for unusual profiles/targets.
+         CALL zeta_from_rig_newton(profile_id, rig, zeta)
+      END IF
       CALL phi_from_zeta(profile_id, zeta, phi_m, phi_h)
 
       f_m = 1.0 / (phi_m * phi_m)

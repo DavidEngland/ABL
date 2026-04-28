@@ -45,7 +45,7 @@ Your comparison table is exactly the right way to frame this:
 
 Feature	Heat operator (\(\phi_h\))	Momentum operator (\(\phi_m\))
 Polynomial family	Legendre \(P_n = C_n^{(1/2)}\)	Gegenbauer \(C_n^{(1/4)}\)
-S–L weight \(w(x)\)	\(1\) (uniform)	\((1-x^2)^{-1/4}\) (singular at `(
+S–L weight \(w(x)\)	\(1\) (uniform)	\((1-x^2)^{-1/4}\) (singular at \(|x|=1\))
 Physical meaning	“Hard” scalar response	“Soft” momentum response
 Spectral decay	`(	c_n
 
@@ -62,11 +62,9 @@ Insight (as you wrote): a numerical model truncated at low degree \(N\) will rep
 
 ---
 
-3.3 Nonlinear link: `\(\phi_h = \phi_m^2\)` as spectral convolution
+3.3 Nonlinear link: \(\phi_h = \phi_m^2\) as spectral convolution
 
-In the degenerate Dyer/Brutsaert case \(b_m=b_h\) and \(a_h^{-1}=1\),
-
-\phi_h = \phi_m^2.
+In the degenerate Dyer/Brutsaert case \(b_m=b_h\) and \(a_h^{-1}=1\), \(\phi_h = \phi_m^2\).
 
 
 In the Gegenbauer spectral domain this is not just a pointwise square; it is a mode‑coupling operation:
