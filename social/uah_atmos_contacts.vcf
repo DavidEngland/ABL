@@ -1,0 +1,30 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Carey;Lawrence D.;;;
+FN:Lawrence D. Carey
+ORG:The University of Alabama in Huntsville
+TITLE:Department Chair & Professor of AES, Associate Director of ESSC
+TEL;TYPE=WORK:256.961.7518
+EMAIL;TYPE=WORK:lawrence.carey@uah.edu
+ADR;TYPE=WORK:;;CRH 4042;;;;
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:Bitzer;Phillip;;;
+FN:Phillip Bitzer
+ORG:The University of Alabama in Huntsville
+TITLE:Associate Professor; Associate Chair
+TEL;TYPE=WORK:256.824.4028
+EMAIL;TYPE=WORK:pm.bitzer@uah.edu
+ADR;TYPE=WORK:;;SWIRLL 226;;;;
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+N:Bledsoe;Vivian;;;
+FN:Vivian Bledsoe
+ORG:The University of Alabama in Huntsville
+TITLE:Lecturer
+TEL;TYPE=WORK:256.824.4032
+EMAIL;TYPE=WORK:vivian.bledsoe@uah.edu
+ADR;TYPE=WORK:;;SWIRLL 215;;;;
+END:VCARD
