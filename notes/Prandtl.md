@@ -363,3 +363,58 @@ $$
 So profile-level and bulk-interval checks can be done analytically in this special case before moving to generalized closures.
 
 In short: yes, this UBL interval is a genuine special case where one gets exact identities, exact inversion, and useful closed-form integrals. It is a strong reference solution for evaluating any generalized Prandtl/Richardson/scalar framework.
+
+---
+
+## 11. What Can Be Determined Analytically, and What Needs Data?
+
+The Gegenbauer / spherical analysis fixes more than a conventional curve fit does, but it does not determine everything.
+
+### 11.1 Fixed or strongly constrained by analysis
+
+1. **Backbone structure:** use one momentum expansion and derive heat/scalar behavior from filtered versions of the same modes.
+2. **Anchor identities:** in the matched unstable case ($a_h=1$, $b_m=b_h=16$),
+
+$$
+\phi_h=\phi_m^2, \qquad Ri_g=\zeta, \qquad Pr_t=\phi_m.
+$$
+
+3. **Basis choice:** Legendre ($\lambda=1/2$) and Gegenbauer ($\lambda\ne 1/2$) are not arbitrary regressors; they encode how spectral resolution is distributed across the neutral-to-strongly-stable interval.
+4. **Map shape:** the transformed coordinate $\xi(\zeta)=\tanh(\alpha\zeta)$ can be constrained by desired transition width and boundedness.
+
+### 11.2 Usually needs data
+
+1. Neutral scalar ratios ($Pr_0$, $S_{0,q}$, etc.).
+2. Filter scales ($n_c$ for heat, $n_{c,q}$ for humidity, $n_{c,CO_2}$ for tracers).
+3. Site- or regime-dependent departures in intermittency, wave activity, cloud influence, and roughness effects.
+
+So the best workflow is not theory *or* data; it is theory first, then data for the remaining degrees of freedom.
+
+### 11.3 Could ML help?
+
+Yes, but in a narrow role.
+
+Recommended use of ML:
+
+1. Predict $n_c$ (or scalar-specific $n_{c,s}$) from metadata: roughness, season, cloud state, stratification class, intermittency indicators.
+2. Learn residual corrections after fitting the constrained spectral model.
+3. Classify regimes before applying different parameter subsets.
+
+What ML should not do here:
+
+1. Replace the anchor identities with an unconstrained black box.
+2. Ignore monotonicity/no-pole constraints in $Pr_t(\zeta)$ or $Ri_g(\zeta)$.
+3. Fit each scalar independently with no shared momentum backbone.
+
+---
+
+## 12. Practical Recommendation
+
+For now, the best next step is:
+
+1. Use the new prototype in [code/spectral_scalar_closure.py](../code/spectral_scalar_closure.py) as the calibration sandbox.
+2. Fit $n_c$ for heat first using available field datasets.
+3. Test whether humidity and other scalars can share $(a_n,\lambda,\alpha)$ with only scalar-specific $(S_{0,s},n_{c,s})$.
+4. Only after that decide what belongs in production Fortran or WRF-facing code.
+
+That keeps the mathematically exact anchor cases intact while letting observations determine the genuinely unknown transport constants.
