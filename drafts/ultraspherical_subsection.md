@@ -304,14 +304,77 @@ For implementation in production surface-layer and PBL code, we recommend an exp
 
 The transition branch is intentionally direct-evaluation only: truncated Taylor and truncated asymptotic forms are both suboptimal there and can degrade monotonicity and inversion robustness.
 
+Before any iteration, apply all available algebraic reductions.
+
+#### When Is Iteration Actually Needed?
+
+Define the general mapping (unstable power-law branch):
+
+$$
+Ri_g(\zeta)=a_h^{-1}\,\zeta\left(\frac{1-b_m\zeta}{1-b_h\zeta}\right)^{1/2}.
+$$
+
+Iteration is **not** needed in the following common cases:
+
+1. **Degenerate unstable branch** ($b_m=b_h$):
+$$
+Ri_g=a_h^{-1}\zeta \quad\Rightarrow\quad \zeta=a_h\,Ri_g.
+$$
+In the canonical case $a_h=1$, this reduces to $\zeta=Ri_g$ exactly.
+
+2. **Linear SBL with equal slopes** ($\phi_m=\phi_h=1+\beta\zeta$, $a_h=1$):
+$$
+Ri_g=\frac{\zeta}{1+\beta\zeta}
+\quad\Rightarrow\quad
+\zeta=\frac{Ri_g}{1-\beta Ri_g}
+=\frac{Ri_c\,Ri_g}{Ri_c-Ri_g},\ \beta=1/Ri_c.
+$$
+
+3. **General linear SBL with unequal slopes** ($\phi_m=1+\beta_m\zeta$, $\phi_h=a_h^{-1}+\beta_h\zeta$):
+$$
+Ri_g=\zeta\frac{a_h^{-1}+\beta_h\zeta}{(1+\beta_m\zeta)^2},
+$$
+which rearranges to a quadratic in $\zeta$:
+$$
+(Ri_g\beta_m^2-\beta_h)\zeta^2+(2Ri_g\beta_m-a_h^{-1})\zeta+Ri_g=0.
+$$
+Select the physically admissible root ($\zeta\ge 0$ in SBL).
+
+Iteration is needed only for the fully general non-linear case (for example, unequal unstable exponents/curvatures, blended stable functions, or hybrid forms where closed-form inversion is unavailable).
+
+#### Calculus-First Newton (when needed)
+
+For the general unstable power-law mapping above, use analytic derivative rather than finite differences:
+
+$$
+\frac{dRi_g}{d\zeta}
+=a_h^{-1}\sqrt{\frac{1-b_m\zeta}{1-b_h\zeta}}
++a_h^{-1}\zeta\frac{(b_h-b_m)}{2(1-b_h\zeta)^2}
+\left(\frac{1-b_m\zeta}{1-b_h\zeta}\right)^{-1/2}.
+$$
+
+Analytic $dRi_g/d\zeta$ substantially improves robustness and iteration count relative to numerical differencing, especially near neutral and near branch curvature transitions.
+
 #### Pseudocode (evaluation and inversion policy)
 
 ```text
 function evaluate_phi_and_zeta(profile_id, Ri_target, b_m, b_h):
-    # Step A: invert Ri_g(zeta) with safeguarded Newton
-    zeta = invert_rig_safeguarded(profile_id, Ri_target)
+    # Step A: algebra-first inversion logic
+    if is_unstable_branch(profile_id, Ri_target) and nearly_equal(b_m, b_h):
+        zeta = a_h * Ri_target
+    elif is_linear_sbl_equal_slopes(profile_id):
+        zeta = Ri_target / (1 - beta * Ri_target)
+    elif is_linear_sbl_general(profile_id):
+        # Solve: A2*zeta^2 + A1*zeta + A0 = 0
+        A2 = Ri_target*beta_m*beta_m - beta_h
+        A1 = 2*Ri_target*beta_m - a_h_inv
+        A0 = Ri_target
+        zeta = select_physical_root_quadratic(A2, A1, A0)
+    else:
+        # Step B: safeguarded Newton only when no closed form exists
+        zeta = invert_rig_safeguarded_analytic_derivative(profile_id, Ri_target)
 
-    # Step B: choose evaluation branch by instability magnitude
+    # Step C: choose evaluation branch by instability magnitude
     if zeta < 0:
         eta = -zeta
         s = max(b_m*eta, b_h*eta)
@@ -324,7 +387,7 @@ function evaluate_phi_and_zeta(profile_id, Ri_target, b_m, b_h):
     else:
         phi_m, phi_h = stable_profile(profile_id, zeta)
 
-    # Step C: return closure functions
+    # Step D: return closure functions
     f_m = clamp(1/(phi_m*phi_m), 0, 1)
     f_h = clamp(1/(phi_m*phi_h), 0, 1)
     return zeta, phi_m, phi_h, f_m, f_h
@@ -334,26 +397,25 @@ function evaluate_phi_and_zeta(profile_id, Ri_target, b_m, b_h):
 
 ```mermaid
 flowchart TD
-    A[Input Ri_target, profile_id] --> B{Ri_target <= 0?}
-    B -->|Yes| C[Set bracket z_lo=-20, z_hi=0]
-    B -->|No| D[Set bracket z_lo=0, z_hi=50]
-    C --> E[Evaluate f(z)=Ri_g(z)-Ri_target at bracket ends]
-    D --> E
-    E --> F{Sign change bracketed?}
-    F -->|No| G[Fallback guarded Newton seed z=clamp(Ri_target)]
-    F -->|Yes| H[Start hybrid loop]
-    H --> I[Compute f(z) and finite-diff fprime(z)]
-    I --> J{Newton step valid and in bracket?}
-    J -->|Yes| K[Accept Newton candidate]
+    A[Input Ri_target, profile_id] --> B{Closed-form branch?}
+    B -->|Degenerate unstable bm=bh| C[zeta = a_h * Ri_target]
+    B -->|Linear SBL equal slopes| D[zeta = Ri_target/(1-beta*Ri_target)]
+    B -->|Linear SBL unequal slopes| E[Solve quadratic; pick physical root]
+    B -->|No| F[Set branch-aware bracket]
+    C --> Z[Return zeta]
+    D --> Z
+    E --> Z
+    F --> G[Start safeguarded Newton]
+    G --> H[Evaluate f(z)=Ri_g(z)-Ri_target]
+    H --> I[Evaluate analytic fprime(z)]
+    I --> J{Newton step valid and inside bracket?}
+    J -->|Yes| K[Accept Newton step]
     J -->|No| L[Use bisection midpoint]
-    K --> M[Evaluate f(candidate)]
+    K --> M[Update bracket by sign]
     L --> M
-    M --> N[Update bracket by sign]
-    N --> O{abs(f) < tol or bracket < tol?}
-    O -->|No| I
-    O -->|Yes| P[Return converged zeta]
-    G --> Q[Run limited iterations + clamp]
-    Q --> R[Return zeta with warning flag]
+    M --> N{Converged?}
+    N -->|No| H
+    N -->|Yes| Z
 ```
 
 #### WRF-style Fortran integration sketch
@@ -363,12 +425,22 @@ flowchart TD
 REAL :: rig_local, zeta, phi_m, phi_h, fm_loc, fh_loc
 LOGICAL :: ok
 INTEGER :: it
+REAL :: A2, A1, A0
 
 rig_local = Ri(i,k)
 
-CALL zeta_from_rig_safeguarded(PROFILE_BD71, rig_local, zeta, ok, it)
-IF (.NOT. ok) THEN
-   CALL zeta_from_rig_newton(PROFILE_BD71, rig_local, zeta)
+IF (is_deg_unstable .AND. ABS(b_m - b_h) < eps) THEN
+    zeta = a_h * rig_local
+ELSEIF (is_linear_sbl_equal) THEN
+    zeta = rig_local / (1.0 - beta * rig_local)
+ELSEIF (is_linear_sbl_general) THEN
+    A2 = rig_local*beta_m*beta_m - beta_h
+    A1 = 2.0*rig_local*beta_m - a_h_inv
+    A0 = rig_local
+    CALL solve_quadratic_physical_root(A2, A1, A0, zeta, ok)
+    IF (.NOT. ok) CALL zeta_from_rig_safeguarded(PROFILE_BD71, rig_local, zeta, ok, it)
+ELSE
+    CALL zeta_from_rig_safeguarded(PROFILE_BD71, rig_local, zeta, ok, it)
 END IF
 
 CALL phi_from_zeta(PROFILE_BD71, zeta, phi_m, phi_h)
@@ -382,4 +454,4 @@ KM(i,k) = KM(i,k) * fm_loc
 KH(i,k) = KH(i,k) * fh_loc
 ```
 
-In this workflow, robustness is enforced at inversion time (safeguarded flow), while physical consistency is enforced at evaluation time (exact power-law core, recurrence only near neutral).  This separation is especially important for mesoscale operational grids where the transition band $1 < b\eta < 5$ is frequently occupied.
+In this workflow, algebraic/calculus structure is exhausted first (exact inversions and analytic derivatives), and iteration is reserved only for non-closed-form branches. This minimizes cost, reduces solver noise, and preserves physical monotonicity in operational SBL/WRF integrations.

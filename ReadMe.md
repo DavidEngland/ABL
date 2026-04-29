@@ -4,6 +4,8 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/DavidEngland/ABL/blob/main/notebooks/Curvature_Demo.ipynb)
 
+> **Last updated:** April 2026 — See [Recent Changes](#-recent-changes) for latest additions.
+
 **Repository for curvature-aware Monin–Obukhov Similarity Theory (MOST) diagnostics, Richardson number closures, and grid-dependent corrections for stable boundary layer parameterizations.**
 
 ---
@@ -18,8 +20,11 @@ Coarse vertical grids in atmospheric models systematically underestimate near-su
 - **Richardson number series inversion** (ζ ↔ Ri) with Newton refinement
 - **Geometric vs logarithmic mean height analysis** for bulk transfer coefficients
 - **Dynamic critical Richardson number** framework (Ri_c*)
+- **Ultraspherical (Gegenbauer) representation** of MOST similarity operators
+- **CBC/Legendre series** for power-law φ functions with equator-evaluation identity
+- **Safeguarded Newton–bisection inversion** for ζ(Ri_g) across all SBL regimes
 
-**Key Innovation:** The neutral curvature invariant Δ = α_h β_h − 2α_m β_m governs initial departure from linearity; preserving 2Δ anchors corrections to physically consistent near-neutral behavior.
+**Key Innovation:** The neutral curvature invariant Δ = α_h β_h − 2α_m β_m governs initial departure from linearity; preserving 2Δ anchors corrections to physically consistent near-neutral behavior. The momentum similarity function φ_m = (1 − b_m ζ)^{−1/4} is an ultraspherical (Gegenbauer, λ=1/4) generating-function evaluation; φ_h is Legendre (λ=1/2); their ratio identity φ_h = φ_m² when a_h=1, b_m=b_h gives an exact Clebsch–Gordan product in polynomial space.
 
 ---
 
@@ -66,42 +71,78 @@ source .venv/bin/activate
 
 ```
 ABL/
-├── README.md                          # This file
+├── ReadMe.md                          # This file
+├── CHANGELOG.md                       # Version history
+├── CONTRIBUTING.md                    # Contribution guidelines
 ├── requirements.txt                   # Python dependencies
-├── setup_dev.sh                       # Development environment setup script
+├── setup_dev.sh                       # Development environment setup
 ├── .gitignore                         # Git ignore patterns
 │
+├── examples/                          # ★ Active Fortran 90 development
+│   ├── README.md                      # Module index and build instructions
+│   ├── module_most_profile_utils.F90  # MOST inversion utilities (safeguarded Newton)
+│   ├── module_cbc_legendre_most.F90   # CBC/Gegenbauer series evaluation
+│   ├── driver_cbc_gegenbauer_errors.F90  # Error-tabulation driver
+│   ├── wrf_integration_example.F90    # WRF/MYNN integration sketch
+│   └── overview.md                    # Jensen's Inequality / grid-bias overview
+│
+├── drafts/                            # Working manuscript drafts
+│   ├── README.md                      # Draft index
+│   ├── ultraspherical_subsection.md   # Ultraspherical MOST structure (McNider-Biazar §3)
+│   ├── SBL_IBEx_expansions.md         # IBEx series framework for SBL inversions
+│   ├── quad heat shear.md             # Linear φ_m / quadratic φ_h analysis
+│   ├── quad heat z-less.md            # Z-less scaling & higher-degree φ_h
+│   └── Momentum as a Gegenbauer ultraspherical problem.md
+│
+├── manuscripts/                       # Near-submission papers
+│   ├── README.md                      # Manuscript status & action items
+│   ├── Grid_Curvature_SBL_v01.md      # Primary paper (BLM target)
+│   ├── CBC_Gegenbauer_Backward_Workflow_v01.md
+│   └── WRF_Ri_Curvature_Integration_Outline_v01.md
+│
+├── notes/                             # Research working notes
+│   ├── README.md                      # Notes index
+│   ├── parameters.md / parameters2.md # MOST parameter tables
+│   ├── Legendre.md                    # Legendre / Gegenbauer identities
+│   ├── Central Binomial UBL heat shear.md
+│   └── SBL-IBEx.md                    # IBEx reference sheet
+│
+├── code/                              # Python & legacy Fortran utilities
+│   ├── most_similarity.md             # MOST similarity function reference
+│   ├── most.f                         # Original Fortran 77 MOST code
+│   ├── module_bl_mynn.F90             # WRF MYNN scheme (reference copy)
+│   ├── select_f_form.py               # Stability-function selector
+│   ├── profiles.py                    # Profile evaluation utilities
+│   └── [additional scripts]
+│
+├── hw/                                # Educational / homework materials
+│   ├── README.md                      # Problem set index
+│   ├── CBC.md                         # Central binomial coefficient problems
+│   ├── Legendre.md                    # Legendre polynomial problems
+│   ├── stability functions.md         # Stability function derivation problems
+│   └── [additional problem sets]
+│
+├── param/                             # Parameterization scaffolding (Julia/SCM)
+│   ├── SCAFFOLDING.md                 # SCM parameterization design
+│   └── core/                         # Core substrate/slab modules
+│
+├── julia/                             # Julia SCM skeleton
+│   ├── SCMSkeleton.jl                 # Single-column model skeleton
+│   └── SCMSkeleton_vs_SCAFFOLDING.md
+│
 ├── notebooks/                         # Interactive demonstrations
-│   ├── Curvature_Demo.ipynb          # Main demo (Colab-ready)
-│   ├── 1DBLM_Fortran_Demo.ipynb      # Fortran integration example
-│   └── README.md                      # Notebook usage guide
+│   └── Curvature_Demo.ipynb          # Main demo (Colab-ready)
 │
-├── implementations/                   # Ready-to-use code modules
+├── implementations/                   # Legacy drop-in correction modules
 │   ├── McNider_1DBLM_fc_module.f90   # Fortran 90 correction module
-│   ├── mcnb_fc_driver.f90            # Fortran driver program
-│   ├── McNider_1DBLM_integration_guide.md  # Integration instructions
-│   └── fc_examples.md                 # VB & Fortran 77 snippets
-│
-├── docs/                              # Documentation and derivations
-│   ├── Vertical Resolution.md         # Grid correction overview
-│   ├── McNider_Ri_Corrections_Overview.md  # Comprehensive guide
-│   ├── curvature.md                   # Full curvature derivation
-│   ├── Ri.md                          # Richardson number reference
-│   ├── SBL corrections.md             # Stable BL implementation guide
-│   └── new draft.md                   # Surface roughness analysis
-│
-├── emails/                            # Status reports and correspondence
-│   └── McNider_Biazar_Status_2025.md  # Collaboration status update
-│
-├── hw/                                # Educational materials
-│   └── special case.md                # Graduate homework problems
+│   └── McNider_1DBLM_integration_guide.md
 │
 ├── config/                            # Configuration files
-│   └── data_sources.json              # Data source specifications
+│   └── rct_config.yaml               # RCT run configuration
 │
-└── refs/                              # Reference materials and literature
-    ├── Pub2.tex                       # England & McNider (1995) LaTeX
-    └── [additional references]
+├── data/                              # Observational / validation data
+├── visuals/                           # Figures and plots
+└── refs/ references/                  # Reference materials and literature
 ```
 
 ---
@@ -187,7 +228,34 @@ z_a = 0.5 * (z0 + z1)            # Arithmetic mean (biases high)
 - GABLS1 LES (9-hour nocturnal evolution)
 - ARM NSA Alaska (persistent stable nights)
 - SHEBA Arctic winter inversions
-- Dallas/Ft. Worth urban tower (325 m + lidar/radiometer)
+
+---
+
+## 🔄 Recent Changes
+
+### April 2026
+
+**Fortran modules (`examples/`)**
+- `module_most_profile_utils.F90`: Added `zeta_from_rig_safeguarded()` — safeguarded Newton + bisection fallback with branch-aware brackets; `fm_fh_from_rig` now calls this as primary solver.
+- `module_cbc_legendre_most.F90`: CBC/Gegenbauer series evaluation module for power-law φ functions; implements Legendre equator identity P_{2n}(0) = (−1)^n C(2n,n)/4^n.
+- `driver_cbc_gegenbauer_errors.F90`: Error-tabulation driver comparing exact φ_m vs truncated Gegenbauer series at equator.
+- `wrf_integration_example.F90`: WRF/MYNN-style integration sketch using safeguarded ζ(Ri_g) inversion.
+
+**Draft manuscripts (`drafts/`)**
+- `ultraspherical_subsection.md`: New §3.x subsection for McNider-Biazar paper. Covers Gegenbauer generating functions (λ=1/4 momentum, λ=1/2 heat), Sturm-Liouville operator in stability space, Clebsch-Gordan squaring identity φ_h=φ_m², Ri_g mapping, asymptotic 3-term expansions, dynamic Ri_c, and algebra-first inversion decision tree with Mermaid flowchart.
+- `SBL_IBEx_expansions.md`: IBEx (Internal/Boundary/External) series framework for SBL Richardson mappings; includes ζ/(1+βζ) canonical forms and SBL asymptote analysis.
+- `quad heat shear.md`: Analysis of linear-φ_m / quadratic-φ_h mixed MOST form and physical implications.
+- `quad heat z-less.md`: Connection between z-less scaling and the required degree of φ_h.
+
+**Working notes (`notes/`)**
+- `parameters.md`, `parameters2.md`: Consolidated MOST parameter tables (Businger, Dyer, Högström, McNider).
+- `Legendre.md`: Legendre/Gegenbauer orthogonality and generating-function identities.
+- `Central Binomial UBL heat shear.md`: CBC series for UBL heat-shear asymptotic expansion.
+- `SBL-IBEx.md`: Quick-reference sheet for IBEx series framework.
+
+**Manuscripts (`manuscripts/`)**
+- `WRF_Ri_Curvature_Integration_Outline_v01.md`: Outline for WRF integration paper.
+- `CBC_Gegenbauer_Backward_Workflow_v01.md`: Backward workflow connecting CBC identities to MOST series.
 
 ---
 
@@ -195,19 +263,25 @@ z_a = 0.5 * (z0 + z1)            # Arithmetic mean (biases high)
 
 ### Technical Papers & Derivations
 
-- **[Vertical Resolution.md](docs/Vertical%20Resolution.md)** — Grid correction framework overview
-- **[McNider_Ri_Corrections_Overview.md](docs/McNider_Ri_Corrections_Overview.md)** — Comprehensive implementation guide
-- **[curvature.md](docs/curvature.md)** — Full mathematical derivation of ∂²Ri_g/∂ζ²
-- **[SBL corrections.md](docs/SBL%20corrections.md)** — Stable boundary layer implementation
+- **[Vertical Resolution.md](Vertical%20Resolution.md)** — Grid correction framework overview
+- **[McNider_Ri_Corrections_Overview.md](McNider_Ri_Corrections_Overview.md)** — Comprehensive implementation guide
+- **[curvature.md](curvature.md)** — Full mathematical derivation of ∂²Ri_g/∂ζ²
+- **[SBL corrections.md](SBL%20corrections.md)** — Stable boundary layer implementation
+- **[ultraspherical_subsection.md](drafts/ultraspherical_subsection.md)** — Ultraspherical structure of MOST operators
+- **[SBL_IBEx_expansions.md](drafts/SBL_IBEx_expansions.md)** — IBEx series for SBL Richardson mappings
+- **[CANONICAL_GLOSSARY.md](CANONICAL_GLOSSARY.md)** — Symbol and notation reference
 
 ### Integration Guides
 
-- **[McNider_1DBLM_integration_guide.md](implementations/McNider_1DBLM_integration_guide.md)** — Fortran 77/90 drop-in instructions
-- **[fc_examples.md](implementations/fc_examples.md)** — VB & Fortran 77 code snippets
+- **[examples/README.md](examples/README.md)** — Fortran 90 module index and build instructions
+- **[McNider_1DBLM_integration_guide.md](implementations/McNider_1DBLM_integration_guide.md)** — Legacy Fortran 77/90 drop-in instructions
+- **[IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md)** — General implementation guide
 
 ### Educational Materials
 
-- **[special case.md](hw/special%20case.md)** — Graduate-level homework problems
+- **[hw/README.md](hw/README.md)** — Problem set index
+- **[CBC.md](hw/CBC.md)** — Central binomial coefficient problem set
+- **[Legendre.md](hw/Legendre.md)** — Legendre/Gegenbauer problem set
 - **[intro.md](intro.md)** — Guest lecture outline (60-90 min)
 
 ---
@@ -257,14 +331,19 @@ jupyter lab notebooks/Curvature_Demo.ipynb
 ### Fortran Development
 
 ```bash
-# Compile correction module
-gfortran -c implementations/McNider_1DBLM_fc_module.f90
+# Build examples (from examples/ directory)
+cd examples
 
-# Compile driver
-gfortran -o mcnb_driver implementations/mcnb_fc_driver.f90 McNider_1DBLM_fc_module.o
+# Compile Fortran 90 modules
+gfortran -c module_most_profile_utils.F90
+gfortran -c module_cbc_legendre_most.F90
+gfortran -c driver_cbc_gegenbauer_errors.F90 -o driver_cbc_gegenbauer_errors
 
-# Run test
-./mcnb_driver
+# Run CBC/Gegenbauer error table
+./driver_cbc_gegenbauer_errors
+
+# Legacy correction module
+gfortran -c ../implementations/McNider_1DBLM_fc_module.f90
 ```
 
 ---
@@ -278,6 +357,7 @@ If you use this toolkit in your research, please cite:
   author = {England, David E. and McNider, Richard T. and Biazar, Arastoo P.},
   title = {Curvature-Aware MOST Toolkit for Stable Boundary Layer Corrections},
   year = {2025},
+    year = {2026},
   publisher = {GitHub},
   url = {https://github.com/DavidEngland/ABL}
 }
@@ -285,7 +365,8 @@ If you use this toolkit in your research, please cite:
 
 **Related Publications:**
 - England & McNider (1995). "Stability Functions Based Upon Shear Functions." *Boundary-Layer Meteorology*.
-- McNider et al. (1995). [Additional key papers — see refs/]
+- McNider et al. (1995). [Additional key papers — see [refs/](refs/)]
+- [JAMC Grid Dependence manuscript](JAMC_format_Grid_Dependence_V15_10-31-2025.md) — Grid-dependent corrections paper (under review)
 
 ---
 
