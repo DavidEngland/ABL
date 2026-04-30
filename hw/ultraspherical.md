@@ -45,7 +45,7 @@ Think in three nested scales.
 
 Practical note: start with station clusters in Alaska/Arctic to target amplification questions directly.
 
-## Arctic amplification link (spelling corrected)
+## Arctic amplification link
 
 Arctic amplification can be reframed as a modal energy redistribution problem:
 
@@ -272,3 +272,52 @@ Implications:
 4. Project 1: Arctic station pair modal-comparison dashboard.
 5. Project 2: global station cluster coefficient-map and mode-energy animation.
 6. Project 3: tracer-dependent effective-dimension closure challenge.
+
+## Fractional dimension and the meaning of $d_q$
+
+The cleanest way to think about dimension is to separate two quantities that are easy to confuse:
+
+1. The **Gegenbauer parameter** $\Lambda_q$, which controls the polynomial family.
+2. The **profile exponent parameter** $\lambda_q$ in a closure such as $\phi_q(\zeta)=a_q(1-b_q\zeta)^{-1/\lambda_q}$.
+
+These are related by
+
+$$
+\Lambda_q = \frac{1}{\lambda_q}.
+$$
+
+For ultraspherical structure, the effective dimension is tied to the Gegenbauer parameter by
+
+$$
+\Lambda_q = \frac{d_q-2}{2}
+\qquad \Longleftrightarrow \qquad
+d_q = 2\Lambda_q + 2.
+$$
+
+Substituting $\Lambda_q=1/\lambda_q$ gives a simple formula directly in terms of the profile exponent parameter:
+
+$$
+d_q = 2 + \frac{2}{\lambda_q}.
+$$
+
+Examples:
+
+1. Momentum: classical unstable exponent $-1/4$ means $\Lambda_m=1/4$, so $\lambda_m=4$ and
+$$
+d_m = 2 + 2\left(\frac{1}{4}\right)=2.5.
+$$
+2. Heat: classical unstable exponent $-1/2$ means $\Lambda_h=1/2$, so $\lambda_h=2$ and
+$$
+d_h = 2 + 2\left(\frac{1}{2}\right)=3.
+$$
+
+This gives a useful physical interpretation:
+
+- $d_h=3$ is consistent with scalar transport retaining fully three-dimensional character.
+- $d_m=2.5$ suggests momentum transport in the surface layer is geometrically constrained relative to a passive scalar.
+
+For other tracers, we do not yet have a universally accepted exponent set analogous to the canonical momentum and heat values. A reasonable working hypothesis is:
+
+1. Conservative tracers near neutral conditions may begin close to the scalar value $\Lambda_q \approx 1/2$.
+2. Moisture, CO$_2$, methane, aerosols, and reactive tracers can depart from that limit because of phase change, chemistry, settling, canopy exchange, or surface heterogeneity.
+3. In practice, $d_q$ should be treated as an inferable, tracer-dependent quantity rather than assumed universal.
