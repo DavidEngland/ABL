@@ -418,3 +418,93 @@ For now, the best next step is:
 4. Only after that decide what belongs in production Fortran or WRF-facing code.
 
 That keeps the mathematically exact anchor cases intact while letting observations determine the genuinely unknown transport constants.
+
+---
+
+## 13. Richardson-Correction Implications for ABL Workflow
+
+This is the direct bridge back to the original repo objective: correcting Richardson-based stability estimates on finite vertical layers.
+
+### 13.1 How model calculations connect
+
+For each level or layer, the usual chain is:
+
+1. Compute Obukhov length:
+
+$$
+L = -\frac{u_*^3\,\overline{\theta}_v}{\kappa g\,\overline{w'\theta_v'}}.
+$$
+
+2. Form stability parameter at level $z$:
+
+$$
+\zeta = \frac{z}{L}.
+$$
+
+3. Compute local gradient Richardson number:
+
+$$
+Ri_g = \frac{g}{\theta_v}\,\frac{\partial \theta_v/\partial z}{(\partial U/\partial z)^2 + (\partial V/\partial z)^2}
+= \zeta\,\frac{\phi_h(\zeta)}{\phi_m(\zeta)^2}.
+$$
+
+4. Compute bulk Richardson number on a finite layer $[z_1,z_2]$:
+
+$$
+Ri_b = \frac{g}{\bar{\theta}_v}\,\frac{\Delta \theta_v\,\Delta z}{(\Delta U)^2+(\Delta V)^2}.
+$$
+
+The correction problem is exactly that $Ri_b$ is a layer average while $Ri_g$ is local; spherical/Gegenbauer structure gives a principled map between them through $\phi_m,\phi_h$ and their curvature.
+
+### 13.2 Why spherical/Gegenbauer analysis helps Richardson correction
+
+1. It gives an analytic anchor branch ($\phi_h=\phi_m^2$) where $Ri_g=\zeta$ exactly.
+2. It provides mode-by-mode diagnostics of where coarse layers lose curvature information.
+3. It supports reduced surrogates (Pad\'e) constrained by exact identities rather than unconstrained regression.
+
+So Richardson correction is no longer just an empirical offset; it is an operator-consistent mapping problem.
+
+### 13.3 Should $\alpha$ in $\tanh(\alpha\zeta)$ be 1 or $b\approx 16$?
+
+Short answer: **do not set $\alpha=b$ by default**.
+
+- $b$ controls the physics in $(1-b\zeta)^{-p}$ and branch singularity location.
+- $\alpha$ controls numerical compactification/resolution in spectral space.
+
+If $\alpha=b\approx 16$, then $\xi=\tanh(\alpha\zeta)$ saturates very quickly, usually compressing too much of the physically relevant interval into $\xi\approx 1$.
+
+Practical guidance:
+
+1. Start with $\alpha\sim O(1)$ (e.g. 0.5 to 1.5).
+2. Tune $\alpha$ to place the knee region ($\zeta\sim0.1$ to 1) in the high-resolution part of $\xi$.
+3. Treat $\alpha$ as a map parameter, not a physical slope constant.
+
+Equivalent viewpoint: if using scaled variable $\tilde\zeta=b\zeta$, then choose $\xi=\tanh(\tilde\alpha\tilde\zeta)$ with $\tilde\alpha=\alpha/b$; this makes explicit that $\alpha$ and $b$ play different roles.
+
+### 13.4 Should $\lambda=1/4$ for momentum and $1/2$ for heat always?
+
+For the canonical unstable power-law generating-function interpretation: **yes, those are the exact natural values**.
+
+For generalized closure over mixed regimes (stable, unstable, intermittency, multi-scalar): **not always**.
+
+Two valid strategies:
+
+1. **Physics-locked strategy:**
+	- momentum basis fixed at $\lambda_m=1/4$,
+	- heat basis fixed at $\lambda_h=1/2$,
+	- coupling handled by convolution/filter maps.
+
+2. **Effective-basis strategy (current prototype):**
+	- one shared effective $\lambda$ for computational compactness,
+	- calibrate against data, but preserve anchor identities.
+
+If the goal is strict interpretability near canonical UBL theory, prefer strategy 1. If the goal is compact operational fitting, strategy 2 is acceptable with explicit validation against the anchor case.
+
+### 13.5 Recommended correction pipeline for this repo
+
+1. Use exact UBL anchor case as a verification test.
+2. Fit effective map/filter parameters from observed $Ri_g$, $Pr_t$, and scalar ratios.
+3. Construct $Ri_b\rightarrow Ri_g$ correction on finite layers using the calibrated spectral model.
+4. Export a reduced Pad\'e or branchwise surrogate for operational code.
+
+This keeps Richardson correction rooted in the spherical/Gegenbauer structure while still using observations where theory alone is insufficient.

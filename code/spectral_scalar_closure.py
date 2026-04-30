@@ -111,6 +111,10 @@ class SpectralScalarClosure:
         phi_s = self.phi_scalar(zeta, s0=s0, n_c=n_c)
         return phi_s / phi_m
 
+    def tracer_ratio(self, zeta: ArrayLike, s0: float, n_c: float) -> np.ndarray:
+        """Alias for scalar_ratio for non-thermal tracers (q, CH4, CO2, etc.)."""
+        return self.scalar_ratio(zeta, s0=s0, n_c=n_c)
+
     def prandtl(self, zeta: ArrayLike, pr0: float = 0.85, n_c: float = 1.2) -> np.ndarray:
         return self.scalar_ratio(zeta, s0=pr0, n_c=n_c)
 
@@ -179,6 +183,34 @@ class SpectralScalarClosure:
             "success": bool(result.success),
             "message": result.message,
         }
+
+    def fit_tracer_filter(
+        self,
+        zeta_obs: ArrayLike,
+        tracer_ratio_obs: ArrayLike,
+        *,
+        s0_init: float = 1.0,
+        n_c_init: float = 1.2,
+        fit_s0: bool = True,
+        bounds_s0: Tuple[float, float] = (0.1, 5.0),
+        bounds_n_c: Tuple[float, float] = (0.1, 25.0),
+    ) -> dict:
+        """Tracer-oriented wrapper around fit_scalar_filter.
+
+        Parameters
+        ----------
+        zeta_obs, tracer_ratio_obs:
+            Observed stability points and tracer transfer ratio phi_tracer/phi_m.
+        """
+        return self.fit_scalar_filter(
+            zeta_obs,
+            tracer_ratio_obs,
+            s0_init=s0_init,
+            n_c_init=n_c_init,
+            fit_s0=fit_s0,
+            bounds_s0=bounds_s0,
+            bounds_n_c=bounds_n_c,
+        )
 
 
 def exact_ubl_anchor(zeta: ArrayLike, b: float = 16.0) -> dict:
