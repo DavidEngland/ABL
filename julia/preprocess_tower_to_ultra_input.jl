@@ -1,13 +1,13 @@
 #!/usr/bin/env julia
 
-using CSV, DataFrames
+using CSV, DataFrames, Downloads
 
 const KAPPA = 0.4
 const G = 9.81
 
 function print_usage()
     println("Usage:")
-    println("  julia julia/preprocess_tower_to_ultra_input.jl <input_csv> <output_csv> <z_m> <d_m> [--stable-only] [--phi=phi_m|phi_h] [--mode=raw|two-level] [--z1=<m> --z2=<m>]")
+    println("  julia julia/preprocess_tower_to_ultra_input.jl <input_or_station> <output_csv> <z_m> <d_m> [--stable-only] [--phi=phi_m|phi_h] [--mode=raw|two-level|api-smear] [--z1=<m> --z2=<m>]")
     println("")
     println("Required raw flux inputs (with alias support):")
     println("  uw covariance: uw, u_w_cov, u_prime_w_prime")
@@ -25,6 +25,17 @@ function print_usage()
     println("  U at z2 aliases: u2, u_high, U2, wind_high")
     println("  Theta at z1 aliases: theta1, theta_low, T1, temp_low")
     println("  Theta at z2 aliases: theta2, theta_high, T2, temp_high")
+    println("")
+    println("Mode api-smear: fetches data directly from SmartSMEAR API")
+    println("  Positional arg #1 is station label for logs (e.g., HYY)")
+    println("  Required flags: --mode=api-smear --from=ISO --to=ISO")
+    println("  Optional flags: --interval=30 --aggregation=ARITHMETIC --quality=ANY")
+    println("  Required tablevariable flags for flux terms:")
+    println("    --tv-uw=TABLE.VAR --tv-vw=TABLE.VAR --tv-wthetav=TABLE.VAR --tv-thetav=TABLE.VAR")
+    println("  Optional tablevariable flags for direct gradients (raw mode):")
+    println("    --tv-dudz=TABLE.VAR --tv-dthetadz=TABLE.VAR")
+    println("  Additional required tablevariable flags for two-level gradients:")
+    println("    --tv-u1=TABLE.VAR --tv-u2=TABLE.VAR --tv-theta1=TABLE.VAR --tv-theta2=TABLE.VAR")
 end
 
 function parse_flag(args::Vector{String}, key::String, default::String)
@@ -47,6 +58,12 @@ function parse_float_flag(args::Vector{String}, key::String)
         return v
     end
     return nothing
+end
+
+function parse_required_flag(args::Vector{String}, key::String)
+    value = parse_flag(args, key, "")
+    isempty(value) && error("Missing required flag: $(key)=...")
+    return value
 end
 
 has_flag(args::Vector{String}, flag::String) = any(x -> x == flag, args)
@@ -78,13 +95,96 @@ function to_float(x)
     end
 end
 
-function col_float(df::DataFrame, col::Symbol)
+function col_float(df::DataFrame, col)
     return [to_float(v) for v in df[!, col]]
 end
 
 function maybe_col_float(df::DataFrame, aliases::Vector{Symbol})
     c = pick_col(df, aliases; required=false)
     return c === nothing ? nothing : col_float(df, c)
+end
+
+function get_tablevariable_flags(extra::Vector{String}, mode::String)
+    tv = Dict{Symbol, String}()
+    tv[:uw] = parse_required_flag(extra, "--tv-uw")
+    tv[:vw] = parse_required_flag(extra, "--tv-vw")
+    tv[:wthetav] = parse_required_flag(extra, "--tv-wthetav")
+    tv[:thetav] = parse_required_flag(extra, "--tv-thetav")
+
+    tv_dudz = parse_flag(extra, "--tv-dudz", "")
+    tv_dthetadz = parse_flag(extra, "--tv-dthetadz", "")
+    if !isempty(tv_dudz)
+        tv[:dudz] = tv_dudz
+    end
+    if !isempty(tv_dthetadz)
+        tv[:dthetadz] = tv_dthetadz
+    end
+
+    if mode == "two-level"
+        tv[:u1] = parse_required_flag(extra, "--tv-u1")
+        tv[:u2] = parse_required_flag(extra, "--tv-u2")
+        tv[:theta1] = parse_required_flag(extra, "--tv-theta1")
+        tv[:theta2] = parse_required_flag(extra, "--tv-theta2")
+    end
+
+    return tv
+end
+
+function fetch_smear_dataframe(station_label::String, extra::Vector{String}, mode::String)
+    from_iso = parse_required_flag(extra, "--from")
+    to_iso = parse_required_flag(extra, "--to")
+    interval = parse_flag(extra, "--interval", "30")
+    aggregation = parse_flag(extra, "--aggregation", "ARITHMETIC")
+    quality = parse_flag(extra, "--quality", "ANY")
+
+    tv = get_tablevariable_flags(extra, mode)
+
+    tablevars = String[]
+    for k in keys(tv)
+        push!(tablevars, tv[k])
+    end
+    tablevars = unique(tablevars)
+
+    params = String[]
+    push!(params, "from=$(from_iso)")
+    push!(params, "to=$(to_iso)")
+    push!(params, "interval=$(interval)")
+    push!(params, "aggregation=$(aggregation)")
+    push!(params, "quality=$(quality)")
+    for tv_name in tablevars
+        push!(params, "tablevariable=$(tv_name)")
+    end
+
+    url = "https://smear-backend-avaa-smear-prod.2.rahtiapp.fi/search/timeseries/csv?" * join(params, "&")
+    tmp = Downloads.download(url)
+    df_api = CSV.read(tmp, DataFrame)
+    rm(tmp; force=true)
+
+    has_stamp = all(col -> col in names(df_api), [:Year, :Month, :Day, :Hour, :Minute, :Second])
+    if has_stamp
+        ts = Vector{String}(undef, nrow(df_api))
+        for i in 1:nrow(df_api)
+            y = Int(to_float(df_api.Year[i]))
+            mo = Int(to_float(df_api.Month[i]))
+            d = Int(to_float(df_api.Day[i]))
+            h = Int(to_float(df_api.Hour[i]))
+            mi = Int(to_float(df_api.Minute[i]))
+            s = Int(to_float(df_api.Second[i]))
+            ts[i] = string(y, "-", lpad(string(mo), 2, '0'), "-", lpad(string(d), 2, '0'), "T", lpad(string(h), 2, '0'), ":", lpad(string(mi), 2, '0'), ":", lpad(string(s), 2, '0'))
+        end
+        df_api.timestamp = ts
+    end
+
+    colmap = Dict(lowercase(String(c)) => c for c in names(df_api))
+    for (k, tv_name) in tv
+        key = lowercase(tv_name)
+        haskey(colmap, key) || error("Requested tablevariable $(tv_name) not found in API response.")
+        col = colmap[key]
+        df_api[!, k] = df_api[!, col]
+    end
+
+    println("Fetched $(nrow(df_api)) rows from SmartSMEAR for station label $(station_label)")
+    return df_api
 end
 
 function main()
@@ -105,14 +205,24 @@ function main()
     if !(phi_target in ("phi_m", "phi_h"))
         error("--phi must be phi_m or phi_h")
     end
-    if !(mode in ("raw", "two-level"))
-        error("--mode must be raw or two-level")
+    if !(mode in ("raw", "two-level", "api-smear"))
+        error("--mode must be raw, two-level, or api-smear")
     end
 
     z_eff = z_m - d_m
     z_eff > 0 || error("Need z_m - d_m > 0. Got z_m=$(z_m), d_m=$(d_m)")
 
-    df = CSV.read(input_csv, DataFrame)
+    df = if mode == "api-smear"
+        station_label = input_csv
+        profile_mode = String(parse_flag(extra, "--profile-mode", "raw"))
+        if !(profile_mode in ("raw", "two-level"))
+            error("For --mode=api-smear, --profile-mode must be raw or two-level")
+        end
+        mode = profile_mode
+        fetch_smear_dataframe(station_label, extra, mode)
+    else
+        CSV.read(input_csv, DataFrame)
+    end
 
     c_uw = pick_col(df, [:uw, :u_w_cov, :u_prime_w_prime])
     c_vw = pick_col(df, [:vw, :v_w_cov, :v_prime_w_prime])
