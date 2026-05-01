@@ -238,8 +238,9 @@ end
 
 function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="observed", truth=nothing)
     required = [:zeta, :phi_obs]
+    col_syms = Symbol.(names(df))
     for c in required
-        if !(c in names(df))
+        if !(c in col_syms)
             error("Missing column: $(c). Required columns are zeta, phi_obs")
         end
     end
