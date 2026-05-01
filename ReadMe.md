@@ -65,11 +65,45 @@ bash setup_dev.sh  # Creates venv, installs deps, checks for gfortran
 source .venv/bin/activate
 ```
 
+### Option 4: Julia Ultraspherical Scripts
+
+Install the Julia packages once:
+
+```bash
+julia -e 'using Pkg; Pkg.add(["CSV", "DataFrames", "LsqFit"])'
+# Optional plotting
+julia -e 'using Pkg; Pkg.add("CairoMakie")'
+```
+
+Run the general prototype first when you have any site-level dataset with `zeta` and `phi_obs`:
+
+```bash
+julia julia/ultraspherical_practical_run.jl data/station_phi_m.csv output/ultra_demo
+```
+
+Run the same script in synthetic mode before touching observations. This generates known Gegenbauer coefficients plus additive white Gaussian noise so students can test recovery under realistic conditions:
+
+```bash
+julia julia/ultraspherical_practical_run.jl --synthetic output/ultra_synth
+julia julia/ultraspherical_practical_run.jl --synthetic output/ultra_synth 0.08 320
+```
+
+Use the HSNBL-oriented script only when the dataset is stable-only and has a credible very-stable tail:
+
+```bash
+julia julia/sheba_ultra.jl data/stable_site_phi.csv output/sheba_style
+```
+
+When to use which script:
+
+- `julia/ultraspherical_practical_run.jl`: first-pass workflow, mixed-regime or generic stable-capable sites, student projects, synthetic recovery tests.
+- `julia/sheba_ultra.jl`: stage-two calibration for HSNBL-like data, especially once SHEBA or equivalent Arctic strong-stability cases are available.
+
 ---
 
 ## 📂 Repository Structure
 
-```
+```text
 ABL/
 ├── ReadMe.md                          # This file
 ├── CHANGELOG.md                       # Version history
@@ -127,6 +161,8 @@ ABL/
 │   └── core/                         # Core substrate/slab modules
 │
 ├── julia/                             # Julia SCM skeleton
+│   ├── ultraspherical_practical_run.jl # General baseline + residual spectral fit
+│   ├── sheba_ultra.jl                 # HSNBL/SHEBA-oriented stable-only fit
 │   ├── SCMSkeleton.jl                 # Single-column model skeleton
 │   └── SCMSkeleton_vs_SCAFFOLDING.md
 │

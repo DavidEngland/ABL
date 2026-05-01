@@ -13,6 +13,11 @@
 # 2) Fit ultraspherical correction on residuals only
 # 3) Select hyperparameters by held-out validation RMSE
 # 4) Export metrics/parameters/predictions (+ optional plot)
+#
+# Synthetic mode:
+#   julia julia/ultraspherical_practical_run.jl --synthetic output/ultra_synth [noise_frac] [n_samples]
+# This generates noisy synthetic data with known Gegenbauer coefficients so
+# students can test recovery before touching observations.
 
 using CSV
 using DataFrames
@@ -47,6 +52,8 @@ const SPLIT_MODE = :blocked
 const N_CANDIDATES = [2, 4, 6]
 const RIDGE_CANDIDATES = [0.0, 1e-10, 1e-8, 1e-6, 1e-4]
 const LAMBDA_STAR_CANDIDATES = [0.25, 0.5, 0.75]
+const SYNTHETIC_DEFAULT_SAMPLES = 240
+const SYNTHETIC_DEFAULT_NOISE = 0.05
 
 phi_most(zeta, p) = begin
     a, b, lam = p
@@ -157,18 +164,79 @@ function apply_regime_filter(zeta::Vector{Float64}, y::Vector{Float64}, regime::
     end
 end
 
-# ----------------------------- Runner ------------------------------------------
+function print_usage()
+    println("Usage:")
+    println("  julia julia/ultraspherical_practical_run.jl <input_csv> <output_prefix>")
+    println("  julia julia/ultraspherical_practical_run.jl --synthetic <output_prefix> [noise_frac] [n_samples]")
+    println("")
+    println("Required CSV columns: zeta, phi_obs")
+    println("Optional CSV column:  time")
+    println("Synthetic defaults: noise_frac=$(SYNTHETIC_DEFAULT_NOISE), n_samples=$(SYNTHETIC_DEFAULT_SAMPLES)")
+end
 
-function main()
-    if length(ARGS) < 2
-        println("Usage: julia julia/ultraspherical_practical_run.jl <input_csv> <output_prefix>")
-        return
+"""
+Generate synthetic training data from a known baseline + Gegenbauer residual model.
+Additive white Gaussian noise is included so coefficient recovery is realistic rather
+than a perfect interpolation exercise.
+"""
+function generate_synthetic_dataset(; n_samples::Int=SYNTHETIC_DEFAULT_SAMPLES, noise_frac::Float64=SYNTHETIC_DEFAULT_NOISE)
+    phase = collect(range(0.0, 6.0 * pi, length=n_samples))
+    zeta = 0.9 .* sin.(phase) .+ 0.45 .* sin.(0.37 .* phase .+ 0.6) .+ 0.20 .* randn(n_samples)
+    zeta = clamp.(zeta, -1.5, 2.2)
+    time = collect(1:n_samples)
+
+    p_true = [1.0, 0.35, 4.0]
+    alpha_xi_true = 0.9
+    lambda_star_true = 0.5
+    coeff_true = [0.0, 0.10, -0.06, 0.035, -0.02]
+    nmax_true = length(coeff_true) - 1
+
+    baseline_true = phi_most(zeta, p_true)
+    xi_true = xi_map(zeta, alpha_xi_true)
+    A_true = gegenbauer_design(xi_true, lambda_star_true, nmax_true)
+    residual_true = A_true * coeff_true
+    phi_clean = baseline_true .+ residual_true
+
+    noise_sigma = noise_frac * std(phi_clean)
+    phi_obs = phi_clean .+ noise_sigma .* randn(n_samples)
+
+    df = DataFrame(
+        time=time,
+        zeta=zeta,
+        phi_obs=phi_obs,
+        phi_clean=phi_clean,
+        baseline_true=baseline_true,
+        residual_true=residual_true,
+    )
+
+    truth = (
+        a=p_true[1],
+        b=p_true[2],
+        lambda_profile=p_true[3],
+        alpha_xi=alpha_xi_true,
+        lambda_star=lambda_star_true,
+        nmax=nmax_true,
+        coeff_true=coeff_true,
+        noise_sigma=noise_sigma,
+        noise_frac=noise_frac,
+    )
+
+    return df, truth
+end
+
+function make_coeff_table(coeff_est::Vector{Float64}, nmax_est::Int; truth=nothing)
+    if truth === nothing
+        return DataFrame(mode=collect(0:nmax_est), coeff_estimate=collect(coeff_est))
     end
 
-    input_csv = ARGS[1]
-    out_prefix = ARGS[2]
+    max_mode = max(nmax_est, truth.nmax)
+    modes = collect(0:max_mode)
+    est = Union{Missing, Float64}[mode <= nmax_est ? coeff_est[mode + 1] : missing for mode in modes]
+    tru = Union{Missing, Float64}[mode <= truth.nmax ? truth.coeff_true[mode + 1] : missing for mode in modes]
+    return DataFrame(mode=modes, coeff_estimate=est, coeff_true=tru)
+end
 
-    df = CSV.read(input_csv, DataFrame)
+function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="observed", truth=nothing)
     required = [:zeta, :phi_obs]
     for c in required
         if !(c in names(df))
@@ -178,29 +246,26 @@ function main()
 
     zeta_raw = Vector{Float64}(df.zeta)
     y_raw = Vector{Float64}(df.phi_obs)
-
-    # If a time column exists, use it for blocked split ordering.
-    # Otherwise preserve file row order as the fallback ordering key.
     order_key_raw = (:time in names(df)) ? df.time : collect(1:nrow(df))
 
-    mask = .!(isnan.(zeta_raw) .| isnan.(y_raw) .| isinf.(zeta_raw) .| isinf.(y_raw))
-    zeta = zeta_raw[mask]
-    y = y_raw[mask]
-    order_key = order_key_raw[mask]
+    valid_mask = .!(isnan.(zeta_raw) .| isnan.(y_raw) .| isinf.(zeta_raw) .| isinf.(y_raw))
+    zeta_valid = zeta_raw[valid_mask]
+    y_valid = y_raw[valid_mask]
+    order_key_valid = order_key_raw[valid_mask]
 
-    zeta, y = apply_regime_filter(zeta, y, REGIME)
-    # Re-apply the same regime mask to order_key for consistent indexing.
-    if REGIME == :all
-        # no-op
+    regime_mask = if REGIME == :all
+        trues(length(zeta_valid))
     elseif REGIME == :unstable
-        m = zeta_raw[mask] .< 0.0
-        order_key = order_key[m]
+        zeta_valid .< 0.0
     elseif REGIME == :stable
-        m = zeta_raw[mask] .>= 0.0
-        order_key = order_key[m]
+        zeta_valid .>= 0.0
+    else
+        error("Unknown REGIME=$(REGIME). Use :all, :unstable, or :stable")
     end
 
-    Random.seed!(RNG_SEED)
+    zeta = zeta_valid[regime_mask]
+    y = y_valid[regime_mask]
+    order_key = order_key_valid[regime_mask]
 
     n = length(y)
     if n < 40
@@ -211,7 +276,6 @@ function main()
     z_tr, y_tr = zeta[train_idx], y[train_idx]
     z_te, y_te = zeta[test_idx], y[test_idx]
 
-    # Baseline MOST fit
     p0 = [1.0, 16.0, 4.0]
     lower = [0.1, 0.1, 0.2]
     upper = [5.0, 80.0, 20.0]
@@ -223,7 +287,6 @@ function main()
     yhat_tr_most = phi_most(z_tr, p_most)
     yhat_te_most = phi_most(z_te, p_most)
 
-    # Ultraspherical residual correction on top of MOST baseline
     alpha_base = recommend_alpha_xi(z_tr)
     alpha_candidates = sort(unique([
         0.5 * alpha_base,
@@ -278,6 +341,7 @@ function main()
     )
 
     params = DataFrame(
+        dataset=[dataset_label],
         a=[p_most[1]],
         b=[p_most[2]],
         lambda_profile=[p_most[3]],
@@ -289,19 +353,35 @@ function main()
         split_mode=[String(SPLIT_MODE)],
     )
 
-    CSV.write("$(out_prefix)_metrics.csv", metrics)
-    CSV.write("$(out_prefix)_params.csv", params)
+    if truth !== nothing
+        params.a_true = [truth.a]
+        params.b_true = [truth.b]
+        params.lambda_profile_true = [truth.lambda_profile]
+        params.alpha_xi_true = [truth.alpha_xi]
+        params.lambda_star_true = [truth.lambda_star]
+        params.n_ultra_true = [truth.nmax]
+        params.noise_sigma = [truth.noise_sigma]
+        params.noise_frac = [truth.noise_frac]
+    end
 
-    # Save prediction table for auditing
     pred = DataFrame(
         zeta=z_te,
         obs=y_te,
         most=yhat_te_most,
         ultra=best.yhat_te,
     )
-    CSV.write("$(out_prefix)_pred_test.csv", pred)
 
-    # Plot if CairoMakie exists
+    coeffs = make_coeff_table(best.coeffs, best.nmax; truth=truth)
+
+    CSV.write("$(out_prefix)_metrics.csv", metrics)
+    CSV.write("$(out_prefix)_params.csv", params)
+    CSV.write("$(out_prefix)_pred_test.csv", pred)
+    CSV.write("$(out_prefix)_coeffs.csv", coeffs)
+
+    if truth !== nothing
+        CSV.write("$(out_prefix)_synthetic_data.csv", df)
+    end
+
     if HAVE_MAKIE
         zline = collect(range(minimum(zeta), maximum(zeta), length=500))
         yline_most = phi_most(zline, p_most)
@@ -327,17 +407,58 @@ function main()
     println("  ridge       = $(best.ridge)")
     println("  split_mode  = $(SPLIT_MODE)")
     println("  regime      = $(REGIME)")
+    if truth !== nothing
+        println("  synthetic noise sigma = $(truth.noise_sigma)")
+    end
 
     println("Done.")
     println("Saved:")
     println("  $(out_prefix)_metrics.csv")
     println("  $(out_prefix)_params.csv")
     println("  $(out_prefix)_pred_test.csv")
+    println("  $(out_prefix)_coeffs.csv")
+    if truth !== nothing
+        println("  $(out_prefix)_synthetic_data.csv")
+    end
     if HAVE_MAKIE
         println("  $(out_prefix)_comparison.png")
     else
         println("  Plot skipped: CairoMakie not installed.")
     end
+end
+
+# ----------------------------- Runner ------------------------------------------
+
+function main()
+    if isempty(ARGS)
+        print_usage()
+        return
+    end
+
+    Random.seed!(RNG_SEED)
+
+    if ARGS[1] == "--synthetic"
+        if length(ARGS) < 2
+            print_usage()
+            return
+        end
+        out_prefix = ARGS[2]
+        noise_frac = length(ARGS) >= 3 ? parse(Float64, ARGS[3]) : SYNTHETIC_DEFAULT_NOISE
+        n_samples = length(ARGS) >= 4 ? parse(Int, ARGS[4]) : SYNTHETIC_DEFAULT_SAMPLES
+        df, truth = generate_synthetic_dataset(n_samples=n_samples, noise_frac=noise_frac)
+        run_pipeline(df, out_prefix; dataset_label="synthetic", truth=truth)
+        return
+    end
+
+    if length(ARGS) < 2
+        print_usage()
+        return
+    end
+
+    input_csv = ARGS[1]
+    out_prefix = ARGS[2]
+    df = CSV.read(input_csv, DataFrame)
+    run_pipeline(df, out_prefix)
 end
 
 main()
