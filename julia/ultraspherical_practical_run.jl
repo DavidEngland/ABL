@@ -60,9 +60,9 @@ const SYNTHETIC_DEFAULT_NOISE = 0.05
 # When fixed, a=1 and lambda_profile=2, giving neutral limit 1 and exponent -1/2.
 const FIX_MOST_A_AND_LAMBDA = true
 const MOST_A_FIXED = 1.0
-const MOST_LAMBDA_FIXED = 2.0
+const MOST_LAMBDA_FIXED = -1.0
 const FIX_MOST_B = true
-const MOST_B_FIXED = 16.0
+const MOST_B_FIXED = 4.7
 
 phi_most(zeta, p) = begin
     a, b, lam = p

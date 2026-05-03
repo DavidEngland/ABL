@@ -1,10 +1,9 @@
 #!/usr/bin/env julia
 
-using CSV, DataFrames, Dates, Downloads
+using CSV, DataFrames, Downloads
 
-const KAPPA::Float64 = 0.4
-const G::Float64 = 9.81
-const DEFAULT_WTV_EPS::Float64 = 1e-12
+const KAPPA = 0.4
+const G = 9.81
 
 function print_usage()
     println("Usage:")
@@ -31,7 +30,6 @@ function print_usage()
     println("  Positional arg #1 is station label for logs (e.g., HYY)")
     println("  Required flags: --mode=api-smear --from=ISO --to=ISO")
     println("  Optional flags: --interval=30 --aggregation=ARITHMETIC --quality=ANY")
-    println("  Neutral handling: --wtv-eps=<eps> (default $(DEFAULT_WTV_EPS))")
     println("  Required tablevariable flags for flux terms:")
     println("    --tv-uw=TABLE.VAR --tv-vw=TABLE.VAR --tv-wthetav=TABLE.VAR --tv-thetav=TABLE.VAR")
     println("  Optional tablevariable flags for direct gradients (raw mode):")
@@ -84,15 +82,21 @@ function pick_col(df::DataFrame, aliases::Vector{Symbol}; required::Bool=true)
     return nothing
 end
 
-to_float(x) = x isa Missing ? NaN : (x isa Number ? Float64(x) : something(tryparse(Float64, strip(String(x))), NaN))
+function to_float(x)
+    if x isa Missing
+        return NaN
+    elseif x isa Number
+        return Float64(x)
+    elseif x isa AbstractString
+        y = tryparse(Float64, strip(x))
+        return y === nothing ? NaN : y
+    else
+        return NaN
+    end
+end
 
 function col_float(df::DataFrame, col)
-    src = df[!, col]
-    out = Vector{Float64}(undef, length(src))
-    @inbounds for i in eachindex(src)
-        out[i] = to_float(src[i])
-    end
-    return out
+    return [to_float(v) for v in df[!, col]]
 end
 
 function maybe_col_float(df::DataFrame, aliases::Vector{Symbol})
@@ -166,8 +170,7 @@ function fetch_smear_dataframe(station_label::String, extra::Vector{String}, mod
             h = Int(to_float(df_api.Hour[i]))
             mi = Int(to_float(df_api.Minute[i]))
             s = Int(to_float(df_api.Second[i]))
-            dt = DateTime(y, mo, d, h, mi, s)
-            ts[i] = Dates.format(dt, dateformat"yyyy-mm-ddTHH:MM:SS")
+            ts[i] = string(y, "-", lpad(string(mo), 2, '0'), "-", lpad(string(d), 2, '0'), "T", lpad(string(h), 2, '0'), ":", lpad(string(mi), 2, '0'), ":", lpad(string(s), 2, '0'))
         end
         df_api.timestamp = ts
     end
@@ -198,8 +201,6 @@ function main()
     extra = length(ARGS) > 4 ? ARGS[5:end] : String[]
     stable_only = has_flag(extra, "--stable-only")
     phi_target = parse_flag(extra, "--phi", "phi_m")
-    wtv_eps = parse_float_flag(extra, "--wtv-eps")
-    wtv_eps = wtv_eps === nothing ? DEFAULT_WTV_EPS : wtv_eps
     mode = parse_flag(extra, "--mode", "raw")
     if !(phi_target in ("phi_m", "phi_h"))
         error("--phi must be phi_m or phi_h")
@@ -256,19 +257,14 @@ function main()
         t1 = col_float(df, c_t1)
         t2 = col_float(df, c_t2)
 
-        dudz = Vector{Float64}(undef, length(u1))
-        dthetadz = Vector{Float64}(undef, length(t1))
-        @inbounds for i in eachindex(u1)
-            dudz[i] = (u2[i] - u1[i]) / dz
-            dthetadz[i] = (t2[i] - t1[i]) / dz
-        end
+        dudz = (u2 .- u1) ./ dz
+        dthetadz = (t2 .- t1) ./ dz
     end
 
     n = nrow(df)
     ustar = similar(uw)
     L = similar(uw)
     zeta = similar(uw)
-    neutral_flag = falses(n)
     phi_m = fill(NaN, n)
     phi_h = fill(NaN, n)
 
@@ -276,21 +272,14 @@ function main()
         tau = sqrt(uw[i]^2 + vw[i]^2)
         ustar[i] = tau^(0.5)
 
-        if !(isfinite(ustar[i]) && isfinite(thetav[i]) && isfinite(wtv[i]) && ustar[i] > 0 && thetav[i] > 0)
+        if !(isfinite(ustar[i]) && isfinite(thetav[i]) && isfinite(wtv[i]) && ustar[i] > 0 && thetav[i] > 0 && abs(wtv[i]) > 1e-12)
             L[i] = NaN
             zeta[i] = NaN
             continue
         end
 
-        if abs(wtv[i]) <= wtv_eps
-            # Treat near-zero buoyancy flux as neutral transition to avoid dropping rows.
-            neutral_flag[i] = true
-            zeta[i] = 0.0
-            L[i] = wtv[i] < 0 ? Inf : -Inf
-        else
-            L[i] = -(ustar[i]^3 * thetav[i]) / (KAPPA * G * wtv[i])
-            zeta[i] = z_eff / L[i]
-        end
+        L[i] = -(ustar[i]^3 * thetav[i]) / (KAPPA * G * wtv[i])
+        zeta[i] = z_eff / L[i]
 
         if dudz !== nothing && isfinite(dudz[i]) && ustar[i] > 0
             phi_m[i] = KAPPA * z_eff * dudz[i] / ustar[i]
@@ -327,7 +316,6 @@ function main()
     out.phi_h = phi_h
     out.u_star = ustar
     out.L = L
-    out.neutral_transition = neutral_flag
     out.quality_pass = quality_pass
 
     out = out[out.quality_pass .== true, :]
@@ -337,12 +325,6 @@ function main()
     println("phi_obs source: $(phi_target)")
     println("stable_only: $(stable_only)")
     println("mode: $(mode)")
-    println("wtv_eps: $(wtv_eps)")
 end
 
-try
-    main()
-catch err
-    println(stderr, "Error: ", err)
-    exit(1)
-end
+main()
