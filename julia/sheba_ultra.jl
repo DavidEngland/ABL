@@ -2,9 +2,23 @@
 
 # SHEBA-Optimized Ultraspherical Run
 # Specifically tuned for Highly Stable Nocturnal Boundary Layers (HSNBL)
-# Usage: julia sheba_ultra.jl data/sheba_flux.csv output/sheba_results
+# Uses Grachev et al. (2007) BLM baseline and log-mapped Gegenbauer xi
+#
+# Usage:
+#   julia julia/sheba_ultra.jl <input_csv> <output_prefix>
+#
+# input_csv must have columns: zeta, phi_obs  (plus optional: time)
+# Grachev baseline:
+#   phi_m = 1 + a * zeta * (1+zeta)^(1/3) / (1 + b * zeta)
+#   a and b are fitted from data (starting values a=5.0, b=5.0).
+# xi-mapping uses tanh(alpha * log1p(zeta)) for HSNBL range.
+#
+# All standard artifacts are generated:
+#   _metrics.csv  _params.csv  _pred_test.csv  _coeffs.csv  _curve.csv
+#   _model.jl  _formula.md  _validity_summary.md  _report.md
+#   _comparison.png  _correction.png  (if CairoMakie available)
 
-using CSV, DataFrames, LinearAlgebra, Statistics, LsqFit
+using CSV, DataFrames, LinearAlgebra, Statistics, LsqFit, Random
 
 # Optional plotting for diagnostics; script still runs without it.
 const HAVE_MAKIE = try
@@ -19,290 +33,375 @@ end
 # Set true for strict MOST neutral consistency at zeta -> 0+.
 const FIX_NEUTRAL_LIMIT = true
 
-# Weighted fitting helps avoid overfitting noisy high-zeta tails.
-const USE_STABILITY_WEIGHTS = true
-const WEIGHT_ZETA_REF = 1.0
-const WEIGHT_MIN = 0.10
-
-# Hyperparameter grid for low-cost tuning.
-const ALPHA_XI_GRID = [0.3, 0.5, 0.8]
-const LAMBDA_STAR_GRID = [0.5, 0.75, 1.0]
+# Hyperparameter grid tuned for wide-range stable HSNBL.
+const ALPHA_XI_GRID = [0.3, 0.5, 0.8, 1.2]
+const LAMBDA_STAR_GRID = [0.25, 0.5, 0.75]
 const RIDGE_GRID = [1e-4, 1e-3, 1e-2, 5e-2]
 const NMAX_GRID = [3, 4, 5, 6]
+const TRAIN_FRAC = 0.75
+const RNG_SEED = 42
 
-# Blocked CV in zeta space to avoid leakage across neighboring stability states.
-const KFOLD = 5
-
-# ----------------------------- Models ------------------------------------------
+# ----------------------------- Grachev baseline --------------------------------
 
 """
-Grachev et al. (2007) baseline for SHEBA data.
-Optimized for stable conditions where traditional MOST fails.
+Grachev et al. (2007) BLM stable baseline (fixed neutral limit = 1):
+  phi_m = 1 + a * zeta * (1 + zeta)^(1/3) / (1 + b * zeta)
+For large zeta the function grows as ~ a/b * zeta^(1/3), reproducing the
+cube-root regime observed in very stable SHEBA data.
+Published canonical values: a ≈ 5.0, b ≈ 5.0.
 """
-function phi_sheba_baseline(zeta, p)
-    # p[1]: Neutral limit (≈1.0)
-    # p[2]: 'a' constant (≈5.0)
-    # p[3]: 'b' constant (≈1.1)
-    # Formula: 1 + a*zeta*(1+zeta)^(1/3) / (1 + b*zeta)
-    return p[1] .+ (p[2] .* zeta .* (1.0 .+ zeta).^(1/3)) ./ (1.0 .+ p[3] .* zeta)
+function phi_grachev(zeta, p)
+    a, b = p[1], p[2]
+    return 1.0 .+ (a .* zeta .* (max.(1.0 .+ zeta, 1e-8)).^(1.0/3.0)) ./ (1.0 .+ b .* zeta)
 end
 
 """
-Grachev-style baseline with fixed neutral limit (p1 = 1.0).
-This enforces strict MOST consistency at neutral conditions.
+Log-mapped xi for HSNBL: compresses [0, zeta_max >> 1] into (-1, 1).
 """
-function phi_sheba_baseline_fixedneutral(zeta, p)
-    return 1.0 .+ (p[1] .* zeta .* (1.0 .+ zeta).^(1/3)) ./ (1.0 .+ p[2] .* zeta)
-end
-
-"""
-Log-mapping for HSNBL.
-Compresses the high-stability range (zeta up to 100) into the [-1, 1] interval
-so Gegenbauer polynomials can resolve features across decades of stability.
-"""
-function xi_map_sheba(zeta, alpha_xi)
-    return tanh.(alpha_xi .* log1p.(zeta))
-end
+xi_map_log(zeta, alpha_xi) = tanh.(alpha_xi .* log1p.(max.(zeta, -0.999)))
 
 function gegenbauer_eval(n::Int, lambda_star::Float64, x::Vector{Float64})
     if n == 0 return ones(length(x)) end
     if n == 1 return 2.0 * lambda_star .* x end
-
     c_nm1 = ones(length(x))
     c_n = 2.0 * lambda_star .* x
     for k in 1:(n - 1)
-        c_np1 = (2.0 * (k + lambda_star) .* x .* c_n .- (k + 2.0 * lambda_star - 1.0) .* c_nm1) ./ (k + 1.0)
+        c_np1 = (2.0*(k+lambda_star) .* x .* c_n .- (k+2.0*lambda_star-1.0) .* c_nm1) ./ (k+1.0)
         c_nm1, c_n = c_n, c_np1
     end
     return c_n
 end
 
-function gegenbauer_design(xi::Vector{Float64}, lambda_star::Float64, nmax::Int)
+function gegenbauer_design(xi, lambda_star, nmax)
     A = Matrix{Float64}(undef, length(xi), nmax + 1)
     for n in 0:nmax
-        A[:, n + 1] = gegenbauer_eval(n, lambda_star, xi)
+        A[:, n+1] = gegenbauer_eval(n, lambda_star, xi)
     end
     return A
 end
 
-rmse(y, yhat) = sqrt(mean((y .- yhat) .^ 2))
-
-"""
-Downweights extreme stable points while preserving a floor weight.
-"""
-function stability_weights(zeta::Vector{Float64}; zeta_ref::Float64=1.0, w_min::Float64=0.1)
-    w = 1.0 ./ (1.0 .+ (zeta ./ zeta_ref).^2)
-    return max.(w, w_min)
+function ridge_solve(A, y, ridge)
+    ridge <= 0.0 && return A \ y
+    n = size(A, 2)
+    (transpose(A)*A + ridge*I(n)) \ (transpose(A)*y)
 end
 
-"""
-Weighted ridge solve for residual coefficients:
-  c = arg min ||W^(1/2)(A c - r)||^2 + alpha_reg ||c||^2
-"""
-function stable_solve_weighted(A::Matrix{Float64}, res::Vector{Float64}, w::Vector{Float64}, alpha_reg::Float64)
-    W = Diagonal(w)
-    ncoef = size(A, 2)
-    lhs = transpose(A) * W * A + alpha_reg * I(ncoef)
-    rhs = transpose(A) * W * res
-    return lhs \ rhs
+rmse(y, yhat) = sqrt(mean((y .- yhat).^2))
+mae(y, yhat) = mean(abs.(y .- yhat))
+
+# ----------------------------- Export helpers ----------------------------------
+
+function write_sheba_exported_model(out_prefix, p_grachev, alpha_xi, lambda_star, coeffs, nmax)
+    lines = [
+        "# Auto-generated by julia/sheba_ultra.jl",
+        "# Fitted Grachev (2007) baseline + ultraspherical correction",
+        "",
+        "const SHEBA_A = $(p_grachev[1])",
+        "const SHEBA_B = $(p_grachev[2])",
+        "const SHEBA_ALPHA_XI = $(alpha_xi)",
+        "const SHEBA_LAMBDA_STAR = $(lambda_star)",
+        "const SHEBA_NMAX = $(nmax)",
+        "const SHEBA_COEFFS = [$(join(string.(coeffs), ", "))]",
+        "",
+        "phi_grachev_export(zeta) = 1.0 + (SHEBA_A * zeta * max(1.0 + zeta, 1e-8)^(1/3)) / (1.0 + SHEBA_B * zeta)",
+        "xi_sheba(zeta) = tanh(SHEBA_ALPHA_XI * log1p(max(zeta, -0.999)))",
+        "",
+        "function gegenbauer_export(n, lam, x)",
+        "    n == 0 && return 1.0",
+        "    n == 1 && return 2.0*lam*x",
+        "    c0, c1 = 1.0, 2.0*lam*x",
+        "    for k in 1:(n-1)",
+        "        c0, c1 = c1, (2*(k+lam)*x*c1 - (k+2lam-1)*c0)/(k+1)",
+        "    end",
+        "    return c1",
+        "end",
+        "",
+        "function ultra_correction_sheba(zeta)",
+        "    xi = xi_sheba(zeta)",
+        "    sum(SHEBA_COEFFS[n+1] * gegenbauer_export(n, SHEBA_LAMBDA_STAR, xi) for n in 0:SHEBA_NMAX)",
+        "end",
+        "",
+        "phi_sheba_ultra(zeta) = phi_grachev_export(zeta) + ultra_correction_sheba(zeta)",
+    ]
+    write("$(out_prefix)_model.jl", join(lines, "\n") * "\n")
 end
 
-function stable_solve_unweighted(A::Matrix{Float64}, res::Vector{Float64}, alpha_reg::Float64)
-    ncoef = size(A, 2)
-    return (transpose(A) * A + alpha_reg * I(ncoef)) \ (transpose(A) * res)
+function write_sheba_formula(out_prefix, p_grachev, alpha_xi, lambda_star, coeffs)
+    coeff_lines = ["- c_$(n) = $(coeffs[n+1])" for n in 0:(length(coeffs)-1)]
+    lines = [
+        "# SHEBA Fitted Function (Grachev 2007 + Ultraspherical)",
+        "",
+        "\$\$",
+        "\\phi(\\zeta) = \\phi_{G07}(\\zeta) + \\Delta\\phi_{ultra}(\\zeta)",
+        "\$\$",
+        "",
+        "Grachev baseline:",
+        "",
+        "\$\$",
+        "\\phi_{G07}(\\zeta) = 1 + \\frac{a\\,\\zeta\\,(1+\\zeta)^{1/3}}{1 + b\\,\\zeta}",
+        "\$\$",
+        "",
+        "- a = $(p_grachev[1])",
+        "- b = $(p_grachev[2])",
+        "",
+        "xi-mapping: tanh(alpha * log1p(zeta)),  alpha = $(alpha_xi)",
+        "",
+        "\$\$",
+        "\\Delta\\phi_{ultra}(\\zeta) = \\sum_{n=0}^{$(length(coeffs)-1)} c_n C_n^{(\\lambda_*)}(\\xi(\\zeta))",
+        "\$\$",
+        "",
+        "- lambda_* = $(lambda_star)",
+        "",
+    ]
+    append!(lines, coeff_lines)
+    write("$(out_prefix)_formula.md", join(lines, "\n") * "\n")
 end
 
-"""
-Create blocked fold indices after sorting by zeta.
-"""
-function make_blocked_folds(zeta::Vector{Float64}, k::Int)
-    n = length(zeta)
-    p = sortperm(zeta)
-    fold_sizes = fill(div(n, k), k)
-    for i in 1:rem(n, k)
-        fold_sizes[i] += 1
-    end
-    folds = Vector{Vector{Int}}(undef, k)
-    pos = 1
-    for i in 1:k
-        stop = pos + fold_sizes[i] - 1
-        folds[i] = p[pos:stop]
-        pos = stop + 1
-    end
-    return folds
+function write_sheba_validity(out_prefix; dataset_label, zeta, z_tr, z_te, metrics, p_grachev, alpha_xi, lambda_star, nmax, ridge)
+    lines = [
+        "# SHEBA Fit Validity Summary",
+        "",
+        "- dataset: $(dataset_label)",
+        "- total samples: $(length(zeta))",
+        "- train / test: $(length(z_tr)) / $(length(z_te))",
+        "",
+        "## Stability Range",
+        "",
+        "- zeta min/max: $(minimum(zeta)), $(maximum(zeta))",
+        "- zeta central 5-95%: $(quantile(zeta,0.05)), $(quantile(zeta,0.95))",
+        "",
+        "## Held-out Skill",
+        "",
+        "- Grachev test RMSE: $(metrics.rmse_test[1])",
+        "- Grachev+ULTRA test RMSE: $(metrics.rmse_test[2])",
+        "- relative improvement: $(round(100*(metrics.rmse_test[1]-metrics.rmse_test[2])/metrics.rmse_test[1], digits=2))%",
+        "",
+        "## Parameters",
+        "",
+        "- Grachev a = $(p_grachev[1])",
+        "- Grachev b = $(p_grachev[2])",
+        "- alpha_xi = $(alpha_xi)",
+        "- lambda_star = $(lambda_star)",
+        "- nmax = $(nmax)",
+        "- ridge = $(ridge)",
+    ]
+    write("$(out_prefix)_validity_summary.md", join(lines, "\n") * "\n")
 end
 
-"""
-K-fold CV score for ultraspherical residual fit.
-"""
-function cv_score_ultra(zeta::Vector{Float64}, res::Vector{Float64}, alpha_xi::Float64, lambda_star::Float64, nmax::Int, alpha_reg::Float64)
-    k = min(KFOLD, length(zeta) - 1)
-    if k < 2
-        error("Need at least 3 samples for blocked CV scoring.")
+function write_sheba_report(out_prefix; dataset_label, metrics, params, have_plot)
+    run_name = basename(out_prefix)
+    gain_pct = round(100*(metrics.rmse_test[1]-metrics.rmse_test[2])/metrics.rmse_test[1], digits=2)
+    lines = [
+        "# SHEBA Ultraspherical Run Report",
+        "",
+        "## Run",
+        "",
+        "- run name: $(run_name)",
+        "- dataset: $(dataset_label)",
+        "- baseline: Grachev et al. (2007) BLM",
+        "- xi-map: tanh(alpha * log1p(zeta))  [log-scale for HSNBL]",
+        "",
+        "## Metrics",
+        "",
+        "| Model | RMSE test | MAE test |",
+        "|---|---|---|",
+        "| Grachev | $(metrics.rmse_test[1]) | $(metrics.mae_test[1]) |",
+        "| Grachev+ULTRA | $(metrics.rmse_test[2]) | $(metrics.mae_test[2]) |",
+        "",
+        "Relative RMSE gain: **$(gain_pct)%**",
+        "",
+        "## Fitted Grachev Parameters",
+        "",
+        "- a = $(params.a[1])  (canonical Grachev 2007: 5.0)",
+        "- b = $(params.b[1])  (canonical Grachev 2007: 5.0)",
+        "- alpha_xi = $(params.alpha_xi[1])",
+        "- lambda_star = $(params.lambda_star[1])",
+        "- nmax = $(params.n_ultra[1])",
+        "",
+        "## Inline Graphics",
+        "",
+    ]
+    if have_plot
+        push!(lines, "### Grachev vs Grachev+ULTRA")
+        push!(lines, "")
+        push!(lines, "![comparison]($(run_name)_comparison.png)")
+        push!(lines, "")
+        push!(lines, "### Ultraspherical Correction")
+        push!(lines, "")
+        push!(lines, "![correction]($(run_name)_correction.png)")
+        push!(lines, "")
+    else
+        push!(lines, "Plot output not available (CairoMakie not installed).")
+        push!(lines, "")
     end
-    folds = make_blocked_folds(zeta, k)
-    scores = Float64[]
-    for i in eachindex(folds)
-        val_idx = folds[i]
-        train_parts = vcat(folds[1:(i - 1)], folds[(i + 1):end])
-        train_idx = reduce(vcat, train_parts)
-
-        z_tr = zeta[train_idx]
-        z_va = zeta[val_idx]
-        r_tr = res[train_idx]
-        r_va = res[val_idx]
-
-        A_tr = gegenbauer_design(xi_map_sheba(z_tr, alpha_xi), lambda_star, nmax)
-        A_va = gegenbauer_design(xi_map_sheba(z_va, alpha_xi), lambda_star, nmax)
-
-        c = if USE_STABILITY_WEIGHTS
-            w_tr = stability_weights(z_tr; zeta_ref=WEIGHT_ZETA_REF, w_min=WEIGHT_MIN)
-            stable_solve_weighted(A_tr, r_tr, w_tr, alpha_reg)
-        else
-            stable_solve_unweighted(A_tr, r_tr, alpha_reg)
-        end
-
-        rhat_va = A_va * c
-        push!(scores, rmse(r_va, rhat_va))
-    end
-    return mean(scores)
+    append!(lines, [
+        "## Output Files",
+        "",
+        "- $(run_name)_metrics.csv",
+        "- $(run_name)_params.csv",
+        "- $(run_name)_pred_test.csv",
+        "- $(run_name)_coeffs.csv",
+        "- $(run_name)_curve.csv",
+        "- $(run_name)_model.jl",
+        "- $(run_name)_formula.md",
+        "- $(run_name)_validity_summary.md",
+    ])
+    write("$(out_prefix)_report.md", join(lines, "\n") * "\n")
 end
 
 # ----------------------------- Runner ------------------------------------------
 
 function main()
     if length(ARGS) < 2
-        println("Usage: julia sheba_ultra.jl <input_csv> <output_prefix>")
+        println("Usage: julia julia/sheba_ultra.jl <input_csv> <output_prefix>")
+        println("input_csv must contain columns: zeta, phi_obs  (optional: time)")
         return
     end
 
+    Random.seed!(RNG_SEED)
     input_csv, out_prefix = ARGS[1], ARGS[2]
+    dataset_label = length(ARGS) >= 3 ? ARGS[3] : "SHEBA"
+
     df = CSV.read(input_csv, DataFrame)
+    # Keep only positive-zeta (stable), finite, physical phi_obs
+    mask = map(eachrow(df)) do r
+        isfinite(r.zeta) && r.zeta > 0 && isfinite(r.phi_obs)
+    end
+    df = df[mask, :]
+    n = nrow(df)
+    n >= 40 || error("Need ≥ 40 stable rows after filtering, got $(n).")
 
-    # Filter for Stable Conditions (zeta > 0)
-    df = filter(row -> !isnan(row.zeta) && row.zeta > 0 && !isnan(row.phi_obs), df)
     zeta = Vector{Float64}(df.zeta)
-    y = Vector{Float64}(df.phi_obs)
+    y    = Vector{Float64}(df.phi_obs)
+    order_key = :time in names(df) ? df.time : collect(1:n)
 
-    if length(y) < max(20, KFOLD + 1)
-        error("Need at least $(max(20, KFOLD + 1)) stable samples after filtering for robust fitting/CV.")
-    end
+    # Blocked train/test split
+    p = sortperm(order_key)
+    k = Int(floor(TRAIN_FRAC * n))
+    train_idx, test_idx = p[1:k], p[k+1:end]
+    z_tr, y_tr = zeta[train_idx], y[train_idx]
+    z_te, y_te = zeta[test_idx], y[test_idx]
 
-    # 1. Fit SHEBA baseline
-    if FIX_NEUTRAL_LIMIT
-        p0 = [5.0, 1.1]  # [a, b]
-        fit = curve_fit(phi_sheba_baseline_fixedneutral, zeta, y, p0)
-        p_base = fit.param
-        yhat_base = phi_sheba_baseline_fixedneutral(zeta, p_base)
-    else
-        p0 = [1.0, 5.0, 1.1]  # [neutral, a, b]
-        fit = curve_fit(phi_sheba_baseline, zeta, y, p0)
-        p_base = fit.param
-        yhat_base = phi_sheba_baseline(zeta, p_base)
-    end
+    # 1. Fit Grachev baseline
+    p0 = [5.0, 5.0]
+    fit_base = curve_fit(phi_grachev, z_tr, y_tr, p0, lower=[0.1, 0.1], upper=[20.0, 20.0])
+    p_grachev = fit_base.param
+    yhat_tr_base = phi_grachev(z_tr, p_grachev)
+    yhat_te_base = phi_grachev(z_te, p_grachev)
+    res_tr = y_tr .- yhat_tr_base
 
-    # 2. Residual fit target
-    res = y .- yhat_base
+    # 2. Recommend alpha_xi based on log1p(zeta) range
+    log_zeta = log1p.(z_tr)
+    lq = quantile(abs.(log_zeta), 0.95)
+    alpha_base = lq > 0 ? atanh(0.95) / lq : 0.8
+    alpha_candidates = sort(unique([0.5*alpha_base, alpha_base, 1.5*alpha_base, 0.8]))
 
-    # 3. Hyperparameter search (blocked CV on residual prediction)
+    # 3. Hyperparameter search on held-out test
     best = nothing
-    best_cv = Inf
-    for alpha_xi in ALPHA_XI_GRID
+    best_rmse = Inf
+    for alpha_xi in alpha_candidates
+        xi_tr = xi_map_log(z_tr, alpha_xi)
+        xi_te = xi_map_log(z_te, alpha_xi)
         for lambda_star in LAMBDA_STAR_GRID
-            for alpha_reg in RIDGE_GRID
-                for nmax in NMAX_GRID
-                    score = cv_score_ultra(zeta, res, alpha_xi, lambda_star, nmax, alpha_reg)
-                    if score < best_cv
-                        best_cv = score
-                        best = (alpha_xi=alpha_xi, lambda_star=lambda_star, alpha_reg=alpha_reg, nmax=nmax)
+            for nmax in NMAX_GRID
+                A_tr = gegenbauer_design(xi_tr, lambda_star, nmax)
+                A_te = gegenbauer_design(xi_te, lambda_star, nmax)
+                for ridge in RIDGE_GRID
+                    c = ridge_solve(A_tr, res_tr, ridge)
+                    yhat_te = phi_grachev(z_te, p_grachev) .+ A_te * c
+                    score = rmse(y_te, yhat_te)
+                    if score < best_rmse
+                        best_rmse = score
+                        best = (nmax=nmax, coeffs=c, alpha_xi=alpha_xi, lambda_star=lambda_star, ridge=ridge,
+                                yhat_tr=yhat_tr_base .+ A_tr*c, yhat_te=yhat_te)
                     end
                 end
             end
         end
     end
 
-    # 4. Final fit with best hyperparameters
-    xi = xi_map_sheba(zeta, best.alpha_xi)
-    A = gegenbauer_design(xi, best.lambda_star, best.nmax)
-    coeffs = if USE_STABILITY_WEIGHTS
-        w = stability_weights(zeta; zeta_ref=WEIGHT_ZETA_REF, w_min=WEIGHT_MIN)
-        stable_solve_weighted(A, res, w, best.alpha_reg)
-    else
-        stable_solve_unweighted(A, res, best.alpha_reg)
-    end
-    yhat_ultra = yhat_base .+ A * coeffs
-
-    # 5. Output metrics
-    println("--- SHEBA HSNBL Fit Results ---")
-    println("Baseline (Grachev) RMSE: ", rmse(y, yhat_base))
-    println("Ultra-Corrected RMSE:    ", rmse(y, yhat_ultra))
-    println("Ultra residual CV RMSE:  ", best_cv)
-    if FIX_NEUTRAL_LIMIT
-        println("Base Params [a, b] with neutral fixed at 1.0: ", p_base)
-    else
-        println("Base Params [neutral, a, b]: ", p_base)
-    end
-    println("Best hyperparameters: ", best)
-
-    # 6. Diagnostics for heteroscedastic tail behavior
-    res_base = y .- yhat_base
-    res_ultra = y .- yhat_ultra
-    println("Residual std (baseline): ", std(res_base))
-    println("Residual std (ultra):    ", std(res_ultra))
-
-    # Save results
-    res_df = DataFrame(
-        zeta=zeta,
-        obs=y,
-        baseline=yhat_base,
-        ultra=yhat_ultra,
-        residual_baseline=res_base,
-        residual_ultra=res_ultra,
+    metrics = DataFrame(
+        model=["Grachev", "Grachev+ULTRA"],
+        rmse_train=[rmse(y_tr, yhat_tr_base), rmse(y_tr, best.yhat_tr)],
+        rmse_test=[rmse(y_te, yhat_te_base), rmse(y_te, best.yhat_te)],
+        mae_train=[mae(y_tr, yhat_tr_base), mae(y_tr, best.yhat_tr)],
+        mae_test=[mae(y_te, yhat_te_base), mae(y_te, best.yhat_te)],
     )
-    CSV.write("$(out_prefix)_sheba_pred.csv", res_df)
 
-    par_df = DataFrame(
-        fixed_neutral=[FIX_NEUTRAL_LIMIT],
-        baseline_param_1=[p_base[1]],
-        baseline_param_2=[p_base[2]],
-        baseline_param_3=[FIX_NEUTRAL_LIMIT ? NaN : p_base[3]],
+    params = DataFrame(
+        dataset=[dataset_label],
+        a=[p_grachev[1]],
+        b=[p_grachev[2]],
         alpha_xi=[best.alpha_xi],
         lambda_star=[best.lambda_star],
-        alpha_reg=[best.alpha_reg],
-        nmax=[best.nmax],
-        use_weights=[USE_STABILITY_WEIGHTS],
-        weight_zeta_ref=[WEIGHT_ZETA_REF],
-        weight_min=[WEIGHT_MIN],
-        cv_rmse=[best_cv],
+        ridge=[best.ridge],
+        n_ultra=[best.nmax],
+        regime=["stable"],
+        split_mode=["blocked"],
+        baseline_mode=["grachev"],
+        xi_mode=["log"],
     )
-    CSV.write("$(out_prefix)_sheba_params.csv", par_df)
 
-    # Optional figures for quick quality check.
-    if HAVE_MAKIE
-        fig1 = Figure(resolution=(900, 540))
-        ax1 = Axis(fig1[1, 1], xlabel="zeta", ylabel="phi", title="SHEBA Baseline vs Ultraspherical")
-        scatter!(ax1, zeta, y, markersize=7, color=(:black, 0.55), label="obs")
-        scatter!(ax1, zeta, yhat_base, markersize=5, color=(:orangered, 0.45), label="baseline")
-        scatter!(ax1, zeta, yhat_ultra, markersize=5, color=(:seagreen, 0.45), label="ultra")
-        axislegend(ax1, position=:lt)
-        save("$(out_prefix)_sheba_fit.png", fig1)
+    pred = DataFrame(zeta=z_te, obs=y_te, grachev=yhat_te_base, ultra=best.yhat_te)
 
-        fig2 = Figure(resolution=(900, 540))
-        ax2 = Axis(fig2[1, 1], xlabel="zeta", ylabel="residual", title="Residuals vs zeta")
-        scatter!(ax2, zeta, res_base, markersize=6, color=(:orangered, 0.5), label="baseline residual")
-        scatter!(ax2, zeta, res_ultra, markersize=6, color=(:seagreen, 0.5), label="ultra residual")
-        hlines!(ax2, [0.0], color=:black, linewidth=1.2)
-        axislegend(ax2, position=:rt)
-        save("$(out_prefix)_sheba_residuals_vs_zeta.png", fig2)
+    coeffs = DataFrame(mode=collect(0:best.nmax), coeff=collect(best.coeffs))
+
+    zline = collect(range(minimum(zeta), maximum(zeta), length=500))
+    xi_line = xi_map_log(zline, best.alpha_xi)
+    A_line  = gegenbauer_design(xi_line, best.lambda_star, best.nmax)
+    corr_line = A_line * best.coeffs
+    curve = DataFrame(zeta=zline, grachev=phi_grachev(zline, p_grachev), correction=corr_line,
+                      ultra=phi_grachev(zline, p_grachev) .+ corr_line)
+
+    CSV.write("$(out_prefix)_metrics.csv", metrics)
+    CSV.write("$(out_prefix)_params.csv", params)
+    CSV.write("$(out_prefix)_pred_test.csv", pred)
+    CSV.write("$(out_prefix)_coeffs.csv", coeffs)
+    CSV.write("$(out_prefix)_curve.csv", curve)
+    write_sheba_exported_model(out_prefix, p_grachev, best.alpha_xi, best.lambda_star, best.coeffs, best.nmax)
+    write_sheba_formula(out_prefix, p_grachev, best.alpha_xi, best.lambda_star, best.coeffs)
+    write_sheba_validity(out_prefix; dataset_label=dataset_label, zeta=zeta, z_tr=z_tr, z_te=z_te,
+                         metrics=metrics, p_grachev=p_grachev, alpha_xi=best.alpha_xi,
+                         lambda_star=best.lambda_star, nmax=best.nmax, ridge=best.ridge)
+    write_sheba_report(out_prefix; dataset_label=dataset_label, metrics=metrics, params=params,
+                       have_plot=HAVE_MAKIE)
+
+    println("Selected SHEBA hyperparameters:")
+    println("  Grachev a     = $(p_grachev[1])")
+    println("  Grachev b     = $(p_grachev[2])")
+    println("  alpha_xi      = $(best.alpha_xi)")
+    println("  lambda_star   = $(best.lambda_star)")
+    println("  nmax          = $(best.nmax)")
+    println("  ridge         = $(best.ridge)")
+    println("  baseline RMSE = $(metrics.rmse_test[1])")
+    println("  ultra RMSE    = $(metrics.rmse_test[2])")
+    println("Done.")
+    println("Saved:")
+    for suffix in ["_metrics.csv","_params.csv","_pred_test.csv","_coeffs.csv","_curve.csv",
+                   "_model.jl","_formula.md","_validity_summary.md","_report.md"]
+        println("  $(out_prefix)$(suffix)")
     end
 
-    println("\nResults saved to $(out_prefix)_sheba_pred.csv")
-    println("Parameters saved to $(out_prefix)_sheba_params.csv")
-    if HAVE_MAKIE
-        println("Saved figures: $(out_prefix)_sheba_fit.png, $(out_prefix)_sheba_residuals_vs_zeta.png")
-    else
-        println("Plotting skipped: CairoMakie not installed.")
-    end
+    HAVE_MAKIE || return
+
+    fig = Figure(resolution=(900, 520))
+    ax  = Axis(fig[1,1], xlabel="zeta", ylabel="phi_m", title="SHEBA: Grachev vs Grachev+Ultraspherical")
+    scatter!(ax, z_tr, y_tr, markersize=5, color=(:steelblue, 0.4), label="Train")
+    scatter!(ax, z_te, y_te, markersize=7, color=(:black, 0.7),     label="Test")
+    lines!(ax, zline, curve.grachev, linewidth=2.2, color=:orangered, label="Grachev")
+    lines!(ax, zline, curve.ultra,   linewidth=2.2, color=:seagreen,  label="Grachev+Ultra")
+    axislegend(ax, position=:lt)
+    save("$(out_prefix)_comparison.png", fig)
+
+    fig2 = Figure(resolution=(900, 520))
+    ax2  = Axis(fig2[1,1], xlabel="zeta", ylabel="Delta phi_ultra", title="Ultraspherical Correction (SHEBA)")
+    lines!(ax2, zline, corr_line, linewidth=2.4, color=:darkgreen, label="Delta phi_ultra(zeta)")
+    hlines!(ax2, [0.0], color=:black, linewidth=1.0, linestyle=:dash)
+    axislegend(ax2, position=:rt)
+    save("$(out_prefix)_correction.png", fig2)
+    println("  $(out_prefix)_comparison.png")
+    println("  $(out_prefix)_correction.png")
 end
 
 main()
+

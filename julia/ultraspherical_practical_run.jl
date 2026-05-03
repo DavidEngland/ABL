@@ -69,7 +69,28 @@ end
 
 phi_most_fixed(zeta, b) = phi_most(zeta, [MOST_A_FIXED, b, MOST_LAMBDA_FIXED])
 
-xi_map(zeta, alpha_xi) = tanh.(alpha_xi .* zeta)
+"""
+Grachev et al. (2007) BLM stable baseline:
+  phi_m = 1 + a * zeta * (1 + zeta)^(1/3) / (1 + b * zeta)
+Neutral limit is exactly 1. For large zeta approaches a/b * zeta^(1/3),
+which reproduces the weak cube-root growth seen in very stable HSNBL.
+"""
+phi_grachev(zeta, p) = begin
+    a, b = p[1], p[2]
+    1.0 .+ (a .* zeta .* (max.(1.0 .+ zeta, 1e-8)).^(1.0/3.0)) ./ (1.0 .+ b .* zeta)
+end
+
+# Published canonical values from Grachev et al. (2007), Table 3, phi_m fit:
+const GRACHEV_A_FIXED = 5.0
+const GRACHEV_B_FIXED = 5.0
+
+xi_map(zeta, alpha_xi; xi_mode::Symbol=:tanh) = begin
+    if xi_mode == :log
+        tanh.(alpha_xi .* log1p.(max.(zeta, -0.999)))
+    else
+        tanh.(alpha_xi .* zeta)
+    end
+end
 
 """
 Recommend alpha_xi so the mapped training data span most of (-1, 1)
@@ -178,7 +199,8 @@ function print_usage()
     println("  julia julia/ultraspherical_practical_run.jl --synthetic <output_prefix> [noise_frac] [n_samples]")
     println("")
     println("Optional flags for observed-data mode:")
-    println("  --baseline=dyer47|linear-fit|ultra-only|most-free   (default dyer47)")
+    println("  --baseline=dyer47|linear-fit|ultra-only|most-free|grachev   (default dyer47)")
+    println("  --xi-map=tanh|log   (default tanh; use log for SHEBA/HSNBL where zeta >> 1)")
     println("")
     println("Required CSV columns: zeta, phi_obs")
     println("Optional CSV column:  time")
@@ -476,7 +498,7 @@ function write_run_report(out_prefix::String; dataset_label::String, metrics::Da
     write("$(out_prefix)_report.md", join(lines, "\n") * "\n")
 end
 
-function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="observed", truth=nothing, baseline_mode::Symbol=:dyer47)
+function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="observed", truth=nothing, baseline_mode::Symbol=:dyer47, xi_mode::Symbol=:tanh)
     required = [:zeta, :phi_obs]
     col_syms = Symbol.(names(df))
     for c in required
@@ -517,7 +539,11 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
     z_tr, y_tr = zeta[train_idx], y[train_idx]
     z_te, y_te = zeta[test_idx], y[test_idx]
 
-    p_most = if baseline_mode == :dyer47
+    # For Grachev mode we use phi_grachev with its own 2-param vector;
+    # for all other modes we use the standard phi_most 3-param vector.
+    use_grachev = (baseline_mode == :grachev)
+
+    p_baseline = if baseline_mode == :dyer47
         [MOST_A_FIXED, MOST_B_FIXED, MOST_LAMBDA_FIXED]
     elseif baseline_mode == :linear_fit
         p0 = [16.0]
@@ -535,12 +561,26 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
         model = (x, p) -> phi_most(x, p)
         fit = curve_fit(model, z_tr, y_tr, p0, lower=lower, upper=upper)
         fit.param
+    elseif baseline_mode == :grachev
+        p0 = [GRACHEV_A_FIXED, GRACHEV_B_FIXED]
+        lower = [0.1, 0.1]
+        upper = [20.0, 20.0]
+        model = (x, p) -> phi_grachev(x, p)
+        fit = curve_fit(model, z_tr, y_tr, p0, lower=lower, upper=upper)
+        fit.param
     else
-        error("Unknown baseline_mode=$(baseline_mode). Use dyer47, linear_fit, ultra_only, or most_free")
+        error("Unknown baseline_mode=$(baseline_mode). Use dyer47, linear_fit, ultra_only, most_free, or grachev")
     end
 
-    yhat_tr_most = phi_most(z_tr, p_most)
-    yhat_te_most = phi_most(z_te, p_most)
+    eval_baseline = use_grachev ?
+        (z -> phi_grachev(z, p_baseline)) :
+        (z -> phi_most(z, p_baseline))
+
+    # Canonical 3-element param vector for reporting/export (Grachev has only 2):
+    p_most = use_grachev ? [1.0, p_baseline[1], p_baseline[2]] : p_baseline
+
+    yhat_tr_most = eval_baseline(z_tr)
+    yhat_te_most = eval_baseline(z_te)
 
     alpha_base = recommend_alpha_xi(z_tr)
     alpha_candidates = sort(unique([
@@ -557,8 +597,8 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
     best_rmse = Inf
 
     for alpha_xi in alpha_candidates
-        xi_tr = xi_map(z_tr, alpha_xi)
-        xi_te = xi_map(z_te, alpha_xi)
+        xi_tr = xi_map(z_tr, alpha_xi; xi_mode=xi_mode)
+        xi_te = xi_map(z_te, alpha_xi; xi_mode=xi_mode)
         for lambda_star in LAMBDA_STAR_CANDIDATES
             for nmax in N_CANDIDATES
                 A_tr = gegenbauer_design(xi_tr, lambda_star, nmax)
@@ -567,7 +607,7 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
                     c = ridge_solve(A_tr, res_tr, ridge)
 
                     yhat_tr = yhat_tr_base .+ A_tr * c
-                    yhat_te = phi_most(z_te, p_most) .+ A_te * c
+                    yhat_te = eval_baseline(z_te) .+ A_te * c
 
                     score = rmse(y_te, yhat_te)
                     if score < best_rmse
@@ -607,6 +647,7 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
         regime=[String(REGIME)],
         split_mode=[String(SPLIT_MODE)],
         baseline_mode=[String(baseline_mode)],
+        xi_mode=[String(xi_mode)],
     )
 
     if truth !== nothing
@@ -630,8 +671,8 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
     coeffs = make_coeff_table(best.coeffs, best.nmax; truth=truth)
 
     zline = collect(range(minimum(zeta), maximum(zeta), length=500))
-    yline_most = phi_most(zline, p_most)
-    xi_line = xi_map(zline, best.alpha_xi)
+    yline_most = eval_baseline(zline)
+    xi_line = xi_map(zline, best.alpha_xi; xi_mode=xi_mode)
     A_line = gegenbauer_design(xi_line, best.lambda_star, best.nmax)
     correction_line = A_line * best.coeffs
     yline_ultra = yline_most .+ correction_line
@@ -698,12 +739,13 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
     println("  lambda_star = $(best.lambda_star)")
     println("  nmax        = $(best.nmax)")
     println("  ridge       = $(best.ridge)")
-    println("  split_mode  = $(SPLIT_MODE)")
+    println("  split_mode    = $(SPLIT_MODE)")
     println("  baseline_mode = $(baseline_mode)")
-    println("  regime      = $(REGIME)")
-    println("  most_a      = $(p_most[1])")
-    println("  most_b      = $(p_most[2])")
-    println("  most_lambda = $(p_most[3])")
+    println("  xi_mode       = $(xi_mode)")
+    println("  regime        = $(REGIME)")
+    println("  most_a        = $(p_most[1])")
+    println("  most_b        = $(p_most[2])")
+    println("  most_lambda   = $(p_most[3])")
     if truth !== nothing
         println("  synthetic noise sigma = $(truth.noise_sigma)")
     end
@@ -770,11 +812,21 @@ function main()
         :ultra_only
     elseif baseline_flag in ("most-free", "most_free")
         :most_free
+    elseif baseline_flag == "grachev"
+        :grachev
     else
-        error("Unknown --baseline=$(baseline_flag). Use dyer47, linear-fit, ultra-only, or most-free")
+        error("Unknown --baseline=$(baseline_flag). Use dyer47, linear-fit, ultra-only, most-free, or grachev")
+    end
+    xi_flag = lowercase(parse_flag(extra, "--xi-map", "tanh"))
+    xi_mode = if xi_flag == "log"
+        :log
+    elseif xi_flag == "tanh"
+        :tanh
+    else
+        error("Unknown --xi-map=$(xi_flag). Use tanh or log")
     end
     df = CSV.read(input_csv, DataFrame)
-    run_pipeline(df, out_prefix; baseline_mode=baseline_mode)
+    run_pipeline(df, out_prefix; baseline_mode=baseline_mode, xi_mode=xi_mode)
 end
 
 main()
