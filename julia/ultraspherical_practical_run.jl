@@ -55,13 +55,10 @@ const LAMBDA_STAR_CANDIDATES = [0.25, 0.5, 0.75]
 const SYNTHETIC_DEFAULT_SAMPLES = 240
 const SYNTHETIC_DEFAULT_NOISE = 0.05
 
-# Baseline MOST constraints for stable phi_m work:
+# Baseline default constants (Dyer linear form encoded by lambda=-1):
 # phi_m = a * (1 + b zeta)^(-1/lambda_profile)
-# When fixed, a=1 and lambda_profile=2, giving neutral limit 1 and exponent -1/2.
-const FIX_MOST_A_AND_LAMBDA = true
 const MOST_A_FIXED = 1.0
 const MOST_LAMBDA_FIXED = -1.0
-const FIX_MOST_B = true
 const MOST_B_FIXED = 4.7
 
 phi_most(zeta, p) = begin
@@ -180,9 +177,23 @@ function print_usage()
     println("  julia julia/ultraspherical_practical_run.jl <input_csv> <output_prefix>")
     println("  julia julia/ultraspherical_practical_run.jl --synthetic <output_prefix> [noise_frac] [n_samples]")
     println("")
+    println("Optional flags for observed-data mode:")
+    println("  --baseline=dyer47|linear-fit|ultra-only|most-free   (default dyer47)")
+    println("")
     println("Required CSV columns: zeta, phi_obs")
     println("Optional CSV column:  time")
     println("Synthetic defaults: noise_frac=$(SYNTHETIC_DEFAULT_NOISE), n_samples=$(SYNTHETIC_DEFAULT_SAMPLES)")
+end
+
+function parse_flag(args::Vector{String}, key::String, default::String)
+    prefix = key * "="
+    for a in args
+        startswith(a, prefix) || continue
+        parts = split(a, "=", limit=2)
+        length(parts) == 2 || return default
+        return parts[2]
+    end
+    return default
 end
 
 """
@@ -465,7 +476,7 @@ function write_run_report(out_prefix::String; dataset_label::String, metrics::Da
     write("$(out_prefix)_report.md", join(lines, "\n") * "\n")
 end
 
-function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="observed", truth=nothing)
+function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="observed", truth=nothing, baseline_mode::Symbol=:dyer47)
     required = [:zeta, :phi_obs]
     col_syms = Symbol.(names(df))
     for c in required
@@ -506,24 +517,26 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
     z_tr, y_tr = zeta[train_idx], y[train_idx]
     z_te, y_te = zeta[test_idx], y[test_idx]
 
-    p_most = if FIX_MOST_A_AND_LAMBDA
-        if FIX_MOST_B
-            [MOST_A_FIXED, MOST_B_FIXED, MOST_LAMBDA_FIXED]
-        else
-            p0 = [16.0]
-            lower = [0.1]
-            upper = [80.0]
-            model = (x, p) -> phi_most_fixed(x, p[1])
-            fit = curve_fit(model, z_tr, y_tr, p0, lower=lower, upper=upper)
-            [MOST_A_FIXED, fit.param[1], MOST_LAMBDA_FIXED]
-        end
-    else
+    p_most = if baseline_mode == :dyer47
+        [MOST_A_FIXED, MOST_B_FIXED, MOST_LAMBDA_FIXED]
+    elseif baseline_mode == :linear_fit
+        p0 = [16.0]
+        lower = [0.1]
+        upper = [80.0]
+        model = (x, p) -> phi_most_fixed(x, p[1])
+        fit = curve_fit(model, z_tr, y_tr, p0, lower=lower, upper=upper)
+        [MOST_A_FIXED, fit.param[1], MOST_LAMBDA_FIXED]
+    elseif baseline_mode == :ultra_only
+        [1.0, 0.0, 1.0]
+    elseif baseline_mode == :most_free
         p0 = [1.0, 16.0, 4.0]
         lower = [0.1, 0.1, 0.2]
         upper = [5.0, 80.0, 20.0]
         model = (x, p) -> phi_most(x, p)
         fit = curve_fit(model, z_tr, y_tr, p0, lower=lower, upper=upper)
         fit.param
+    else
+        error("Unknown baseline_mode=$(baseline_mode). Use dyer47, linear_fit, ultra_only, or most_free")
     end
 
     yhat_tr_most = phi_most(z_tr, p_most)
@@ -593,6 +606,7 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
         n_ultra=[best.nmax],
         regime=[String(REGIME)],
         split_mode=[String(SPLIT_MODE)],
+        baseline_mode=[String(baseline_mode)],
     )
 
     if truth !== nothing
@@ -685,12 +699,11 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
     println("  nmax        = $(best.nmax)")
     println("  ridge       = $(best.ridge)")
     println("  split_mode  = $(SPLIT_MODE)")
+    println("  baseline_mode = $(baseline_mode)")
     println("  regime      = $(REGIME)")
     println("  most_a      = $(p_most[1])")
     println("  most_b      = $(p_most[2])")
     println("  most_lambda = $(p_most[3])")
-    println("  most_fixed_a_lambda = $(FIX_MOST_A_AND_LAMBDA)")
-    println("  most_fixed_b = $(FIX_MOST_B)")
     if truth !== nothing
         println("  synthetic noise sigma = $(truth.noise_sigma)")
     end
@@ -747,8 +760,21 @@ function main()
 
     input_csv = ARGS[1]
     out_prefix = ARGS[2]
+    extra = length(ARGS) > 2 ? ARGS[3:end] : String[]
+    baseline_flag = lowercase(parse_flag(extra, "--baseline", "dyer47"))
+    baseline_mode = if baseline_flag == "dyer47"
+        :dyer47
+    elseif baseline_flag in ("linear-fit", "linear_fit")
+        :linear_fit
+    elseif baseline_flag in ("ultra-only", "ultra_only")
+        :ultra_only
+    elseif baseline_flag in ("most-free", "most_free")
+        :most_free
+    else
+        error("Unknown --baseline=$(baseline_flag). Use dyer47, linear-fit, ultra-only, or most-free")
+    end
     df = CSV.read(input_csv, DataFrame)
-    run_pipeline(df, out_prefix)
+    run_pipeline(df, out_prefix; baseline_mode=baseline_mode)
 end
 
 main()

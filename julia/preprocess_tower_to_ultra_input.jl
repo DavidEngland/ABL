@@ -32,6 +32,9 @@ function print_usage()
     println("  Required flags: --mode=api-smear --from=ISO --to=ISO")
     println("  Optional flags: --interval=30 --aggregation=ARITHMETIC --quality=ANY")
     println("  Neutral handling: --wtv-eps=<eps> (default $(DEFAULT_WTV_EPS))")
+    println("  Optional direct stability inputs:")
+    println("    --tv-mo-length=TABLE.VAR [--tv-ustar=TABLE.VAR]")
+    println("    When --tv-mo-length is provided, zeta uses z_eff / MO_length directly.")
     println("  Required tablevariable flags for flux terms:")
     println("    --tv-uw=TABLE.VAR --tv-vw=TABLE.VAR --tv-wthetav=TABLE.VAR --tv-thetav=TABLE.VAR")
     println("  Optional tablevariable flags for direct gradients (raw mode):")
@@ -188,10 +191,22 @@ end
 
 function get_tablevariable_flags(extra::Vector{String}, mode::String)
     tv = Dict{Symbol, String}()
-    tv[:uw] = parse_required_flag(extra, "--tv-uw")
-    tv[:vw] = parse_required_flag(extra, "--tv-vw")
-    tv[:wthetav] = parse_required_flag(extra, "--tv-wthetav")
-    tv[:thetav] = parse_required_flag(extra, "--tv-thetav")
+
+    tv_mo = parse_flag(extra, "--tv-mo-length", "")
+    tv_ustar = parse_flag(extra, "--tv-ustar", "")
+    has_direct_mo = !isempty(tv_mo)
+
+    if has_direct_mo
+        tv[:mo_length] = tv_mo
+        if !isempty(tv_ustar)
+            tv[:u_star] = tv_ustar
+        end
+    else
+        tv[:uw] = parse_required_flag(extra, "--tv-uw")
+        tv[:vw] = parse_required_flag(extra, "--tv-vw")
+        tv[:wthetav] = parse_required_flag(extra, "--tv-wthetav")
+        tv[:thetav] = parse_required_flag(extra, "--tv-thetav")
+    end
 
     tv_dudz = parse_flag(extra, "--tv-dudz", "")
     tv_dthetadz = parse_flag(extra, "--tv-dthetadz", "")
@@ -309,15 +324,21 @@ function main()
         CSV.read(input_csv, DataFrame)
     end
 
-    c_uw = pick_col(df, [:uw, :u_w_cov, :u_prime_w_prime])
-    c_vw = pick_col(df, [:vw, :v_w_cov, :v_prime_w_prime])
-    c_wtv = pick_col(df, [:wthetav, :w_theta_v, :wthetav_cov])
-    c_thetav = pick_col(df, [:thetav, :theta_v, :theta_v_mean])
+    c_mo = pick_col(df, [:mo_length, :MO_length, :L, :monin_obukhov_length]; required=false)
+    c_ustar_direct = pick_col(df, [:u_star, :ustar, :uStar]; required=false)
+    have_direct_mo = c_mo !== nothing
 
-    uw = col_float(df, c_uw)
-    vw = col_float(df, c_vw)
-    wtv = col_float(df, c_wtv)
-    thetav = col_float(df, c_thetav)
+    c_uw = pick_col(df, [:uw, :u_w_cov, :u_prime_w_prime]; required=!have_direct_mo)
+    c_vw = pick_col(df, [:vw, :v_w_cov, :v_prime_w_prime]; required=!have_direct_mo)
+    c_wtv = pick_col(df, [:wthetav, :w_theta_v, :wthetav_cov]; required=!have_direct_mo)
+    c_thetav = pick_col(df, [:thetav, :theta_v, :theta_v_mean]; required=!have_direct_mo)
+
+    uw = c_uw === nothing ? fill(NaN, nrow(df)) : col_float(df, c_uw)
+    vw = c_vw === nothing ? fill(NaN, nrow(df)) : col_float(df, c_vw)
+    wtv = c_wtv === nothing ? fill(NaN, nrow(df)) : col_float(df, c_wtv)
+    thetav = c_thetav === nothing ? fill(NaN, nrow(df)) : col_float(df, c_thetav)
+    mo_length = c_mo === nothing ? fill(NaN, nrow(df)) : col_float(df, c_mo)
+    ustar_direct = c_ustar_direct === nothing ? fill(NaN, nrow(df)) : col_float(df, c_ustar_direct)
 
     dudz = nothing
     dthetadz = nothing
@@ -360,22 +381,32 @@ function main()
 
     for i in 1:n
         tau = sqrt(uw[i]^2 + vw[i]^2)
-        ustar[i] = tau^(0.5)
-
-        if !(isfinite(ustar[i]) && isfinite(thetav[i]) && isfinite(wtv[i]) && ustar[i] > 0 && thetav[i] > 0)
-            L[i] = NaN
-            zeta[i] = NaN
-            continue
+        ustar_from_tau = tau^(0.5)
+        if isfinite(ustar_direct[i]) && ustar_direct[i] > 0
+            ustar[i] = ustar_direct[i]
+        else
+            ustar[i] = ustar_from_tau
         end
 
-        if abs(wtv[i]) <= wtv_eps
-            # Treat near-zero buoyancy flux as neutral transition to avoid dropping rows.
-            neutral_flag[i] = true
-            zeta[i] = 0.0
-            L[i] = wtv[i] < 0 ? Inf : -Inf
-        else
-            L[i] = -(ustar[i]^3 * thetav[i]) / (KAPPA * G * wtv[i])
+        if have_direct_mo && isfinite(mo_length[i]) && mo_length[i] != 0.0
+            L[i] = mo_length[i]
             zeta[i] = z_eff / L[i]
+        else
+            if !(isfinite(ustar[i]) && isfinite(thetav[i]) && isfinite(wtv[i]) && ustar[i] > 0 && thetav[i] > 0)
+                L[i] = NaN
+                zeta[i] = NaN
+                continue
+            end
+
+            if abs(wtv[i]) <= wtv_eps
+                # Treat near-zero buoyancy flux as neutral transition to avoid dropping rows.
+                neutral_flag[i] = true
+                zeta[i] = 0.0
+                L[i] = wtv[i] < 0 ? Inf : -Inf
+            else
+                L[i] = -(ustar[i]^3 * thetav[i]) / (KAPPA * G * wtv[i])
+                zeta[i] = z_eff / L[i]
+            end
         end
 
         if dudz !== nothing && isfinite(dudz[i]) && ustar[i] > 0
