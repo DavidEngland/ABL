@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-using CSV, DataFrames, Dates, Downloads
+using CSV, DataFrames, Dates, Downloads, Statistics
 
 const KAPPA::Float64 = 0.4
 const G::Float64 = 9.81
@@ -100,6 +100,92 @@ function maybe_col_float(df::DataFrame, aliases::Vector{Symbol})
     return c === nothing ? nothing : col_float(df, c)
 end
 
+function output_base(output_csv::String)
+    return endswith(lowercase(output_csv), ".csv") ? output_csv[1:(end - 4)] : output_csv
+end
+
+function write_preprocess_summary(output_csv::String, out::DataFrame; input_source::String, mode::String, phi_target::String, stable_only::Bool, z_m::Float64, d_m::Float64, z_eff::Float64, wtv_eps::Float64, total_rows::Int, neutral_count::Int)
+    base = output_base(output_csv)
+
+    rows_written = nrow(out)
+    zeta_vals = rows_written > 0 ? Vector{Float64}(out.zeta) : Float64[]
+    phi_vals = rows_written > 0 ? Vector{Float64}(out.phi_obs) : Float64[]
+
+    zeta_min = rows_written > 0 ? minimum(zeta_vals) : NaN
+    zeta_max = rows_written > 0 ? maximum(zeta_vals) : NaN
+    zeta_q05 = rows_written > 0 ? quantile(zeta_vals, 0.05) : NaN
+    zeta_q50 = rows_written > 0 ? quantile(zeta_vals, 0.50) : NaN
+    zeta_q95 = rows_written > 0 ? quantile(zeta_vals, 0.95) : NaN
+
+    phi_min = rows_written > 0 ? minimum(phi_vals) : NaN
+    phi_max = rows_written > 0 ? maximum(phi_vals) : NaN
+    phi_q05 = rows_written > 0 ? quantile(phi_vals, 0.05) : NaN
+    phi_q50 = rows_written > 0 ? quantile(phi_vals, 0.50) : NaN
+    phi_q95 = rows_written > 0 ? quantile(phi_vals, 0.95) : NaN
+
+    stats = DataFrame(
+        input_source=[input_source],
+        mode=[mode],
+        phi_target=[phi_target],
+        stable_only=[stable_only],
+        z_m=[z_m],
+        d_m=[d_m],
+        z_eff=[z_eff],
+        wtv_eps=[wtv_eps],
+        total_rows=[total_rows],
+        rows_written=[rows_written],
+        neutral_count=[neutral_count],
+        zeta_min=[zeta_min],
+        zeta_q05=[zeta_q05],
+        zeta_q50=[zeta_q50],
+        zeta_q95=[zeta_q95],
+        zeta_max=[zeta_max],
+        phi_min=[phi_min],
+        phi_q05=[phi_q05],
+        phi_q50=[phi_q50],
+        phi_q95=[phi_q95],
+        phi_max=[phi_max],
+    )
+    CSV.write("$(base)_preprocess_stats.csv", stats)
+
+    lines = [
+        "# Preprocess Summary",
+        "",
+        "## Source",
+        "",
+        "- input source: $(input_source)",
+        "- mode: $(mode)",
+        "- phi target: $(phi_target)",
+        "- stable_only: $(stable_only)",
+        "",
+        "## Geometry and Thresholds",
+        "",
+        "- z_m: $(z_m)",
+        "- d_m: $(d_m)",
+        "- z_eff: $(z_eff)",
+        "- wtv_eps: $(wtv_eps)",
+        "",
+        "## Row Accounting",
+        "",
+        "- total rows read: $(total_rows)",
+        "- rows written: $(rows_written)",
+        "- neutral-transition rows flagged: $(neutral_count)",
+        "",
+        "## Output Distribution",
+        "",
+        "- zeta min/max: $(zeta_min), $(zeta_max)",
+        "- zeta quantiles 5/50/95%: $(zeta_q05), $(zeta_q50), $(zeta_q95)",
+        "- phi_obs min/max: $(phi_min), $(phi_max)",
+        "- phi_obs quantiles 5/50/95%: $(phi_q05), $(phi_q50), $(phi_q95)",
+        "",
+        "## Files",
+        "",
+        "- data: $(output_csv)",
+        "- stats csv: $(base)_preprocess_stats.csv",
+    ]
+    write("$(base)_preprocess_summary.md", join(lines, "\n") * "\n")
+end
+
 function get_tablevariable_flags(extra::Vector{String}, mode::String)
     tv = Dict{Symbol, String}()
     tv[:uw] = parse_required_flag(extra, "--tv-uw")
@@ -197,10 +283,10 @@ function main()
 
     extra = length(ARGS) > 4 ? ARGS[5:end] : String[]
     stable_only = has_flag(extra, "--stable-only")
-    phi_target = parse_flag(extra, "--phi", "phi_m")
+    phi_target = String(parse_flag(extra, "--phi", "phi_m"))
     wtv_eps = parse_float_flag(extra, "--wtv-eps")
     wtv_eps = wtv_eps === nothing ? DEFAULT_WTV_EPS : wtv_eps
-    mode = parse_flag(extra, "--mode", "raw")
+    mode = String(parse_flag(extra, "--mode", "raw"))
     if !(phi_target in ("phi_m", "phi_h"))
         error("--phi must be phi_m or phi_h")
     end
@@ -332,6 +418,20 @@ function main()
 
     out = out[out.quality_pass .== true, :]
     CSV.write(output_csv, out)
+    write_preprocess_summary(
+        output_csv,
+        out;
+        input_source=input_csv,
+        mode=mode,
+        phi_target=phi_target,
+        stable_only=stable_only,
+        z_m=z_m,
+        d_m=d_m,
+        z_eff=z_eff,
+        wtv_eps=wtv_eps,
+        total_rows=n,
+        neutral_count=count(neutral_flag),
+    )
 
     println("Wrote $(nrow(out)) filtered rows to $(output_csv)")
     println("phi_obs source: $(phi_target)")

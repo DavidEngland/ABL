@@ -397,6 +397,74 @@ function write_validity_summary(out_prefix::String; dataset_label::String, zeta:
     write("$(out_prefix)_validity_summary.md", join(lines, "\n") * "\n")
 end
 
+function write_run_report(out_prefix::String; dataset_label::String, metrics::DataFrame, params::DataFrame, have_plot::Bool)
+    run_name = basename(out_prefix)
+    most_test = metrics.rmse_test[1]
+    ultra_test = metrics.rmse_test[2]
+    gain = most_test - ultra_test
+    gain_pct = most_test > 0 ? 100.0 * gain / most_test : NaN
+
+    lines = [
+        "# Ultraspherical Run Report",
+        "",
+        "## Run",
+        "",
+        "- run name: $(run_name)",
+        "- dataset label: $(dataset_label)",
+        "",
+        "## Metrics",
+        "",
+        "- MOST test RMSE: $(most_test)",
+        "- MOST+ULTRA test RMSE: $(ultra_test)",
+        "- absolute RMSE gain: $(gain)",
+        "- relative RMSE gain: $(gain_pct)%",
+        "",
+        "## Parameters",
+        "",
+        "- baseline a: $(params.a[1])",
+        "- baseline b: $(params.b[1])",
+        "- baseline lambda_profile: $(params.lambda_profile[1])",
+        "- alpha_xi: $(params.alpha_xi[1])",
+        "- lambda_star: $(params.lambda_star[1])",
+        "- ridge: $(params.ridge[1])",
+        "- n_ultra: $(params.n_ultra[1])",
+        "- regime: $(params.regime[1])",
+        "- split_mode: $(params.split_mode[1])",
+        "",
+        "## Inline Graphics",
+        "",
+    ]
+
+    if have_plot
+        push!(lines, "### MOST vs MOST+ULTRA")
+        push!(lines, "")
+        push!(lines, "![MOST vs MOST+ULTRA]($(run_name)_comparison.png)")
+        push!(lines, "")
+        push!(lines, "### Ultraspherical Correction")
+        push!(lines, "")
+        push!(lines, "![Ultraspherical Correction]($(run_name)_correction.png)")
+        push!(lines, "")
+    else
+        push!(lines, "Plot output not available (CairoMakie not installed at run time).")
+        push!(lines, "")
+    end
+
+    append!(lines, [
+        "## Run Files",
+        "",
+        "- $(run_name)_metrics.csv",
+        "- $(run_name)_params.csv",
+        "- $(run_name)_coeffs.csv",
+        "- $(run_name)_pred_test.csv",
+        "- $(run_name)_curve.csv",
+        "- $(run_name)_model.jl",
+        "- $(run_name)_formula.md",
+        "- $(run_name)_validity_summary.md",
+    ])
+
+    write("$(out_prefix)_report.md", join(lines, "\n") * "\n")
+end
+
 function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="observed", truth=nothing)
     required = [:zeta, :phi_obs]
     col_syms = Symbol.(names(df))
@@ -581,6 +649,13 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
         nmax=best.nmax,
         ridge=best.ridge,
     )
+    write_run_report(
+        out_prefix;
+        dataset_label=dataset_label,
+        metrics=metrics,
+        params=params,
+        have_plot=HAVE_MAKIE,
+    )
 
     if truth !== nothing
         CSV.write("$(out_prefix)_synthetic_data.csv", df)
@@ -630,6 +705,7 @@ function run_pipeline(df::DataFrame, out_prefix::String; dataset_label::String="
     println("  $(out_prefix)_model.jl")
     println("  $(out_prefix)_formula.md")
     println("  $(out_prefix)_validity_summary.md")
+    println("  $(out_prefix)_report.md")
     if truth !== nothing
         println("  $(out_prefix)_synthetic_data.csv")
     end
