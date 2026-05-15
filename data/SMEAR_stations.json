@@ -1,0 +1,72 @@
+[
+  {
+    "dcmiPoint": "name=Värriö; east=29.610137; north=67.755044; elevation=395;",
+    "id": 1,
+    "name": "Värriö"
+  },
+  {
+    "dcmiPoint": "name=Hyytiälä; east=24.294795; north=61.847463; elevation=179;",
+    "id": 2,
+    "name": "Hyytiälä"
+  },
+  {
+    "dcmiPoint": "name=Kumpula; east=24.961227; north=60.202887; elevation=30;",
+    "id": 3,
+    "name": "Kumpula"
+  },
+  {
+    "dcmiPoint": "name=Puijo; east=27.655278; north=62.909444; elevation=306;",
+    "id": 4,
+    "name": "Puijo"
+  },
+  {
+    "dcmiPoint": "name=Erottaja; east=24.9454; north=60.1652; elevation=23;",
+    "id": 5,
+    "name": "Erottaja"
+  },
+  {
+    "dcmiPoint": "name=Torni; east=24.9387; north=60.1678; elevation=15;",
+    "id": 6,
+    "name": "Torni"
+  },
+  {
+    "dcmiPoint": "name=Siikaneva 1; east=24.192794; north=61.832702; elevation=162;",
+    "id": 7,
+    "name": "Siikaneva 1"
+  },
+  {
+    "dcmiPoint": "name=Siikaneva 2; east=24.169752; north=61.837286; elevation=162;",
+    "id": 8,
+    "name": "Siikaneva 2"
+  },
+  {
+    "dcmiPoint": "name=Kuivajärvi; east=24.282; north=61.846; elevation=141;",
+    "id": 9,
+    "name": "Kuivajärvi"
+  },
+  {
+    "dcmiPoint": "name=Dome_C; east=123.332; north=-75.099; elevation=3233;",
+    "id": 10,
+    "name": "Dome_C"
+  },
+  {
+    "dcmiPoint": "name=Nuorttiaapa; east=29.4846; north=67.7542; elevation=255;",
+    "id": 11,
+    "name": "Nuorttiaapa"
+  },
+  {
+    "dcmiPoint": "name=Viikki; east=25.017; north=60.219; elevation=3;",
+    "id": 12,
+    "name": "Viikki"
+  },
+  {
+    "dcmiPoint": "name=Haltiala; east=24.9445; north=60.2716; elevation=15;",
+    "id": 13,
+    "name": "Haltiala"
+  },
+  {
+    "dcmiPoint": "name=Tvärminne; east=23.2503; north=59.8418; elevation=0;",
+    "id": 14,
+    "name": "Tvärminne"
+  }
+]

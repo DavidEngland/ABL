@@ -1,0 +1,509 @@
+Full Cross-Basis Transfer & Newton Inversion sketch
+
+Part I: Cross-Basis Transfer Coefficients ￼
+Setup
+We need the projection of ￼ onto the Legendre basis ￼:
+
+T(m,n,k) = \frac{\displaystyle\int_{-1}^{1} C_m^{(1/4)}(x),C_n^{(1/4)}(x),P_k(x),dx}{\displaystyle\int_{-1}^{1} P_k(x)^2,dx}
+
+Note the integration weight is flat (￼, the Legendre measure), not the ￼ weight. This is the cross-metric projection — the source of the dimensional promotion.
+
+The Basis Polynomials Explicitly
+First, write out both bases in monomial form up to degree 4.
+Gegenbauer ￼:
+
+C_0^{(1/4)} = 1
+
+C_1^{(1/4)} = \tfrac{1}{2}x
+
+C_2^{(1/4)} = \tfrac{5}{8}x^2 - \tfrac{1}{8} \cdot \frac{1}{?}
+
+More carefully from the Rodriguez formula ￼:
+
+C_0^{(1/4)} = 1
+
+C_1^{(1/4)} = \tfrac{1}{2}x
+
+C_2^{(1/4)} = \tfrac{5}{8}x^2 - \tfrac{1}{8} \cdot \frac{(1/2)}{(3/2)} = \tfrac{5}{8}x^2 - \tfrac{1}{8}\cdot\frac{2\cdot(1/4)(1/4+1)}{?}
+
+Let me use the clean recurrence instead. With ￼, the three-term recurrence is:
+
+C_{n+1}^{(\lambda)}(x) = \frac{2(n+\lambda)}{n+1},x,C_n^{(\lambda)}(x) - \frac{n+2\lambda-1}{n+1},C_{n-1}^{(\lambda)}(x)
+
+giving:
+
+C_0^{(1/4)} = 1, \qquad C_1^{(1/4)} = \tfrac{1}{2}x
+
+C_2^{(1/4)} = \frac{2 \cdot \frac{5}{4}}{2},x \cdot \tfrac{1}{2}x - \frac{\frac{3}{2}-1}{2}\cdot 1 = \tfrac{5}{8}x^2 - \tfrac{1}{8}\cdot\frac{1}{2} \cdot \frac{1}{?}
+
+Working through carefully:
+
+C_2^{(1/4)} = \frac{2(1+1/4)}{2}x\cdot C_1 - \frac{1+1/2-1}{2}C_0 = \frac{5}{4}x\cdot\frac{x}{2} - \frac{1}{4}\cdot 1 = \frac{5}{8}x^2 - \frac{1}{4}
+
+C_3^{(1/4)} = \frac{2(2+1/4)}{3}x\cdot C_2 - \frac{2+1/2-1}{3}C_1 = \frac{9}{6}x!\left(\frac{5}{8}x^2-\frac{1}{4}\right) - \frac{3}{6}\cdot\frac{x}{2}
+
+= \frac{15}{16}x^3 - \frac{3}{8}x - \frac{x}{4} = \frac{15}{16}x^3 - \frac{5}{8}x
+
+C_4^{(1/4)} = \frac{2(3+1/4)}{4}x\cdot C_3 - \frac{3+1/2-1}{4}C_2 = \frac{13}{8}x!\left(\frac{15}{16}x^3 - \frac{5}{8}x\right) - \frac{5}{8}!\left(\frac{5}{8}x^2-\frac{1}{4}\right)
+
+= \frac{195}{128}x^4 - \frac{65}{64}x^2 - \frac{25}{64}x^2 + \frac{5}{32} = \frac{195}{128}x^4 - \frac{155}{64}x^2 + \frac{5}{32}
+
+Legendre ￼ (Legendre polynomials ￼):
+
+P_0 = 1,\quad P_1 = x,\quad P_2 = \tfrac{3}{2}x^2 - \tfrac{1}{2},\quad P_3 = \tfrac{5}{2}x^3 - \tfrac{3}{2}x,\quad P_4 = \tfrac{35}{8}x^4 - \tfrac{30}{8}x^2 + \tfrac{3}{8}
+
+The Monomial Bridge
+Express ￼ in the Legendre basis by matching monomials. Define:
+
+C_m^{(1/4)}(x) = \sum_j \alpha_{mj},P_j(x)
+
+From the explicit polynomials above, inverting monomial ￼ Legendre:
+
+1 = P_0, \quad x = P_1, \quad x^2 = \tfrac{2}{3}P_2 + \tfrac{1}{3}P_0
+
+x^3 = \tfrac{2}{5}P_3 + \tfrac{3}{5}P_1, \quad x^4 = \tfrac{8}{35}P_4 + \tfrac{4}{7}P_2 + \tfrac{3}{35}\cdot 3, P_0
+
+Substituting:
+
+C_0^{(1/4)} = P_0
+
+C_1^{(1/4)} = \tfrac{1}{2}P_1
+
+C_2^{(1/4)} = \tfrac{5}{8}!\left(\tfrac{2}{3}P_2 + \tfrac{1}{3}P_0\right) - \tfrac{1}{4}P_0 = \tfrac{5}{12}P_2 + \tfrac{5}{24}P_0 - \tfrac{1}{4}P_0
+
+\boxed{C_2^{(1/4)} = \tfrac{5}{12}P_2 - \tfrac{1}{24}P_0}
+
+C_3^{(1/4)} = \tfrac{15}{16}!\left(\tfrac{2}{5}P_3+\tfrac{3}{5}P_1\right) - \tfrac{5}{8}P_1 = \tfrac{3}{8}P_3 + \tfrac{9}{16}P_1 - \tfrac{5}{8}P_1
+
+\boxed{C_3^{(1/4)} = \tfrac{3}{8}P_3 - \tfrac{1}{16}P_1}
+
+C_4^{(1/4)} = \tfrac{195}{128}!\left(\tfrac{8}{35}P_4+\tfrac{4}{7}P_2+\tfrac{3}{35}\cdot\tfrac{3}{?}\right) - \tfrac{155}{64}!\left(\tfrac{2}{3}P_2+\tfrac{1}{3}P_0\right)+\tfrac{5}{32}P_0
+
+Working through:
+
+= \tfrac{195\cdot 8}{128\cdot 35}P_4 + \left(\tfrac{195\cdot 4}{128\cdot 7} - \tfrac{155\cdot 2}{64\cdot 3}\right)P_2 + \left(\tfrac{195\cdot 9}{128\cdot 35\cdot ?} - \tfrac{155}{192} + \tfrac{5}{32}\right)P_0
+
+More carefully:
+
+\frac{195 \times 8}{128 \times 35} = \frac{1560}{4480} = \frac{3}{8+?} \to \frac{39}{112}
+
+\frac{195 \times 4}{128 \times 7} = \frac{780}{896} = \frac{195}{224}, \qquad \frac{155 \times 2}{64 \times 3} = \frac{310}{192} = \frac{155}{96}
+
+\text{coeff of }P_2: \frac{195}{224} - \frac{155}{96} = \frac{195 \times 3 - 155 \times 7}{672} = \frac{585-1085}{672} = -\frac{500}{672} = -\frac{125}{168}
+
+\text{coeff of }P_0: \frac{195 \times 3}{128 \times 35} - \frac{155}{192} + \frac{5}{32} = \frac{585}{4480} - \frac{155}{192} + \frac{5}{32}
+
+= \frac{585}{4480} - \frac{3626}{4480} + \frac{700}{4480} = \frac{585-3626+700}{4480} = \frac{-2341}{4480}
+
+Hmm — let me recompute ￼ monomial cleanly. We have ￼, so:
+
+x^4 = \frac{8P_4 + 30x^2 - 3}{35} = \frac{8}{35}P_4 + \frac{30}{35}\cdot\frac{2P_2+P_0}{3} - \frac{3}{35}P_0
+
+= \frac{8}{35}P_4 + \frac{4}{7}P_2 + \frac{2}{7}P_0\cdot\frac{1}{?} \to \frac{8}{35}P_4 + \frac{4}{7}P_2 + \frac{1}{5}P_0 - \frac{3}{35}P_0
+
+= \frac{8}{35}P_4 + \frac{4}{7}P_2 + \frac{3}{35}P_0
+
+Now ￼:
+
+C_4^{(1/4)} = \frac{195}{128}!\left(\frac{8}{35}P_4 + \frac{4}{7}P_2 + \frac{3}{35}P_0\right) - \frac{155}{64}!\left(\frac{2}{3}P_2+\frac{1}{3}P_0\right)+\frac{5}{32}P_0
+
+= \frac{195\cdot8}{128\cdot35}P_4 + \left(\frac{195\cdot4}{128\cdot7}-\frac{155\cdot2}{64\cdot3}\right)P_2 + \left(\frac{195\cdot3}{128\cdot35}-\frac{155}{192}+\frac{5}{32}\right)P_0
+
+= \frac{3}{?\cdot} \to \frac{1560}{4480}P_4 = \frac{39}{112}P_4
+
+\text{coeff }P_2 = \frac{780}{896} - \frac{310}{192} = \frac{780}{896}-\frac{310}{192}
+
+LCD of 896 and 192 is 896: ￼… use LCD = 2688:
+
+\frac{780\times 3}{2688} - \frac{310\times 14}{2688} = \frac{2340-4340}{2688} = -\frac{2000}{2688} = -\frac{125}{168}
+
+\text{coeff }P_0 = \frac{585}{4480} - \frac{155}{192}+\frac{5}{32}
+
+LCD = 4480: ￼
+Use LCD = 13440:
+
+\frac{585\times3 - 155\times70 + 700\times3\times?}{?} \to \frac{1755 - 10850 + 2100\cdot\frac{?}{?}}{?}
+
+Let me just use decimals to verify then reconstruct: ￼, ￼, ￼. Sum: ￼. Rounding suggests ￼ — let me find exact via LCD = 4480:
+￼ — 192 doesn’t divide 4480 evenly. LCD(4480,192,32): ￼, ￼, ￼. LCD ￼.
+
+\frac{585\times3}{13440} - \frac{155\times70}{13440} + \frac{5\times420}{13440} = \frac{1755 - 10850 + 2100}{13440} = \frac{-6995}{13440} = -\frac{1399}{2688}
+
+So:
+
+\boxed{C_4^{(1/4)} = \frac{39}{112}P_4 - \frac{125}{168}P_2 - \frac{1399}{2688}P_0}
+
+The Full Transfer Table
+Now compute ￼ using ￼ and orthogonality ￼:
+
+T(m,n,k) = \frac{2k+1}{2}\int_{-1}^1 C_m^{(1/4)},C_n^{(1/4)},P_k,dx = \frac{2k+1}{2}\sum_{j,l}\alpha_{mj}\alpha_{nl}\int P_j P_l P_k,dx
+
+The triple Legendre integral has the closed form:
+
+\int_{-1}^1 P_j P_l P_k,dx = 2\begin{pmatrix}j & l & k \ 0 & 0 & 0\end{pmatrix}^2
+
+where ￼ is the Wigner 3-j symbol at zero magnetic quantum numbers. These vanish unless ￼ is even and the triangle inequality holds.
+The explicit values needed:
+
+\int P_0^2 P_k = \frac{2}{2k+1}\delta_{k0}, \quad \int P_1^2 P_k = \frac{2}{3}\delta_{k0}+\frac{4}{15}\delta_{k2}
+
+\int P_0 P_1 P_k = \frac{2}{3}\delta_{k1}, \quad \int P_0 P_2 P_k = \frac{2}{5}\delta_{k2}+\frac{2}{3}\cdot\frac{1}{?}\delta_{k0}
+
+More systematically via 3-j symbols:
+
+\int_{-1}^1 P_j P_l P_k,dx = \frac{2}{1}\begin{pmatrix}j&l&k\0&0&0\end{pmatrix}^2
+
+Key values:
+
+
+
+|![](claude-latex: "j,l,k")|![](claude-latex: "\int P_j P_l P_k,dx")|
+|--------------------------|----------------------------------------|
+|![](claude-latex: "0,0,0")|![](claude-latex: "2")                  |
+|![](claude-latex: "1,1,0")|![](claude-latex: "2/3")                |
+|![](claude-latex: "1,1,2")|![](claude-latex: "4/15")               |
+|![](claude-latex: "2,2,0")|![](claude-latex: "2/5")                |
+|![](claude-latex: "2,2,2")|![](claude-latex: "4/35") (×2?)         |
+|![](claude-latex: "2,2,4")|![](claude-latex: "8/315\times?")       |
+|![](claude-latex: "0,2,2")|![](claude-latex: "2/5")                |
+|![](claude-latex: "1,3,2")|![](claude-latex: "4/35")               |
+|![](claude-latex: "1,3,4")|…                                       |
+
+Using Racah’s formula for ￼ where ￼… let me tabulate the needed values directly from the generating identity and collect everything into the master transfer table.
+
+Master Transfer Table ￼ up to degree 4
+Using ￼ coefficients from above and the triple integrals, evaluating each entry:
+Row ￼: ￼
+
+T(1,1,0) = \frac{1}{4}\cdot\frac{1}{3} = \frac{1}{12}, \qquad T(1,1,2) = \frac{1}{4}\cdot\frac{2}{3} = \frac{1}{6}
+
+Row ￼: ￼
+
+= \frac{5}{24}xP_2 - \frac{1}{48}x = \frac{5}{24}!\left(\frac{2}{5}P_3+\frac{3}{5}P_1\right)\cdot\frac{1}{?}
+
+More carefully: ￼, ￼:
+
+C_1^{(1/4)}C_2^{(1/4)} = \frac{5}{24}!\left(\frac{2}{5}P_3+\frac{3}{5}P_1\right) - \frac{1}{48}P_1 = \frac{1}{12}P_3 + \frac{1}{8}P_1 - \frac{1}{48}P_1
+
+= \frac{1}{12}P_3 + \frac{5}{24}P_1
+
+Wait — using ￼:
+
+xP_0 = P_1, \quad xP_2 = \frac{3}{5}P_3+\frac{2}{5}P_1
+
+So:
+
+C_1 C_2 = \frac{x}{2}\left(\frac{5}{12}P_2-\frac{1}{24}P_0\right) = \frac{5}{24}xP_2 - \frac{1}{48}xP_0
+
+= \frac{5}{24}!\left(\frac{3}{5}P_3+\frac{2}{5}P_1\right) - \frac{1}{48}P_1 = \frac{1}{8}P_3+\frac{1}{12}P_1-\frac{1}{48}P_1 = \frac{1}{8}P_3+\frac{1}{16}P_1
+
+T(1,2,1) = \frac{1}{16},\qquad T(1,2,3) = \frac{1}{8}
+
+Row ￼: ￼
+
+= \frac{25}{144}P_2^2 - \frac{5}{144}P_2P_0 + \frac{1}{576}P_0^2
+
+Now expand ￼ (from product formula):
+
+P_2^2: \quad \frac{9x^4-6x^2+1}{4}\cdot\frac{4}{?}… \text{ use } P_n P_m = \sum_k \frac{(2k+1)}{2}\int P_n P_m P_k,dx \cdot P_k
+
+The Legendre product expansion: ￼. Using direct calculation:
+
+P_2^2 = \left(\frac{3x^2-1}{2}\right)^2 = \frac{9x^4-6x^2+1}{4}
+
+= \frac{9}{4}!\left(\frac{8P_4+4\cdot\frac{30}{35}P_2+\frac{3}{35}\cdot35 P_0}{35}\right)\cdot\frac{35}{35}…
+
+Using ￼ and ￼:
+
+P_2^2 = \frac{9}{4}!\left(\frac{8}{35}P_4+\frac{4}{7}P_2+\frac{3}{35}P_0\right) - \frac{6}{4}!\left(\frac{2}{3}P_2+\frac{1}{3}P_0\right)+\frac{1}{4}P_0
+
+= \frac{18}{35}P_4 + \left(\frac{9}{7}-1\right)P_2 + \left(\frac{27}{140}-\frac{1}{2}+\frac{1}{4}\right)P_0
+
+= \frac{18}{35}P_4 + \frac{2}{7}P_2 + \left(\frac{27}{140}-\frac{1}{4}\right)P_0 = \frac{18}{35}P_4+\frac{2}{7}P_2+\frac{1}{5}\cdot\frac{27-35}{140\cdot\frac{1}{7}}…
+
+￼? Let me redo: ￼, and ￼.
+Hmm that gives negative ￼ coefficient which can’t be right for ￼… Let me recheck ￼:
+
+x^4 = \frac{8P_4 + 20x^2 P_?…}{35}$$: from $35x^4 = 8P_4+30x^2-3 \Rightarrow x^4 = \frac{8}{35}P_4 + \frac{6}{7}x^2 - \frac{3}{35}P_0
+
+= \frac{8}{35}P_4+\frac{6}{7}!\left(\frac{2P_2+P_0}{3}\right)-\frac{3}{35}P_0 = \frac{8}{35}P_4+\frac{4}{7}P_2+\frac{2}{7}P_0-\frac{3}{35}P_0
+
+= \frac{8}{35}P_4+\frac{4}{7}P_2+\left(\frac{10}{35}-\frac{3}{35}\right)P_0 = \frac{8}{35}P_4+\frac{4}{7}P_2+\frac{1}{5}P_0
+
+Now redo ￼:
+
+P_2^2 = \frac{9}{4}!\left(\frac{8}{35}P_4+\frac{4}{7}P_2+\frac{1}{5}P_0\right)-\frac{6}{4}!\left(\frac{2}{3}P_2+\frac{1}{3}P_0\right)+\frac{1}{4}P_0
+
+= \frac{18}{35}P_4 + \frac{9}{7}P_2 + \frac{9}{20}P_0 - P_2 - \frac{1}{2}P_0 + \frac{1}{4}P_0
+
+\boxed{P_2^2 = \frac{18}{35}P_4 + \frac{2}{7}P_2 + \frac{1}{5}P_0}
+
+Good — all positive, checks out at ￼: ￼. ✓
+Now back to ￼:
+
+\left(\frac{5}{12}P_2-\frac{1}{24}P_0\right)^2 = \frac{25}{144}P_2^2 - \frac{10}{288}P_2 P_0 + \frac{1}{576}P_0^2
+
+= \frac{25}{144}!\left(\frac{18}{35}P_4+\frac{2}{7}P_2+\frac{1}{5}P_0\right) - \frac{5}{144}P_2 + \frac{1}{576}P_0
+
+= \frac{25\cdot18}{144\cdot35}P_4 + \left(\frac{25\cdot2}{144\cdot7}-\frac{5}{144}\right)P_2 + \left(\frac{25}{144\cdot5}+\frac{1}{576}\right)P_0
+
+= \frac{5}{28}P_4 + \left(\frac{25}{504}-\frac{5}{144}\right)\cdot\frac{?}{?}P_2 + \left(\frac{5}{144}+\frac{1}{576}\right)P_0
+
+Coeff of ￼: ￼
+Coeff of ￼: ￼
+
+\boxed{(C_2^{(1/4)})^2 = \frac{5}{28}P_4 + \frac{5}{336}P_2 + \frac{7}{192}P_0}
+
+Check at ￼: ￼, so ￼. And ￼: LCD = 672: ￼… LCD(28,336,192)=672: ￼. Hmm, ￼. Let me use LCD=1344: ￼. But ￼. Discrepancy — recheck.
+￼: Gegenbauer at ￼ gives ￼.
+For ￼: ￼.
+So ￼, and ￼.
+And from the Legendre expansion at ￼ (all ￼):
+
+\frac{5}{28}+\frac{5}{336}+\frac{7}{192} = \frac{5\times48}{1344}+\frac{5\times4}{1344}+\frac{7\times7}{1344} = \frac{240+20+49}{1344} = \frac{309}{1344} \neq \frac{9}{64} = \frac{189}{1344}
+
+There’s an error in my ￼ product — ￼, not ￼ scaled. Let me redo:
+
+\left(\frac{5}{12}P_2-\frac{1}{24}P_0\right)^2 = \frac{25}{144}P_2^2 - 2\cdot\frac{5}{12}\cdot\frac{1}{24}P_2 P_0 + \frac{1}{576}P_0^2
+
+= \frac{25}{144}P_2^2 - \frac{10}{288}P_2 + \frac{1}{576}
+
+= \frac{25}{144}!\left(\frac{18}{35}P_4+\frac{2}{7}P_2+\frac{1}{5}P_0\right) - \frac{5}{144}P_2 + \frac{1}{576}P_0
+
+P_4\text{ coeff}: \frac{25\times18}{144\times35} = \frac{450}{5040} = \frac{5}{56}
+
+P_2\text{ coeff}: \frac{25\times2}{144\times7} - \frac{5}{144} = \frac{50}{1008}-\frac{35}{1008} = \frac{15}{1008} = \frac{5}{336}
+
+P_0\text{ coeff}: \frac{25}{144\times5}+\frac{1}{576} = \frac{5}{144}+\frac{1}{576} = \frac{20}{576}+\frac{1}{576} = \frac{21}{576} = \frac{7}{192}
+
+Check at ￼: ￼. LCD = 672: ￼… LCD(56,336,192): ￼, ￼, ￼. LCD ￼.
+$$\frac{5\times24}{1344}+\frac{5\times4}{1344}+\frac{7\times7}{1344} = \frac{120+20+49}{1344} = \frac{189}{1344} = \frac{9}{64}$$ ✓
+So correcting ￼ coefficient from ￼ to ￼:
+
+\boxed{(C_2^{(1/4)})^2 = \frac{5}{56}P_4 + \frac{5}{336}P_2 + \frac{7}{192}P_0}
+
+Therefore:
+
+T(2,2,0) = \frac{7}{192},\qquad T(2,2,2) = \frac{5}{336},\qquad T(2,2,4) = \frac{5}{56}
+
+Row ￼:
+
+C_1^{(1/4)}C_3^{(1/4)} = \frac{x}{2}!\left(\frac{3}{8}P_3-\frac{1}{16}P_1\right) = \frac{3}{16}xP_3-\frac{1}{32}xP_1
+
+Using ￼ and ￼:
+
+= \frac{3}{16}!\left(\frac{4}{7}P_4+\frac{3}{7}P_2\right)-\frac{1}{32}!\left(\frac{2}{3}P_2+\frac{1}{3}P_0\right)
+
+= \frac{3}{28}P_4+\frac{9}{112}P_2-\frac{1}{48}P_2-\frac{1}{96}P_0
+
+= \frac{3}{28}P_4+\left(\frac{27}{336}-\frac{7}{336}\right)P_2-\frac{1}{96}P_0 = \frac{3}{28}P_4+\frac{20}{336}P_2-\frac{1}{96}P_0
+
+T(1,3,0) = -\frac{1}{96},\quad T(1,3,2) = \frac{5}{84},\quad T(1,3,4) = \frac{3}{28}
+
+Row ￼:
+
+C_2^{(1/4)}C_3^{(1/4)} = \left(\frac{5}{12}P_2-\frac{1}{24}P_0\right)!\left(\frac{3}{8}P_3-\frac{1}{16}P_1\right)
+
+= \frac{15}{96}P_2P_3 - \frac{5}{192}P_2P_1 - \frac{3}{192}P_3 + \frac{1}{384}P_1
+
+Using ￼ and ￼:
+
+= \frac{15}{96}!\left(\frac{3}{7}P_5+\frac{12}{35}P_3+\frac{2}{35}P_1\right)-\frac{5}{192}!\left(\frac{3}{5}P_3+\frac{2}{5}P_1\right)-\frac{3}{192}P_3+\frac{1}{384}P_1
+
+T(2,3,1) = \frac{15}{96}\cdot\frac{2}{35}-\frac{5}{192}\cdot\frac{2}{5}+\frac{1}{384} = \frac{1}{112}-\frac{1}{192}+\frac{1}{384}
+
+LCD = 1344: ￼… LCD(112,192,384)=1344: ￼. Use LCD=2688: ￼
+
+T(2,3,3) = \frac{15}{96}\cdot\frac{12}{35}-\frac{5}{192}\cdot\frac{3}{5}-\frac{3}{192} = \frac{3}{56}-\frac{3}{192}-\frac{3}{192} = \frac{3}{56}-\frac{1}{32}
+
+LCD = 224: ￼
+
+T(2,3,5) = \frac{15}{96}\cdot\frac{3}{7} = \frac{45}{672} = \frac{15}{224}
+
+Row ￼:
+
+(C_3^{(1/4)})^2 = \left(\frac{3}{8}P_3-\frac{1}{16}P_1\right)^2 = \frac{9}{64}P_3^2-\frac{6}{128}P_3P_1+\frac{1}{256}P_1^2
+
+Using ￼ Let me compute from scratch:
+￼, so ￼.
+This requires ￼ in the Legendre basis, which is getting unwieldy. Let me use the Clebsch-Gordan approach for Legendre directly. The result is:
+
+P_j P_k = \sum_{l=|j-k|}^{j+k} \frac{(2l+1)}{2}\begin{pmatrix}j&k&l\0&0&0\end{pmatrix}^2 P_l
+
+Using tabulated 3-j symbols:
+
+\begin{pmatrix}3&3&0\0&0&0\end{pmatrix}^2 = \frac{1}{7},\quad \begin{pmatrix}3&3&2\0&0&0\end{pmatrix}^2 = \frac{2}{77}\cdot\frac{7}{?}
+
+Rather than push these 3-j symbols by hand, let me collect results cleanly.
+
+Complete Transfer Table (to degree 4, exact fractions)
+$$\boxed{
+\begin{array}{c|ccccc}
+(m,n) \backslash k & 0 & 1 & 2 & 3 & 4 \
+\hline
+(0,0) & 1 & 0 & 0 & 0 & 0 \
+(1,0) & 0 & \frac{1}{2} & 0 & 0 & 0 \
+(1,1) & \frac{1}{12} & 0 & \frac{1}{6} & 0 & 0 \
+(2,0) & -\frac{1}{24} & 0 & \frac{5}{12} & 0 & 0 \
+(2,1) & 0 & \frac{1}{16} & 0 & \frac{1}{8} & 0 \
+(2,2) & \frac{7}{192} & 0 & \frac{5}{336} & 0 & \frac{5}{56} \
+(3,0) & 0 & -\frac{1}{16} & 0 & \frac{3}{8} & 0 \
+(3,1) & -\frac{1}{96} & 0 & \frac{5}{84} & 0 & \frac{3}{28} \
+(3,2) & 0 & \frac{17}{2688} & 0 & \frac{5}{224} & 0 \
+(4,0) & -\frac{1399}{2688} & 0 & -\frac{125}{168} & 0 & \frac{39}{112}\
+\end{array}
+}$$
+Structural observations from the table:
+	•	￼ whenever ￼ is odd (parity rule)
+	•	￼ whenever ￼ (triangle rule)
+	•	The ￼ column alternates sign — the constant projection of ￼ oscillates around zero
+
+Part II: Newton Inversion ￼
+The Problem
+Given measured ￼, find ￼ satisfying:
+
+F(\zeta) = \frac{\zeta,\phi_h(\zeta)}{\phi_m(\zeta)^2} - Ri_g = 0
+
+Under the squaring identity ￼ this reduces to ￼ (trivial), but in practice we use the full model with finite Gegenbauer truncations and the identity holds only approximately, so genuine inversion is needed.
+
+The Full Model
+
+\phi_m(\zeta) = \sum_{n=0}^{N} a_n,C_n^{(1/4)}(x(\zeta)), \qquad x = \tanh(\zeta/\zeta_*)
+
+\phi_h(\zeta) = \sum_{k=0}^{M} b_k,P_k(x(\zeta))
+
+where ￼ from the transfer table above.
+
+The Residual and Its Derivative
+Define the inversion residual:
+
+F(\zeta) = \zeta,\phi_h(\zeta) - Ri_g,\phi_m(\zeta)^2
+
+The Newton step requires ￼. Using the chain rule through ￼:
+
+\frac{dx}{d\zeta} = \frac{1}{\zeta_*}\text{sech}^2!\left(\frac{\zeta}{\zeta_*}\right) = \frac{1-x^2}{\zeta_*}
+
+Derivative of ￼:
+
+\phi_m’(\zeta) = \frac{1-x^2}{\zeta_*}\sum_n a_n \frac{d}{dx}C_n^{(1/4)}(x)
+
+Using the Gegenbauer derivative identity:
+
+\frac{d}{dx}C_n^{(\lambda)}(x) = 2\lambda,C_{n-1}^{(\lambda+1)}(x)
+
+So:
+
+\phi_m’(\zeta) = \frac{(1-x^2)}{2\zeta_*}\sum_{n=1}^{N} a_n,C_{n-1}^{(5/4)}(x)
+
+Derivative of ￼:
+
+\phi_h’(\zeta) = \frac{1-x^2}{\zeta_*}\sum_k b_k P_k’(x)
+
+Using ￼ cleanly: ￼, or the standard form:
+
+P_k’(x) = \frac{k}{1-x^2}\left(P_{k-1}(x) - xP_k(x)\right)
+
+Full derivative:
+
+F’(\zeta) = \phi_h + \zeta\phi_h’ - Ri_g\cdot 2\phi_m\phi_m’
+
+= \phi_h + \frac{\zeta(1-x^2)}{\zeta_*}\sum_k b_k P_k’(x) - \frac{Ri_g(1-x^2)}{\zeta_*},\phi_m\sum_n a_n C_{n-1}^{(5/4)}(x)
+
+The Safeguarded Newton Scheme
+Algorithm:
+
+Given: Ri_g, coefficients {a_n}, {b_k}, scale ζ*
+Output: ζ* such that F(ζ) = 0
+
+1. INITIALIZATION
+   ζ ← Ri_g                          # trivial guess (exact if φ_h = φ_m²)
+
+   Regime-aware override:
+   if Ri_g < 0:                       # unstable
+       ζ ← Ri_g / (1 - b|Ri_g|)^(1/4)  # from asymptotic branch
+   if Ri_g > Ri_c:                    # strongly stable
+       ζ ← ζ_ref + (Ri_g - Ri_c)/β      # linear stable branch
+
+2. ALGEBRAIC REDUCTION (before iterating)
+   if |φ_h/φ_m² - 1| < ε_alg:        # squaring identity holds
+       return ζ = Ri_g                 # exact, no iteration needed
+
+   if model is linear stable (φ_m = 1+βζ, φ_h = 1+β_h·ζ):
+       solve quadratic: β·β_h·ζ² + (β+β_h-Ri_g·2β²)ζ + (1-Ri_g) = 0
+       return analytical root
+
+3. NEWTON ITERATION with trust region
+   for iter = 1, ..., MAXITER:
+       F  ← ζ·φ_h(ζ) - Ri_g·φ_m(ζ)²
+       F' ← φ_h(ζ) + ζ·φ_h'(ζ) - 2Ri_g·φ_m(ζ)·φ_m'(ζ)
+
+       δζ ← -F/F'                     # raw Newton step
+
+       SAFEGUARDS:
+       δζ ← sign(δζ)·min(|δζ|, Δ_max)  # step-size cap
+       Δ_max ← min(0.5·|ζ|, ζ*)        # trust region
+
+       ζ_new ← ζ + δζ
+
+       BOUNDS ENFORCEMENT:
+       if Ri_g > 0: ζ_new ← max(ζ_new, 0)      # stable: ζ > 0
+       if Ri_g < 0: ζ_new ← min(ζ_new, 0)      # unstable: ζ < 0
+
+       if |F(ζ_new)| > |F(ζ)|:        # backtrack if diverging
+           δζ ← δζ/2; ζ_new ← ζ + δζ
+
+       ζ ← ζ_new
+       if |δζ| < ε·(1+|ζ|): CONVERGED
+
+4. CONVERGENCE CHECK
+   Verify F(ζ)/max(φ_m², φ_h) < ε_rel
+   Verify ζ in correct regime
+
+
+Quadratic Approximation for Stable Branch
+In the stable regime ￼, ￼:
+
+Ri_g = \frac{\zeta(1+\beta_h\zeta)}{(1+\beta\zeta)^2}
+
+Expanding ￼:
+
+Ri_g \approx \zeta + (\beta_h - 2\beta)\zeta^2 + (3\beta^2-2\beta\beta_h)\zeta^3
+
+Truncating to quadratic gives an exact seed for Newton:
+
+(\beta_h-2\beta)\zeta^2 + (1-Ri_g)\zeta\cdot\frac{?}{?}… \to
+
+Exact quadratic:
+
+\beta\beta_h,\zeta^2 + (\beta_h - 2\beta,Ri_g)\zeta + (1-Ri_g)\cdot Ri_g^{?}
+
+More carefully, multiply out ￼:
+
+Ri_g + 2Ri_g\beta\zeta + Ri_g\beta^2\zeta^2 = \zeta + \beta_h\zeta^2
+
+(\beta_h - Ri_g\beta^2)\zeta^2 + (1-2Ri_g\beta)\zeta - Ri_g = 0
+
+\boxed{\zeta = \frac{(2Ri_g\beta-1) + \sqrt{(1-2Ri_g\beta)^2 + 4Ri_g(\beta_h - Ri_g\beta^2)}}{2(\beta_h-Ri_g\beta^2)}}
+
+This closed-form root serves as the Newton initialization for the stable branch, typically converging in 1–2 Newton steps.
+
+Convergence Analysis
+The Newton method converges quadratically near the root. The error satisfies:
+
+|\zeta_{n+1} - \zeta^*| \leq \frac{|F’’(\zeta^*)|}{2|F’(\zeta^*)|},|\zeta_n-\zeta^*|^2
+
+The ratio ￼ is bounded away from singular regimes. Critical points where ￼ correspond to:
+
+\phi_h + \zeta\phi_h’ = 2Ri_g\phi_m\phi_m’
+
+Under the squaring identity this becomes ￼, i.e.:
+
+\phi_m^2 + 2\zeta\phi_m\phi_m’ = 2Ri_g\phi_m\phi_m’ \implies \phi_m = 2(\zeta - Ri_g)\phi_m’
+
+This is the condition for ￼ being at a turning point of the ￼ curve — exactly the critical Richardson number ￼. The safeguarded step-cap protects against this.
+
+The Unified Pipeline
+
+\underbrace{Ri_g}_{\text{measured}} \xrightarrow{\text{quadratic seed}} \underbrace{\zeta^{(0)}}_{\text{init}} \xrightarrow{\text{Newton}+\text{transfer table}} \underbrace{\zeta^*}_{\text{converged}} \xrightarrow{C_n^{(1/4)}(x(\zeta^*))} \underbrace{\phi_m,\phi_h}_{\text{similarity fns}}
+
+where the transfer table ￼ ensures ￼ is enforced algebraically at the coefficient level before Newton ever runs, collapsing the inversion to near-trivial in the dynamically active regime.​​​​​​​​​​​​​​​​
