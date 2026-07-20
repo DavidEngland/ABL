@@ -2,6 +2,10 @@
 
 ## Active Manuscripts
 
+## Program-Level Planning (Cross-Paper)
+
+- Paper-series roadmap (not a manuscript draft): `program/PaperSeries_Gegenbauer_Roadmap_v01.md`
+
 ### 1. Grid-Curvature Correction for SBL (Primary)
 **Working Title:** "Grid-Dependent Corrections to Stable Boundary Layer Turbulence Closures: A Curvature-Aware Approach"
 

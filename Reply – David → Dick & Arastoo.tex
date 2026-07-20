@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{parskip}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  pdftitle={Reply to Dick McNider and Arastoo Biazar}
+}
+
+\begin{document}
+
+\begin{center}
+{\LARGE Reply to Dick McNider and Arastoo Biazar}\par
+\vspace{0.75em}
+\end{center}
+
+Dick, Arastoo,
+
+Thank you for the careful read and for the direct feedback. It is useful because it points to the same two things I need to fix next: the physical framing has to be clearer, and the temperature state in the SCM has to be brought back into a realistic range before I rely on any of the figures.
+
+The main message I want to preserve is that the boundary layer should be read as a fast-slow dynamical system, not just as a collection of closure formulas. In the notation I am using,
+
+\[
+\varepsilon \dot{x} = f(x,y,\varepsilon), \qquad \dot{y} = g(x,y,\varepsilon),
+\]
+
+the turbulence variable adjusts quickly, while the wind and surface state evolve more slowly. In that language, folds and jumps are not decorative mathematics; they are the geometry of collapse, recovery, and low-level-jet formation.
+
+I also agree with your point about readability. I need to translate the GSPT language into atmospheric terms earlier in the draft, so the paper leads with the physics rather than with the geometry. The practical claim is simple: this framework gives us a way to track where the boundary layer loses normal hyperbolicity, how the trajectory switches branches, and how that transition relates to the observed nocturnal evolution of the wind and skin temperature.
+
+Your temperature comment was the right catch. A surface temperature near 400 K is not acceptable, so I am auditing the initialization and the surface-energy coupling before I use the results in the manuscript. I have also moved the SCM workflow to a two-stage protocol: neutral spin-up first, then the overnight radiative run. That makes the collapse test much more defensible than starting from an arbitrary initial state.
+
+On the modeling side, I think the most useful next step is exactly the one you suggested: map a CASES99 case and compare it with a WRF run in the same geometric diagnostics. That would make the paper much stronger because it would show how the framework behaves on a real atmospheric case rather than only in the idealized SCM. If that comparison is promising, I would then like to reduce the idea to a 1D prototype that mirrors your Excel/VB model, but in a cleaner and more testable form.
+
+Figure 13 is still one of the best parts of the draft because it shows the Blackadar inertial oscillation clearly. I want to keep that interpretation, but only after the thermal state is fixed so the surface values are physically credible.
+
+I am attaching a short PDF version with the equations typeset properly and a small set of supporting figures. If you want, I can next reorganize the manuscript so the atmospheric interpretation comes first and the GSPT machinery comes second.
+
+Cheers,
+
+David
+

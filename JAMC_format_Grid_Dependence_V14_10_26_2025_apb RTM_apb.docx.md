@@ -64,7 +64,7 @@ The spread in model results in the Arctic may partially be due to modeling diffi
 
 In K closure models in the stable layer, such as those used in GCMs and weather forecast models (Esau and Byrkjedal 2007), the vertical mixing coefficient is often parameterized (Blackadar 1979; McNider et al. 1981; Savijarvi 2009\) by 
 
- Km=fmRil2s           Kh=fhRil2s             fm=Pr(Ri) fh   	(1)
+   	(1)
 
 Here  Km ,  Kh  are the mixing coefficients for momentum and heat. The symbols  fm(Ri) ,  fh(Ri)  are  referred to as the stability functions with Ri, the Richardson Number, given by 
 
