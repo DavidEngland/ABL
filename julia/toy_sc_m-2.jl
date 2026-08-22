@@ -242,32 +242,32 @@ if abspath(PROGRAM_FILE) == @__FILE__
 end
 
 
-⸻
+# ⸻
 
-Notes, caveats & how to improve
-   •   Simplicity vs. realism: this toy model intentionally simplifies microphysics, radiation, and surface processes. It’s meant for quick prototyping of feedbacks (albedo → SW absorption → Ts → melt) and for experimenting with ML closures later.
-   •   Stability: the vertical diffusion uses an explicit scheme; for realistic K and dt you’ll need very small dt or an implicit solver (Crank–Nicolson) for diffusion. For production runs switch to an implicit tridiagonal solve for diffusion tendencies.
-   •   Radiation: the 2-stream/longwave is replaced by a very simple Stefan–Boltzmann upwelling + prescribed downward LW. Replace with a two-stream solver (e.g., delta-Eddington) for realistic cloud radiative effects.
-   •   Clouds & microphysics: saturation adjustment is very crude (instantaneous condensation). Add prognostic cloud liquid/ice and a microphysics scheme for mixed-phase clouds to capture Arctic cloud feedbacks.
-   •   Surface fluxes: LE is approximated assuming a dry ice surface — for open water or melt ponds compute saturation q_s from Ts and use proper bulk formulas.
-   •   K-profile: the simple exponential K can be replaced with an EDMF or a stability-dependent K from Monin–Obukhov theory for better representation of very stable Arctic BL.
-   •   Units & pressure: here we used simplified constants and assumed near-surface pressure; for accuracy use a pressure profile and convert T→potential temperature if you want to conserve energy properly.
+# Notes, caveats & how to improve
+#    •   Simplicity vs. realism: this toy model intentionally simplifies microphysics, radiation, and surface processes. It’s meant for quick prototyping of feedbacks (albedo → SW absorption → Ts → melt) and for experimenting with ML closures later.
+#    •   Stability: the vertical diffusion uses an explicit scheme; for realistic K and dt you’ll need very small dt or an implicit solver (Crank–Nicolson) for diffusion. For production runs switch to an implicit tridiagonal solve for diffusion tendencies.
+#    •   Radiation: the 2-stream/longwave is replaced by a very simple Stefan–Boltzmann upwelling + prescribed downward LW. Replace with a two-stream solver (e.g., delta-Eddington) for realistic cloud radiative effects.
+#    •   Clouds & microphysics: saturation adjustment is very crude (instantaneous condensation). Add prognostic cloud liquid/ice and a microphysics scheme for mixed-phase clouds to capture Arctic cloud feedbacks.
+#    •   Surface fluxes: LE is approximated assuming a dry ice surface — for open water or melt ponds compute saturation q_s from Ts and use proper bulk formulas.
+#    •   K-profile: the simple exponential K can be replaced with an EDMF or a stability-dependent K from Monin–Obukhov theory for better representation of very stable Arctic BL.
+#    •   Units & pressure: here we used simplified constants and assumed near-surface pressure; for accuracy use a pressure profile and convert T→potential temperature if you want to conserve energy properly.
 
-⸻
+# ⸻
 
-How to connect this to Clima.jl / TurbulenceConvection.jl
-   •   The Clima stack would provide robust vertical discretization, an EDMF closure, radiation modules, and land/sea-ice components. Once you’re happy with the toy SCM behavior:
-	1.	Replace the explicit diffusion vertical_diffusion_tend with the TurbulenceConvection EDMF tendencies (it will expose an API to compute tendencies given state & parameters).
-	2.	Replace radiation_simple with a Clima radiation module (two-stream) and use ClimaLand for ice thermodynamics.
-	3.	Use ClimaCore grids & fields instead of the lightweight Grid/State here — that lets you use existing solvers and time integrators.
-   •   I can write a second script that shows an example glue layer calling TurbulenceConvection.jl APIs (if you confirm you have those packages available). I will not invent package APIs — I’ll read the actual package docs and adapt — if you want that, say “Yes — show Clima glue” and I’ll produce a safe adaptation.
+# How to connect this to Clima.jl / TurbulenceConvection.jl
+#    •   The Clima stack would provide robust vertical discretization, an EDMF closure, radiation modules, and land/sea-ice components. Once you’re happy with the toy SCM behavior:
+# 	1.	Replace the explicit diffusion vertical_diffusion_tend with the TurbulenceConvection EDMF tendencies (it will expose an API to compute tendencies given state & parameters).
+# 	2.	Replace radiation_simple with a Clima radiation module (two-stream) and use ClimaLand for ice thermodynamics.
+# 	3.	Use ClimaCore grids & fields instead of the lightweight Grid/State here — that lets you use existing solvers and time integrators.
+#    •   I can write a second script that shows an example glue layer calling TurbulenceConvection.jl APIs (if you confirm you have those packages available). I will not invent package APIs — I’ll read the actual package docs and adapt — if you want that, say “Yes — show Clima glue” and I’ll produce a safe adaptation.
 
-⸻
+# ⸻
 
-Want me to:
-   •   (A) Replace the explicit diffusion with an implicit Crank–Nicolson diffusion solver (safer dt), or
-   •   (B) Expand the radiation to a two-stream shortwave + longwave scheme with cloud optical depth, or
-   •   (C) Produce the Clima.jl/TurbulenceConvection.jl glue version (I’ll adapt to real package APIs if you confirm you have those libs installed), or
-   •   (D) Translate this toy SCM to a Python script (xarray/numpy) so it plugs into your Python ML toolchain?
+# Want me to:
+#    •   (A) Replace the explicit diffusion with an implicit Crank–Nicolson diffusion solver (safer dt), or
+#    •   (B) Expand the radiation to a two-stream shortwave + longwave scheme with cloud optical depth, or
+#    •   (C) Produce the Clima.jl/TurbulenceConvection.jl glue version (I’ll adapt to real package APIs if you confirm you have those libs installed), or
+#    •   (D) Translate this toy SCM to a Python script (xarray/numpy) so it plugs into your Python ML toolchain?
 
-Pick one (A/B/C/D) and I’ll produce it now.
+# Pick one (A/B/C/D) and I’ll produce it now.
